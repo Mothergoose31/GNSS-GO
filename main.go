@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 
 	"github.com/mothergoose31/GNNS-GO/GNSS/helpers"
@@ -33,4 +34,12 @@ func main() {
 		fmt.Printf("ECEF Coordinates: %v\n", coord)
 	}
 
+	axis := []float64{1, 0, 0}
+	angle := math.Pi / 4
+
+	rr := helpers.Rotate(axis, angle)
+	fmt.Println(rr)
+
+	// helpers.TestMatrixMultiplication1(10000000)
+	helpers.TestMatrixRotation(10000000)
 }
