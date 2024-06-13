@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/mothergoose31/GNNS-GO/helpers"
+	"github.com/mothergoose31/GNNS-GO/GNSS/helpers"
 )
 
 func main() {

@@ -3,3 +3,4 @@ module github.com/mothergoose31/GNNS-GO
 go 1.22.3
 
 require gonum.org/v1/gonum v0.15.0
+
