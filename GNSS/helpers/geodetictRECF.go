@@ -1,6 +1,8 @@
 package helpers
 
-import "math"
+import (
+	"math"
+)
 
 const (
 	SemiMajorAxis             = 6378137.0
@@ -21,11 +23,14 @@ func GeodeticToECEF(geodetic [][]float64, radians bool) [][]float64 {
 		lon := ratio * coordinate[1]
 		alt := coordinate[2]
 
-		// todo LOOKUP THE FORMULA
 		//  prime vertical radius of curvature
+		xi := math.Sqrt(1 - EccentricitySquared*math.Sin(lat)*math.Sin(lat))
+		x := (SemiMajorAxis/xi + alt) * math.Cos(lat) * math.Cos(lon)
+		y := (SemiMajorAxis/xi + alt) * math.Cos(lat) * math.Sin(lon)
+		z := (SemiMajorAxis/xi*(1-EccentricitySquared) + alt) * math.Sin(lat)
 
 		// calc cords
-		earthCenterEarthFixed[i] = []float64{}
+		earthCenterEarthFixed[i] = []float64{x, y, z}
 	}
 
 	return earthCenterEarthFixed
