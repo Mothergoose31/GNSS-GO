@@ -41,5 +41,6 @@ func main() {
 	fmt.Println(rr)
 
 	// helpers.TestMatrixMultiplication1(10000000)
-	helpers.TestMatrixRotation(10000000)
+	// helpers.TestMatrixRotation(10000000)
+	helpers.BenchQuaternion2Euler(10000000)
 }

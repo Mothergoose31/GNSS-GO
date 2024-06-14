@@ -103,6 +103,49 @@ func Rotate(axis []float64, angle float64) *mat.Dense {
 	return &result
 }
 
+// =====================================================
+
+// =====================================================
+
+func QuaterionProduct(q, r [4]float64) [4]float64 {
+	var t [4]float64
+	t[0] = r[0]*q[0] - r[1]*q[1] - r[2]*q[2] - r[3]*q[3]
+	t[1] = r[0]*q[1] + r[1]*q[0] - r[2]*q[3] + r[3]*q[2]
+	t[2] = r[0]*q[2] + r[1]*q[3] + r[2]*q[0] - r[3]*q[1]
+	t[3] = r[0]*q[3] - r[1]*q[2] + r[2]*q[1] + r[3]*q[0]
+	return t
+}
+
+func Quaternion2Euler(quats [][]float64) [][]float64 {
+	eulers := make([][]float64, len(quats))
+
+	for i, quat := range quats {
+		q0, q1, q2, q3 := quat[0], quat[1], quat[2], quat[3]
+
+		q0q1 := 2 * q0 * q1
+		q0q2 := 2 * q0 * q2
+		q0q3 := 2 * q0 * q3
+		q1q1 := 2 * q1 * q1
+		q1q2 := 2 * q1 * q2
+		q2q2 := 2 * q2 * q2
+		q2q3 := 2 * q2 * q3
+		q3q3 := 2 * q3 * q3
+
+		gamma := math.Atan2(q0q1+q2q3, 1-q1q1-q2q2)
+		theta := math.Asin(q0q2 - q3*q1)
+		psi := math.Atan2(q0q3+q1q2, 1-q2q2-q3q3)
+
+		eulers[i] = []float64{gamma, theta, psi}
+	}
+
+	return eulers
+}
+
+// TODO Euler2Quaternion
+// Quaternion2Rot
+// ROT2Quaternion
+// Euler2Rot
+// Rot2Euler
 // ===================== Benchmarking =====================
 func generateRandomMatrix() [3][3]float64 {
 	var matrix [3][3]float64
@@ -154,6 +197,40 @@ func TestMatrixRotation(iterations int) {
 	duration := time.Since(start)
 	fmt.Printf("Time taken for %d iterations: %v\n", iterations, duration)
 
+}
+
+func generateRandomQuaternion() [][]float64 {
+	rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	w := rand.Float64()*2 - 1
+	x := rand.Float64()*2 - 1
+	y := rand.Float64()*2 - 1
+	z := rand.Float64()*2 - 1
+
+	length := math.Sqrt(w*w + x*x + y*y + z*z)
+	w /= length
+	x /= length
+	y /= length
+	z /= length
+
+	quaternion := [][]float64{
+		{w, x, y, z},
+	}
+
+	return quaternion
+}
+
+func BenchQuaternion2Euler(iterations int) {
+	start := time.Now()
+
+	for i := 0; i < iterations; i++ {
+		quat := generateRandomQuaternion()
+
+		Quaternion2Euler(quat)
+	}
+
+	duration := time.Since(start)
+	fmt.Printf("Time taken for %d iterations: %v\n", iterations, duration)
 }
 
 // ===================== Benchmarking =====================
