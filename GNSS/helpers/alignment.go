@@ -141,6 +141,33 @@ func Quaternion2Euler(quats [][]float64) [][]float64 {
 	return eulers
 }
 
+func euler2Quaternion(eulerAngles [][]float64) [][]float64 {
+	quaternions := make([][]float64, len(eulerAngles))
+	for i := range quaternions {
+		quaternions[i] = make([]float64, 4)
+	}
+	for i, angles := range eulerAngles {
+		roll, pitch, yaw := angles[0], angles[1], angles[2]
+		cosHalfRoll := math.Cos(roll / 2)
+		cosHalfPitch := math.Cos(pitch / 2)
+		cosHalfYaw := math.Cos(yaw / 2)
+		sinHalfRoll := math.Sin(roll / 2)
+		sinHalfPitch := math.Sin(pitch / 2)
+		sinHalfYaw := math.Sin(yaw / 2)
+		q0 := cosHalfRoll*cosHalfPitch*cosHalfYaw + sinHalfRoll*sinHalfPitch*sinHalfYaw
+		q1 := sinHalfRoll*cosHalfPitch*cosHalfYaw - cosHalfRoll*sinHalfPitch*sinHalfYaw
+		q2 := cosHalfRoll*sinHalfPitch*cosHalfYaw + sinHalfRoll*cosHalfPitch*sinHalfYaw
+		q3 := cosHalfRoll*cosHalfPitch*sinHalfYaw - sinHalfRoll*sinHalfPitch*cosHalfYaw
+		quaternions[i] = []float64{q0, q1, q2, q3}
+		if quaternions[i][0] < 0 {
+			for j := range quaternions[i] {
+				quaternions[i][j] = -quaternions[i][j]
+			}
+		}
+	}
+	return quaternions
+}
+
 // TODO Euler2Quaternion
 // Quaternion2Rot
 // ROT2Quaternion
@@ -218,6 +245,34 @@ func generateRandomQuaternion() [][]float64 {
 	}
 
 	return quaternion
+}
+
+func generateEuler() [][]float64 {
+	rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	roll := randomAngle()
+	pitch := randomAngle()
+	yaw := randomAngle()
+
+	euler := [][]float64{
+		{roll, pitch, yaw},
+	}
+
+	return euler
+
+}
+
+func BenchEuler2Quarterion(iterations int) {
+	start := time.Now()
+
+	for i := 0; i < iterations; i++ {
+		euler := generateEuler()
+
+		euler2Quaternion(euler)
+	}
+
+	duration := time.Since(start)
+	fmt.Printf("Time taken for %d iterations: %v\n", iterations, duration)
 }
 
 func BenchQuaternion2Euler(iterations int) {
