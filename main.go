@@ -42,7 +42,8 @@ func main() {
 
 	// helpers.TestMatrixMultiplication1(10000000)
 	// helpers.TestMatrixRotation(10000000)
-	// helpers.BenchQuaternion2Euler(10000000)
-	helpers.BenchEuler2Quarterion(10000000)
-
+	// // helpers.BenchQuaternion2Euler(10000000)
+	// helpers.BenchEuler2Quarterion(10000000)
+	helpers.BenchQuaternion2Rot(100000000)
+	helpers.BenchQuaternion2Rot2(100000000)
 }

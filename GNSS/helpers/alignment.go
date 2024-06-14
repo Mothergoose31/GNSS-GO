@@ -141,7 +141,7 @@ func Quaternion2Euler(quats [][]float64) [][]float64 {
 	return eulers
 }
 
-func euler2Quaternion(eulerAngles [][]float64) [][]float64 {
+func Euler2Quaternion(eulerAngles [][]float64) [][]float64 {
 	quaternions := make([][]float64, len(eulerAngles))
 	for i := range quaternions {
 		quaternions[i] = make([]float64, 4)
@@ -168,12 +168,68 @@ func euler2Quaternion(eulerAngles [][]float64) [][]float64 {
 	return quaternions
 }
 
-// TODO Euler2Quaternion
+func Quaterion2Rot(quats [][]float64) [][][]float64 {
+	n := len(quats)
+	Rs := make([][][]float64, n)
+	for i := 0; i < n; i++ {
+		Rs[i] = make([][]float64, 3)
+		for j := 0; j < 3; j++ {
+			Rs[i][j] = make([]float64, 3)
+		}
+		q0, q1, q2, q3 := quats[i][0], quats[i][1], quats[i][2], quats[i][3]
+		Rs[i][0][0] = q0*q0 + q1*q1 - q2*q2 - q3*q3
+		Rs[i][0][1] = 2 * (q1*q2 - q0*q3)
+		Rs[i][0][2] = 2 * (q0*q2 + q1*q3)
+		Rs[i][1][0] = 2 * (q1*q2 + q0*q3)
+		Rs[i][1][1] = q0*q0 - q1*q1 + q2*q2 - q3*q3
+		Rs[i][1][2] = 2 * (q2*q3 - q0*q1)
+		Rs[i][2][0] = 2 * (q1*q3 - q0*q2)
+		Rs[i][2][1] = 2 * (q0*q1 + q2*q3)
+		Rs[i][2][2] = q0*q0 - q1*q1 - q2*q2 + q3*q3
+	}
+	if len(quats) == 1 {
+		return Rs[:1]
+	}
+	return Rs
+}
+
+func Quaterion2Rot2(quats [][]float64) [][][]float64 {
+	n := len(quats)
+	Rs := make([][][]float64, n)
+
+	for i := range Rs {
+		Rs[i] = [][]float64{
+			make([]float64, 3),
+			make([]float64, 3),
+			make([]float64, 3),
+		}
+	}
+
+	for i, quat := range quats {
+		q0, q1, q2, q3 := quat[0], quat[1], quat[2], quat[3]
+		Rs[i][0][0] = q0*q0 + q1*q1 - q2*q2 - q3*q3
+		Rs[i][0][1] = 2 * (q1*q2 - q0*q3)
+		Rs[i][0][2] = 2 * (q0*q2 + q1*q3)
+		Rs[i][1][0] = 2 * (q1*q2 + q0*q3)
+		Rs[i][1][1] = q0*q0 - q1*q1 + q2*q2 - q3*q3
+		Rs[i][1][2] = 2 * (q2*q3 - q0*q1)
+		Rs[i][2][0] = 2 * (q1*q3 - q0*q2)
+		Rs[i][2][1] = 2 * (q0*q1 + q2*q3)
+		Rs[i][2][2] = q0*q0 - q1*q1 - q2*q2 + q3*q3
+	}
+
+	return Rs
+}
+
+// TODO
 // Quaternion2Rot
 // ROT2Quaternion
 // Euler2Rot
 // Rot2Euler
 // ===================== Benchmarking =====================
+
+// ========================================================
+
 func generateRandomMatrix() [3][3]float64 {
 	var matrix [3][3]float64
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -268,7 +324,7 @@ func BenchEuler2Quarterion(iterations int) {
 	for i := 0; i < iterations; i++ {
 		euler := generateEuler()
 
-		euler2Quaternion(euler)
+		Euler2Quaternion(euler)
 	}
 
 	duration := time.Since(start)
@@ -282,6 +338,32 @@ func BenchQuaternion2Euler(iterations int) {
 		quat := generateRandomQuaternion()
 
 		Quaternion2Euler(quat)
+	}
+
+	duration := time.Since(start)
+	fmt.Printf("Time taken for %d iterations: %v\n", iterations, duration)
+}
+
+func BenchQuaternion2Rot(iterations int) {
+	start := time.Now()
+
+	for i := 0; i < iterations; i++ {
+		quat := generateRandomQuaternion()
+
+		Quaterion2Rot(quat)
+	}
+
+	duration := time.Since(start)
+	fmt.Printf("Time taken for %d iterations: %v\n", iterations, duration)
+}
+
+func BenchQuaternion2Rot2(iterations int) {
+	start := time.Now()
+
+	for i := 0; i < iterations; i++ {
+		quat := generateRandomQuaternion()
+
+		Quaterion2Rot2(quat)
 	}
 
 	duration := time.Since(start)
