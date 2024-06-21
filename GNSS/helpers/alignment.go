@@ -15,6 +15,10 @@ type NedConverter struct {
 	Ecef2NedMatrix *mat.Dense
 }
 
+type Quaternion struct {
+	W, X, Y, Z float64
+}
+
 // =====================================================
 
 // =====================================================
@@ -221,11 +225,60 @@ func Quaterion2Rot2(quats [][]float64) [][][]float64 {
 	return Rs
 }
 
+// https://upcommons.upc.edu/bitstream/handle/2117/124384/2068-Accurate-Computation-of-Quaternions-from-Rotation-Matrices.pdf
+
+func Rot2Quaternions(rotationMatrices [][][]float64) [][]float64 {
+	quaternions := make([][]float64, len(rotationMatrices))
+	for i, matrix := range rotationMatrices {
+		trace := matrix[0][0] + matrix[1][1] + matrix[2][2]
+		var quat Quaternion
+
+		if trace > 0 {
+			scale := 0.5 / math.Sqrt(trace+1.0)
+			quat.W = 0.25 / scale
+			quat.X = (matrix[2][1] - matrix[1][2]) * scale
+			quat.Y = (matrix[0][2] - matrix[2][0]) * scale
+			quat.Z = (matrix[1][0] - matrix[0][1]) * scale
+		} else {
+			if matrix[0][0] > matrix[1][1] && matrix[0][0] > matrix[2][2] {
+				scale := 2.0 * math.Sqrt(1.0+matrix[0][0]-matrix[1][1]-matrix[2][2])
+				quat.W = (matrix[2][1] - matrix[1][2]) / scale
+				quat.X = 0.25 * scale
+				quat.Y = (matrix[0][1] + matrix[1][0]) / scale
+				quat.Z = (matrix[0][2] + matrix[2][0]) / scale
+			} else if matrix[1][1] > matrix[2][2] {
+				scale := 2.0 * math.Sqrt(1.0+matrix[1][1]-matrix[0][0]-matrix[2][2])
+				quat.W = (matrix[0][2] - matrix[2][0]) / scale
+				quat.X = (matrix[0][1] + matrix[1][0]) / scale
+				quat.Y = 0.25 * scale
+				quat.Z = (matrix[1][2] + matrix[2][1]) / scale
+			} else {
+				scale := 2.0 * math.Sqrt(1.0+matrix[2][2]-matrix[0][0]-matrix[1][1])
+				quat.W = (matrix[1][0] - matrix[0][1]) / scale
+				quat.X = (matrix[0][2] + matrix[2][0]) / scale
+				quat.Y = (matrix[1][2] + matrix[2][1]) / scale
+				quat.Z = 0.25 * scale
+			}
+		}
+
+		quaternions[i] = []float64{quat.X, quat.Y, quat.Z, quat.W}
+	}
+	return quaternions
+}
+
+func Euler2Rot(eulerAngles [][]float64) [][][]float64 {
+	return Quaterion2Rot(Euler2Quaternion(eulerAngles))
+}
+
+func Rot2Euler(rotations [][][]float64) [][]float64 {
+	return Quaternion2Euler(Rot2Quaternions(rotations))
+}
+
 // TODO
-// Quaternion2Rot
-// ROT2Quaternion
-// Euler2Rot
-// Rot2Euler
+
+// TODO
+// https://en.wikipedia.org/wiki/Geographic_coordinate_conversion#Ferrari.27s_solution
+
 // ===================== Benchmarking =====================
 
 // ========================================================
