@@ -40,10 +40,19 @@ func main() {
 	rr := helpers.Rotate(axis, angle)
 	fmt.Println(rr)
 
+	ecef := [][]float64{
+		{4510733.0, 4510733.0, 4510733.0},
+		{6378137.0, 0.0, 0.0},
+		{0.0, 6378137.0, 0.0},
+		{0.0, 0.0, 6378137.0},
+	}
+	fmt.Println(helpers.ECEFToGeodetic(ecef, false))
+
 	// helpers.TestMatrixMultiplication1(10000000)
 	// helpers.TestMatrixRotation(10000000)
 	// // helpers.BenchQuaternion2Euler(10000000)
 	// helpers.BenchEuler2Quarterion(10000000)
-	helpers.BenchQuaternion2Rot(100000000)
+	// helpers.BenchQuaternion2Rot(100000000)
 	// helpers.BenchQuaternion2Rot2(100000000)
+	// helpers.BenchECEFToGeodetic(10000000)
 }
