@@ -48,6 +48,18 @@ func main() {
 	}
 	fmt.Println(helpers.ECEFToGeodetic(ecef, false))
 
+	geodetic := []float64{47.6062, -122.3321, 10.0}
+	fmt.Println("====================================")
+	fmt.Println(helpers.GeodeticToECEF([][]float64{geodetic}, false))
+	fmt.Println("====================================")
+	// fmt.Println(helpers.GeodeticToECEF2([][]float64{geodetic}, false))
+	fmt.Println("====================================")
+	fmt.Println("== ECEF to Geodetic ===============")
+	fmt.Println(helpers.ECEFToGeodetic(helpers.GeodeticToECEF([][]float64{geodetic}, false), false))
+	fmt.Println("====================================")
+	// fmt.Println(helpers.ECEFToGeodetic(helpers.GeodeticToECEF2([][]float64{geodetic}, false), false))
+	// fmt.Println(helpers.NewLocalCoordinates(geodetic))
+
 	// helpers.TestMatrixMultiplication1(10000000)
 	// helpers.TestMatrixRotation(10000000)
 	// // helpers.BenchQuaternion2Euler(10000000)
