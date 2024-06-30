@@ -120,6 +120,10 @@ func QuaterionProduct(q, r [4]float64) [4]float64 {
 	return t
 }
 
+// =====================================================
+
+// =====================================================
+
 func Quaternion2Euler(quats [][]float64) [][]float64 {
 	eulers := make([][]float64, len(quats))
 
@@ -144,6 +148,10 @@ func Quaternion2Euler(quats [][]float64) [][]float64 {
 
 	return eulers
 }
+
+// =====================================================
+
+// =====================================================
 
 func Euler2Quaternion(eulerAngles [][]float64) [][]float64 {
 	quaternions := make([][]float64, len(eulerAngles))
@@ -172,6 +180,10 @@ func Euler2Quaternion(eulerAngles [][]float64) [][]float64 {
 	return quaternions
 }
 
+// =====================================================
+
+// =====================================================
+
 func Quaterion2Rot(quats [][]float64) [][][]float64 {
 	n := len(quats)
 	Rs := make([][][]float64, n)
@@ -196,6 +208,10 @@ func Quaterion2Rot(quats [][]float64) [][][]float64 {
 	}
 	return Rs
 }
+
+// =====================================================
+
+// =====================================================
 
 func Quaterion2Rot2(quats [][]float64) [][][]float64 {
 	n := len(quats)
@@ -225,7 +241,11 @@ func Quaterion2Rot2(quats [][]float64) [][][]float64 {
 	return Rs
 }
 
+// ======================================
+
 // https://upcommons.upc.edu/bitstream/handle/2117/124384/2068-Accurate-Computation-of-Quaternions-from-Rotation-Matrices.pdf
+
+// ======================================
 
 func Rot2Quaternions(rotationMatrices [][][]float64) [][]float64 {
 	quaternions := make([][]float64, len(rotationMatrices))
@@ -266,9 +286,17 @@ func Rot2Quaternions(rotationMatrices [][][]float64) [][]float64 {
 	return quaternions
 }
 
+// ======================================
+
+// ======================================
+
 func Euler2Rot(eulerAngles [][]float64) [][][]float64 {
 	return Quaterion2Rot(Euler2Quaternion(eulerAngles))
 }
+
+// ======================================
+
+// ======================================
 
 func Rot2Euler(rotations [][][]float64) [][]float64 {
 	return Quaternion2Euler(Rot2Quaternions(rotations))
@@ -310,6 +338,10 @@ func TestMatrixMultiplication1(iterations int) {
 
 }
 
+// ======================================
+
+// ======================================
+
 func randomAngle() float64 {
 	return (rand.Float64() * 2 * math.Pi) - math.Pi
 }
@@ -321,6 +353,10 @@ func generateRandomAngles() (float64, float64, float64) {
 	yaw := randomAngle()
 	return roll, pitch, yaw
 }
+
+// ======================================
+
+// ======================================
 
 func TestMatrixRotation(iterations int) {
 	start := time.Now()
@@ -334,6 +370,10 @@ func TestMatrixRotation(iterations int) {
 	fmt.Printf("Time taken for %d iterations: %v\n", iterations, duration)
 
 }
+
+// ======================================
+
+// ======================================
 
 func generateRandomQuaternion() [][]float64 {
 	rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -356,6 +396,10 @@ func generateRandomQuaternion() [][]float64 {
 	return quaternion
 }
 
+// ======================================
+
+// ======================================
+
 func generateEuler() [][]float64 {
 	rand.New(rand.NewSource(time.Now().UnixNano()))
 
@@ -370,6 +414,10 @@ func generateEuler() [][]float64 {
 	return euler
 
 }
+
+// ======================================
+
+// ======================================
 
 func BenchEuler2Quarterion(iterations int) {
 	start := time.Now()
