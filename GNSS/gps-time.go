@@ -7,7 +7,28 @@ import (
 
 // towToDateTime converts a GPS Week and Time Of Week to a Go time.Time object.
 // Does *not* convert from GPST to UTC. Fractional seconds are supported.
-func towToDateTime(tow float64, week int) time.Time {
+
+const SecondsInWeek = 604800
+
+type GPSTime struct {
+	Week int
+	Tow  float64
+}
+
+func NewGPSTime(week int, tow float64) GPSTime {
+	return GPSTime{week, tow}
+}
+
+func GPSTimeFromDateTime(t time.Time) GPSTime {
+	wkRef := time.Date(2014, 2, 16, 0, 0, 0, 0, time.UTC)
+	refWk := 1780
+	wk := int(t.Sub(wkRef).Hours()/24/7) + refWk
+	tow := float64(t.Sub(wkRef).Seconds()) - float64((wk-refWk)*SecondsInWeek)
+	return GPSTime{Week: wk, Tow: tow}
+
+}
+
+func TowToDateTime(tow float64, week int) time.Time {
 
 	gpsEpoch := time.Date(1980, 1, 6, 0, 0, 0, 0, time.UTC)
 
@@ -17,7 +38,7 @@ func towToDateTime(tow float64, week int) time.Time {
 	return gpsEpoch.Add(towDuration + weekDuration)
 }
 
-func getLeapSeconds(t time.Time) (int, error) {
+func GetLeapSeconds(t time.Time) (int, error) {
 	// Define the date boundaries
 	date2006 := time.Date(2006, 1, 1, 0, 0, 0, 0, time.UTC)
 	date2009 := time.Date(2009, 1, 1, 0, 0, 0, 0, time.UTC)
@@ -41,21 +62,21 @@ func getLeapSeconds(t time.Time) (int, error) {
 	}
 }
 
-func gpstToUtc(tGpst time.Time) (time.Time, error) {
-	leapSeconds, err := getLeapSeconds(tGpst)
+func GpstToUtc(tGpst time.Time) (time.Time, error) {
+	leapSeconds, err := GetLeapSeconds(tGpst)
 	if err != nil {
 		return time.Time{}, err
 	}
 	tUtc := tGpst.Add(-time.Duration(leapSeconds) * time.Second)
-	if utcToGpst(tUtc).Sub(tGpst) != 0 {
+	if UtcToGpst(tUtc).Sub(tGpst) != 0 {
 		return tUtc.Add(time.Second), nil
 	}
 	return tUtc, nil
 }
 
 // Convert UTC to GPST
-func utcToGpst(tUtc time.Time) time.Time {
-	leapSeconds, err := getLeapSeconds(tUtc)
+func UtcToGpst(tUtc time.Time) time.Time {
+	leapSeconds, err := GetLeapSeconds(tUtc)
 	if err != nil {
 		return time.Time{}
 	}

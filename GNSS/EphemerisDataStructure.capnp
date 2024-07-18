@@ -1,7 +1,10 @@
-using Go = import "/go.capnp";
-Go.Package("gnss");
-
 @0xb3ca6d2462778bb1;
+
+using Go = import "/go.capnp";
+
+$Go.package("gnss");
+$Go.import("github.com/mothergoose31/GNSS-GO/GNSS");
+
 struct Ephemeris {
   # GPS ephemeris data according to the RINEX format
   satelliteId @0 :UInt16;
@@ -96,8 +99,8 @@ struct GlonassEphemeris {
 
   frequencyNumberDEPRECATED @28 :UInt32;
 
-  N4 @29 :UInt8;
-  NT @30 :UInt16;
+  n4 @29 :UInt8;
+  nt @30 :UInt16;
   frequencyNumber @31 :Int16;
   timeCorrectionSeconds @32 :UInt32;
 }
