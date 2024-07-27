@@ -272,36 +272,6 @@ func ParseRINEXFile(filename string) (*RINEXHeader, []*GLONASSEphemeris, error) 
 
 // =========================================================================
 
-// https://files.igs.org/pub/data/format/rinex2.txt
-// 1 24  7 23  0 15  0.0 0.922027975321D-04 0.909494701773D-12 0.000000000000D+00
-//     0.147764956055D+05 0.151113414764D+01 0.000000000000D+00 0.000000000000D+00
-//    -0.159414018555D+05-0.103984928131D+01 0.186264514923D-08 0.100000000000D+01
-//     0.133588305664D+05-0.291043663025D+01-0.186264514923D-08 0.000000000000D+00
-// Line 1:
-// - Epoch: 2024-07-23 00:15:00.0
-// - SV clock bias (TauN): 0.922027975321E-04 seconds
-// - SV relative frequency bias (GammaN): 0.909494701773E-12
-// - Message frame time (tk): 0.0 seconds
-//
-// Line 2:
-// - X coordinate: 14776.4956055 km
-// - X velocity: 0.151113414764 km/s
-// - X acceleration: 0.0 km/s²
-// - Health (0 = OK): 0
-//
-// Line 3:
-// - Y coordinate: -15941.4018555 km
-// - Y velocity: -1.03984928131 km/s
-// - Y acceleration: 0.186264514923E-08 km/s²
-// - Frequency number: 1
-//
-// Line 4:
-// - Z coordinate: 13358.8305664 km
-// - Z velocity: -2.91043663025 km/s
-// - Z acceleration: -0.186264514923E-08 km/s²
-// - Age of operation: 0 days
-
-// lines are a maximum of 80 characters long , NEED TO BE KEPT AT 79 CHARACTERS
 func parseGLONASSEphemeris(scanner *bufio.Scanner) ([]*GLONASSEphemeris, error) {
 	var ephemerides []*GLONASSEphemeris
 	var currentLines []string
@@ -362,35 +332,39 @@ func parseGLONASSEphemeris(scanner *bufio.Scanner) ([]*GLONASSEphemeris, error) 
 // =========================================================================
 
 // =========================================================================
+//  GLONASS EPHEMERIS FORMAT (RINEX 2.01)
+// https://files.igs.org/pub/data/format/rinex2.txt
+// https://igs.org/formats-and-standards/
+// https://cddis.nasa.gov/Data_and_Derived_Products/GNSS/daily_30second_data.html
 // 1 24  7 23  0 15  0.0 0.922027975321D-04 0.909494701773D-12 0.000000000000D+00
 //     0.147764956055D+05 0.151113414764D+01 0.000000000000D+00 0.000000000000D+00
 //    -0.159414018555D+05-0.103984928131D+01 0.186264514923D-08 0.100000000000D+01
 //     0.133588305664D+05-0.291043663025D+01-0.186264514923D-08 0.000000000000D+00
-// LINE 1:
+// Line 1:
 // - Epoch: 2024-07-23 00:15:00.0
 // - SV clock bias (TauN): 0.922027975321E-04 seconds
 // - SV relative frequency bias (GammaN): 0.909494701773E-12
 // - Message frame time (tk): 0.0 seconds
 //
-// LINE 2:
+// Line 2:
 // - X coordinate: 14776.4956055 km
 // - X velocity: 0.151113414764 km/s
 // - X acceleration: 0.0 km/s²
 // - Health (0 = OK): 0
 //
-// LINE 3:
+// Line 3:
 // - Y coordinate: -15941.4018555 km
 // - Y velocity: -1.03984928131 km/s
 // - Y acceleration: 0.186264514923E-08 km/s²
 // - Frequency number: 1
 //
-// LINE 4:
+// Line 4:
 // - Z coordinate: 13358.8305664 km
 // - Z velocity: -2.91043663025 km/s
 // - Z acceleration: -0.186264514923E-08 km/s²
 // - Age of operation: 0 days
 
-// RINEX version  2.01,  lines are a maximum of 80 characters long , NEED TO BE KEPT AT 79 CHARACTERS WHEN PARSSING
+// lines are a maximum of 80 characters long , NEED TO BE KEPT AT 79 CHARACTERS
 func processEphemerisLines(lines []string) (*GLONASSEphemeris, error) {
 	if len(lines) != 4 {
 		return nil, fmt.Errorf("invalid number of lines for ephemeris record: %d", len(lines))
@@ -398,23 +372,21 @@ func processEphemerisLines(lines []string) (*GLONASSEphemeris, error) {
 
 	eph := &GLONASSEphemeris{}
 
-	// Process first line
 	if len(lines[0]) < 79 {
 		return nil, fmt.Errorf("line 1 is too short: %d characters", len(lines[0]))
 	}
-	eph.SatelliteID = safeParseInt(lines[0][:2])
-	year := safeParseInt(lines[0][3:7])
-	month := safeParseInt(lines[0][8:10])
-	day := safeParseInt(lines[0][11:13])
-	hour := safeParseInt(lines[0][14:16])
-	min := safeParseInt(lines[0][17:19])
-	sec := safeParseFloat(lines[0][19:24])
+	eph.SatelliteID = parseInt(lines[0][:2])
+	year := parseInt(lines[0][3:7])
+	month := parseInt(lines[0][8:10])
+	day := parseInt(lines[0][11:13])
+	hour := parseInt(lines[0][14:16])
+	min := parseInt(lines[0][17:19])
+	sec := parseFloat(lines[0][19:24])
 	eph.Epoch = time.Date(year, time.Month(month), day, hour, min, int(sec), int((sec-float64(int(sec)))*1e9), time.UTC)
-	eph.ClockBias = safeParseFloat(lines[0][23:42])
-	eph.RelativeFreqBias = safeParseFloat(lines[0][42:61])
-	eph.MessageFrameTime = safeParseFloat(lines[0][61:79])
+	eph.ClockBias = parseFloat(lines[0][23:42])
+	eph.RelativeFreqBias = parseFloat(lines[0][42:61])
+	eph.MessageFrameTime = parseFloat(lines[0][61:79])
 
-	// Process remaining lines
 	for i := 1; i < 4; i++ {
 		if len(lines[i]) < 79 {
 			fmt.Printf("Debug: Line %d is short: %d characters\n", i+1, len(lines[i]))
@@ -422,20 +394,20 @@ func processEphemerisLines(lines []string) (*GLONASSEphemeris, error) {
 		}
 		switch i {
 		case 1:
-			eph.PositionX = safeParseFloat(lines[i][4:23])
-			eph.VelocityX = safeParseFloat(lines[i][23:42])
-			eph.AccelerationX = safeParseFloat(lines[i][42:61])
-			eph.Health = safeParseFloat(lines[i][61:79])
+			eph.PositionX = parseFloat(lines[i][4:23])
+			eph.VelocityX = parseFloat(lines[i][23:42])
+			eph.AccelerationX = parseFloat(lines[i][42:61])
+			eph.Health = parseFloat(lines[i][61:79])
 		case 2:
-			eph.PositionY = safeParseFloat(lines[i][4:23])
-			eph.VelocityY = safeParseFloat(lines[i][23:42])
-			eph.AccelerationY = safeParseFloat(lines[i][42:61])
-			eph.FrequencyNumber = safeParseInt(lines[i][61:79])
+			eph.PositionY = parseFloat(lines[i][4:23])
+			eph.VelocityY = parseFloat(lines[i][23:42])
+			eph.AccelerationY = parseFloat(lines[i][42:61])
+			eph.FrequencyNumber = parseInt(lines[i][61:79])
 		case 3:
-			eph.PositionZ = safeParseFloat(lines[i][4:23])
-			eph.VelocityZ = safeParseFloat(lines[i][23:42])
-			eph.AccelerationZ = safeParseFloat(lines[i][42:61])
-			eph.InformationAge = safeParseFloat(lines[i][61:79])
+			eph.PositionZ = parseFloat(lines[i][4:23])
+			eph.VelocityZ = parseFloat(lines[i][23:42])
+			eph.AccelerationZ = parseFloat(lines[i][42:61])
+			eph.InformationAge = parseFloat(lines[i][61:79])
 		}
 	}
 
@@ -446,7 +418,7 @@ func processEphemerisLines(lines []string) (*GLONASSEphemeris, error) {
 
 // =========================================================================
 
-func safeParseFloat(s string) float64 {
+func parseFloat(s string) float64 {
 	s = strings.TrimSpace(s)
 	s = strings.ReplaceAll(s, "D", "E")
 	if s == "" {
@@ -471,7 +443,7 @@ func safeParseFloat(s string) float64 {
 
 // =========================================================================
 
-func safeParseInt(s string) int {
+func parseInt(s string) int {
 	s = strings.TrimSpace(s)
 	if s == "" {
 		return 0
