@@ -377,6 +377,15 @@ func processEphemerisLines(lines []string) (*GLONASSEphemeris, error) {
 	}
 	eph.SatelliteID = parseInt(lines[0][:2])
 	year := parseInt(lines[0][3:7])
+
+	if year < 100 {
+		if year < 80 {
+			year += 2000
+		} else {
+			year += 1900
+		}
+	}
+
 	month := parseInt(lines[0][8:10])
 	day := parseInt(lines[0][11:13])
 	hour := parseInt(lines[0][14:16])
@@ -394,19 +403,19 @@ func processEphemerisLines(lines []string) (*GLONASSEphemeris, error) {
 		}
 		switch i {
 		case 1:
-			eph.PositionX = parseFloat(lines[i][4:23])
-			eph.VelocityX = parseFloat(lines[i][23:42])
-			eph.AccelerationX = parseFloat(lines[i][42:61])
+			eph.PositionX = parseFloat(lines[i][3:22])
+			eph.VelocityX = parseFloat(lines[i][22:41])
+			eph.AccelerationX = parseFloat(lines[i][41:60])
 			eph.Health = parseFloat(lines[i][61:79])
 		case 2:
-			eph.PositionY = parseFloat(lines[i][4:23])
-			eph.VelocityY = parseFloat(lines[i][23:42])
-			eph.AccelerationY = parseFloat(lines[i][42:61])
+			eph.PositionY = parseFloat(lines[i][3:22])
+			eph.VelocityY = parseFloat(lines[i][22:41])
+			eph.AccelerationY = parseFloat(lines[i][41:60])
 			eph.FrequencyNumber = parseInt(lines[i][61:79])
 		case 3:
-			eph.PositionZ = parseFloat(lines[i][4:23])
-			eph.VelocityZ = parseFloat(lines[i][23:42])
-			eph.AccelerationZ = parseFloat(lines[i][42:61])
+			eph.PositionZ = parseFloat(lines[i][3:22])
+			eph.VelocityZ = parseFloat(lines[i][22:41])
+			eph.AccelerationZ = parseFloat(lines[i][41:60])
 			eph.InformationAge = parseFloat(lines[i][61:79])
 		}
 	}
@@ -425,12 +434,12 @@ func parseFloat(s string) float64 {
 		return 0
 	}
 
-	if strings.HasSuffix(s, "-") {
-		s = "-" + strings.TrimSuffix(s, "-")
+	if strings.HasPrefix(s, "-") {
+		s = "-" + strings.Trim(s, "-")
 	}
-	s = strings.ReplaceAll(s, " -", "-")
 
 	s = strings.ReplaceAll(s, " ", "")
+
 	f, err := strconv.ParseFloat(s, 64)
 	if err != nil {
 		fmt.Printf("Debug: Error parsing float: %s, error: %v\n", s, err)
