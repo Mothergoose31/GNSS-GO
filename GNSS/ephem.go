@@ -45,23 +45,23 @@ type GPSEphemeris struct {
 }
 
 type GLONASSEphemeris struct {
-	SatelliteID      int
-	Epoch            time.Time
-	ClockBias        float64
-	RelativeFreqBias float64
-	MessageFrameTime float64
-	PositionX        float64
-	VelocityX        float64
-	AccelerationX    float64
-	PositionY        float64
-	VelocityY        float64
-	AccelerationY    float64
-	PositionZ        float64
-	VelocityZ        float64
-	AccelerationZ    float64
-	Health           float64
-	FrequencyNumber  int
-	InformationAge   float64
+	SatelliteID           int
+	Epoch                 time.Time
+	ClockBias             float64
+	RelativeFreqBias      float64
+	MessageFrameTime      float64
+	PositionX             float64
+	VelocityX             float64
+	AccelerationX         float64
+	PositionY             float64
+	VelocityY             float64
+	AccelerationY         float64
+	PositionZ             float64
+	VelocityZ             float64
+	AccelerationZ         float64
+	Health                float64
+	FrequencyChannelOfSet int
+	InformationAge        float64
 }
 
 type RINEXHeader struct {
@@ -375,8 +375,8 @@ func processEphemerisLines(lines []string) (*GLONASSEphemeris, error) {
 	if len(lines[0]) < 79 {
 		return nil, fmt.Errorf("line 1 is too short: %d characters", len(lines[0]))
 	}
-	eph.SatelliteID = parseInt(lines[0][:2])
-	year := parseInt(lines[0][3:7])
+	eph.SatelliteID = parseInt(lines[0][1:2])
+	year := parseInt(lines[0][3:5])
 
 	if year < 100 {
 		if year < 80 {
@@ -386,13 +386,14 @@ func processEphemerisLines(lines []string) (*GLONASSEphemeris, error) {
 		}
 	}
 
-	month := parseInt(lines[0][8:10])
-	day := parseInt(lines[0][11:13])
-	hour := parseInt(lines[0][14:16])
-	min := parseInt(lines[0][17:19])
-	sec := parseFloat(lines[0][19:24])
+	month := parseInt(lines[0][6:8])
+
+	day := parseInt(lines[0][9:11])
+	hour := parseInt(lines[0][12:14])
+	min := parseInt(lines[0][16:17])
+	sec := parseFloat(lines[0][19:22])
 	eph.Epoch = time.Date(year, time.Month(month), day, hour, min, int(sec), int((sec-float64(int(sec)))*1e9), time.UTC)
-	eph.ClockBias = parseFloat(lines[0][23:42])
+	eph.ClockBias = parseFloat(lines[0][23:41])
 	eph.RelativeFreqBias = parseFloat(lines[0][42:61])
 	eph.MessageFrameTime = parseFloat(lines[0][61:79])
 
@@ -405,17 +406,18 @@ func processEphemerisLines(lines []string) (*GLONASSEphemeris, error) {
 		case 1:
 			eph.PositionX = parseFloat(lines[i][3:22])
 			eph.VelocityX = parseFloat(lines[i][22:41])
-			eph.AccelerationX = parseFloat(lines[i][41:60])
+			eph.AccelerationX = parseFloat(lines[i][41:59])
 			eph.Health = parseFloat(lines[i][61:79])
 		case 2:
 			eph.PositionY = parseFloat(lines[i][3:22])
 			eph.VelocityY = parseFloat(lines[i][22:41])
-			eph.AccelerationY = parseFloat(lines[i][41:60])
-			eph.FrequencyNumber = parseInt(lines[i][61:79])
+			eph.AccelerationY = parseFloat(lines[i][41:59])
+			freqNum := parseFloat(lines[i][60:79])
+			eph.FrequencyChannelOfSet = int(freqNum)
 		case 3:
 			eph.PositionZ = parseFloat(lines[i][3:22])
 			eph.VelocityZ = parseFloat(lines[i][22:41])
-			eph.AccelerationZ = parseFloat(lines[i][41:60])
+			eph.AccelerationZ = parseFloat(lines[i][41:59])
 			eph.InformationAge = parseFloat(lines[i][61:79])
 		}
 	}

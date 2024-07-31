@@ -112,7 +112,7 @@ func main() {
 		fmt.Printf("Clock Bias: %.12f\n", eph.ClockBias)
 		fmt.Printf("Position (X, Y, Z): %.3f, %.3f, %.3f\n", eph.PositionX, eph.PositionY, eph.PositionZ)
 		fmt.Printf("Velocity (X, Y, Z): %.3f, %.3f, %.3f\n", eph.VelocityX, eph.VelocityY, eph.VelocityZ)
-		fmt.Printf("Frequency Number: %d\n", eph.FrequencyNumber)
+		fmt.Printf("Frequency Number: %d\n", eph.FrequencyChannelOfSet)
 	}
 
 	fmt.Println("\nRINEX file parsing completed successfully.")
