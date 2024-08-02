@@ -43,7 +43,7 @@ import (
 // }
 
 func main() {
-	msg, seg, err := capnp.NewMessage(capnp.SingleSegment(nil))
+	_, seg, err := capnp.NewMessage(capnp.SingleSegment(nil))
 	if err != nil {
 		log.Fatalf("Failed to create new message: %v", err)
 	}
@@ -52,7 +52,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to create new Ephemeris: %v", err)
 	}
-	fmt.Println(msg)
 
 	ephemeris.SetSatelliteId(1)
 	ephemeris.SetToeWeek(2000)
@@ -83,39 +82,51 @@ func main() {
 	filename := "./brdc2050.24g"
 	fmt.Printf("Debug: Parsing file %s\n", filename)
 
-	header, ephemerides, err := gnss.ParseRINEXFile(filename)
+	header, ephemerides, err := gnss.ParseRINEXFileV201(filename)
 	if err != nil {
 		fmt.Printf("Error parsing RINEX file: %v\n", err)
 		return
 	}
+	fmt.Println(header)
+	sorted := gnss.SortEphemerisBySatelliteID(ephemerides)
 
-	fmt.Printf("\nRINEX Header:\n")
-	fmt.Printf("Version: %.2f\n", header.Version)
-	fmt.Printf("Type: %s\n", header.Type)
-	fmt.Printf("Satellite System: %s\n", header.SatSystem)
-	fmt.Printf("Program: %s\n", header.ProgramName)
-	fmt.Printf("Agency: %s\n", header.Agency)
-	fmt.Printf("Date: %s\n", header.Date)
-	fmt.Printf("Comments:\n")
-	for _, comment := range header.Comments {
-		fmt.Printf("  %s\n", comment)
-	}
+	gnss.PrintSortedEphemerides(sorted)
 
-	fmt.Printf("\nNumber of GLONASS Ephemerides: %d\n", len(ephemerides))
-	for i, eph := range ephemerides {
-		if i >= 5 {
-			break
-		}
-		fmt.Printf("\nEphemeris %d:\n", i+1)
-		fmt.Printf("Satellite ID: %d\n", eph.SatelliteID)
-		fmt.Printf("Epoch: %s\n", eph.Epoch)
-		fmt.Printf("Clock Bias: %.12f\n", eph.ClockBias)
-		fmt.Printf("Position (X, Y, Z): %.3f, %.3f, %.3f\n", eph.PositionX, eph.PositionY, eph.PositionZ)
-		fmt.Printf("Velocity (X, Y, Z): %.3f, %.3f, %.3f\n", eph.VelocityX, eph.VelocityY, eph.VelocityZ)
-		fmt.Printf("Frequency Number: %d\n", eph.FrequencyChannelOfSet)
-	}
+	// for _, ephs := range sorted {
+	// 	fmt.Println(ephs)
+	// }
+	// // ephmap := gnss.SortEphemerisBySatelliteID(ephemerides)
+	// for ephs := range ephmap {
+	// 	fmt.Println(ephmap[ephs])
+	// }
 
-	fmt.Println("\nRINEX file parsing completed successfully.")
+	// fmt.Printf("\nRINEX Header:\n")
+	// fmt.Printf("Version: %.2f\n", header.Version)
+	// fmt.Printf("Type: %s\n", header.Type)
+	// fmt.Printf("Satellite System: %s\n", header.SatSystem)
+	// fmt.Printf("Program: %s\n", header.ProgramName)
+	// fmt.Printf("Agency: %s\n", header.Agency)
+	// fmt.Printf("Date: %s\n", header.Date)
+	// fmt.Printf("Comments:\n")
+	// for _, comment := range header.Comments {
+	// 	fmt.Printf("  %s\n", comment)
+	// }
+
+	// fmt.Printf("\nNumber of GLONASS Ephemerides: %d\n", len(ephemerides))
+	// for i, eph := range ephemerides {
+	// 	if i >= 5 {
+	// 		break
+	// 	}
+	// 	fmt.Printf("\nEphemeris %d:\n", i+1)
+	// 	fmt.Printf("Satellite ID: %d\n", eph.SatelliteID)
+	// 	fmt.Printf("Epoch: %s\n", eph.Epoch)
+	// 	fmt.Printf("Clock Bias: %.12f\n", eph.ClockBias)
+	// 	fmt.Printf("Position (X, Y, Z): %.3f, %.3f, %.3f\n", eph.PositionX, eph.PositionY, eph.PositionZ)
+	// 	fmt.Printf("Velocity (X, Y, Z): %.3f, %.3f, %.3f\n", eph.VelocityX, eph.VelocityY, eph.VelocityZ)
+	// 	fmt.Printf("Frequency Number: %d\n", eph.FrequencyChannelOfSet)
+	// }
+
+	// fmt.Println("\nRINEX file parsing completed successfully.")
 
 	// timeOfInterest := gnss.NewGPSTime(2000, 18000)
 

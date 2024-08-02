@@ -7,6 +7,7 @@ import (
 	"math"
 	"os"
 	"reflect"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -45,23 +46,28 @@ type GPSEphemeris struct {
 }
 
 type GLONASSEphemeris struct {
-	SatelliteID           int
-	Epoch                 time.Time
-	ClockBias             float64
-	RelativeFreqBias      float64
-	MessageFrameTime      float64
-	PositionX             float64
-	VelocityX             float64
-	AccelerationX         float64
-	PositionY             float64
-	VelocityY             float64
-	AccelerationY         float64
-	PositionZ             float64
-	VelocityZ             float64
-	AccelerationZ         float64
-	Health                float64
-	FrequencyChannelOfSet int
-	InformationAge        float64
+	SatelliteID           int       `json:"satellite_id"`
+	Epoch                 time.Time `json:"epoch"`
+	ClockBias             float64   `json:"clock_bias"`
+	RelativeFreqBias      float64   `json:"relativeFreqBias"`
+	MessageFrameTime      float64   `json:"messageFrameTime"`
+	PositionX             float64   `json:"positionX"`
+	VelocityX             float64   `json:"velocityX"`
+	AccelerationX         float64   `json:"AccelerationX"`
+	PositionY             float64   `json:"PositionY"`
+	VelocityY             float64   `json:"VelocityY"`
+	AccelerationY         float64   `json:"AccelerationY"`
+	PositionZ             float64   `json:"PositionZ"`
+	VelocityZ             float64   `json:"VelocityZ"`
+	AccelerationZ         float64   `json:"AccelerationZ"`
+	Health                float64   `json:"Health"`
+	FrequencyChannelOfSet int       `json:"FrequencyChannelOfSet"`
+	InformationAge        float64   `json:"InformationAge"`
+}
+
+type GroupedEphemerides struct {
+	SatelliteID       int                 `json:"satelliteID"`
+	SortedEphemerides []*GLONASSEphemeris `json:"sortedEphemerides"`
 }
 
 type RINEXHeader struct {
@@ -73,6 +79,47 @@ type RINEXHeader struct {
 	Date        time.Time
 	Comments    []string
 	LeapSeconds int
+}
+
+type SP3Header struct {
+	Version           string    `json:"version"`
+	Time              time.Time `json:"time"`
+	EpochCount        int       `json:"epochCount"`
+	DataUsed          string    `json:"dataUsed"`
+	CoordinateSystem  string    `json:"coordinateSystem"`
+	OrbitType         string    `json:"orbitType"`
+	Agency            string    `json:"agency"`
+	GPSWeek           int       `json:"gpsWeek"`
+	SecondsOfWeek     float64   `json:"secondsOfWeek"`
+	EpochInterval     float64   `json:"epochInterval"`
+	ModifiedJulianDay int       `json:"modifiedJulianDay"`
+	FractionalDay     float64   `json:"fractionalDay"`
+	SatelliteCount    int       `json:"satelliteCount"`
+	SatelliteIDs      []string  `json:"satelliteIDs"`
+	AccuracyExponents []int     `json:"accuracyExponents"`
+	File              string    `json:"file"`
+	TimeSys           string    `json:"timeSys"`
+	BaseForPosVel     float64   `json:"baseForPosVel"`
+	BaseForClkRate    float64   `json:"baseForClkRate"`
+	Comments          []string  `json:"comments"`
+}
+
+type SP3Entry struct {
+	Satellite string  `json:"satellite"`
+	X         float64 `json:"x"`     // km
+	Y         float64 `json:"y"`     // km
+	Z         float64 `json:"z"`     // km
+	Clock     float64 `json:"clock"` // microseconds
+}
+
+type SP3Epoch struct {
+	Time    time.Time  `json:"time"`
+	Entries []SP3Entry `json:"entries"`
+}
+
+type SP3File struct {
+	Header SP3Header  `json:"header"`
+	Epochs []SP3Epoch `json:"epochs"`
 }
 
 // =========================================================================
@@ -217,6 +264,61 @@ func (e *GPSEphemeris) GetSatInfo(time GPSTime) ([]float64, []float64, float64, 
 
 // =========================================================================
 
+func SortEphemerisBySatelliteID(ephs []*GLONASSEphemeris) []GroupedEphemerides {
+	ephemerisMap := make(map[int][]*GLONASSEphemeris)
+
+	for _, eph := range ephs {
+		singleEph := GLONASSEphemeris{
+			SatelliteID:           eph.SatelliteID,
+			Epoch:                 eph.Epoch,
+			ClockBias:             eph.ClockBias,
+			RelativeFreqBias:      eph.RelativeFreqBias,
+			MessageFrameTime:      eph.MessageFrameTime,
+			PositionX:             eph.PositionX,
+			VelocityX:             eph.VelocityX,
+			AccelerationX:         eph.AccelerationX,
+			PositionY:             eph.PositionY,
+			VelocityY:             eph.VelocityY,
+			AccelerationY:         eph.AccelerationY,
+			PositionZ:             eph.PositionZ,
+			VelocityZ:             eph.VelocityZ,
+			AccelerationZ:         eph.AccelerationZ,
+			Health:                eph.Health,
+			FrequencyChannelOfSet: eph.FrequencyChannelOfSet,
+			InformationAge:        eph.InformationAge,
+		}
+
+		ephemerisMap[eph.SatelliteID] = append(ephemerisMap[eph.SatelliteID], &singleEph)
+
+	}
+	var groupedEphemerides []GroupedEphemerides
+
+	var satelliteIDs []int
+	for id := range ephemerisMap {
+		satelliteIDs = append(satelliteIDs, id)
+	}
+	sort.Ints(satelliteIDs)
+
+	for _, id := range satelliteIDs {
+		group := ephemerisMap[id]
+
+		sort.Slice(group, func(i, j int) bool {
+			return group[i].Epoch.Before(group[j].Epoch)
+		})
+
+		groupedEphemerides = append(groupedEphemerides, GroupedEphemerides{
+			SatelliteID:       id,
+			SortedEphemerides: group,
+		})
+	}
+
+	return groupedEphemerides
+}
+
+// =========================================================================
+
+// =========================================================================
+
 func parseRINEXHeader(scanner *bufio.Scanner) (*RINEXHeader, error) {
 	header := &RINEXHeader{}
 	for scanner.Scan() {
@@ -247,7 +349,7 @@ func parseRINEXHeader(scanner *bufio.Scanner) (*RINEXHeader, error) {
 
 // =========================================================================
 
-func ParseRINEXFile(filename string) (*RINEXHeader, []*GLONASSEphemeris, error) {
+func ParseRINEXFileV201(filename string) (*RINEXHeader, []*GLONASSEphemeris, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, nil, fmt.Errorf("error opening file: %v", err)
@@ -280,8 +382,6 @@ func parseGLONASSEphemeris(scanner *bufio.Scanner) ([]*GLONASSEphemeris, error) 
 	for scanner.Scan() {
 		line := scanner.Text()
 		lineCount++
-		fmt.Printf("Debug: Line %d: %s\n", lineCount, line)
-		fmt.Println(line)
 
 		if len(line) == 0 {
 			fmt.Printf("Debug: Skipping empty line %d\n", lineCount)
@@ -292,7 +392,7 @@ func parseGLONASSEphemeris(scanner *bufio.Scanner) ([]*GLONASSEphemeris, error) 
 			if len(currentLines) > 0 {
 				eph, err := processEphemerisLines(currentLines)
 				if err != nil {
-
+					err = fmt.Errorf("error processing ephemeris lines: %v", err)
 				} else {
 					ephemerides = append(ephemerides, eph)
 					fmt.Printf("Debug: Processed ephemeris for satellite %d\n", eph.SatelliteID)
@@ -306,10 +406,9 @@ func parseGLONASSEphemeris(scanner *bufio.Scanner) ([]*GLONASSEphemeris, error) 
 		if len(currentLines) == 4 {
 			eph, err := processEphemerisLines(currentLines)
 			if err != nil {
-				fmt.Printf("Debug: Error processing ephemeris lines: %v\n", err)
+				err = fmt.Errorf("error processing ephemeris lines: %v", err)
 			} else {
 				ephemerides = append(ephemerides, eph)
-				fmt.Printf("Debug: Processed ephemeris for satellite %d\n", eph.SatelliteID)
 			}
 			currentLines = nil
 		}
@@ -318,10 +417,9 @@ func parseGLONASSEphemeris(scanner *bufio.Scanner) ([]*GLONASSEphemeris, error) 
 	if len(currentLines) > 0 {
 		eph, err := processEphemerisLines(currentLines)
 		if err != nil {
-			fmt.Printf("Debug: Error processing final ephemeris lines: %v\n", err)
+			err = fmt.Errorf("error processing ephemeris lines: %v", err)
 		} else {
 			ephemerides = append(ephemerides, eph)
-			fmt.Printf("Debug: Processed final ephemeris for satellite %d\n", eph.SatelliteID)
 		}
 	}
 
@@ -375,7 +473,7 @@ func processEphemerisLines(lines []string) (*GLONASSEphemeris, error) {
 	if len(lines[0]) < 79 {
 		return nil, fmt.Errorf("line 1 is too short: %d characters", len(lines[0]))
 	}
-	eph.SatelliteID = parseInt(lines[0][1:2])
+	eph.SatelliteID = parseInt(lines[0][0:2])
 	year := parseInt(lines[0][3:5])
 
 	if year < 100 {
@@ -429,6 +527,12 @@ func processEphemerisLines(lines []string) (*GLONASSEphemeris, error) {
 
 // =========================================================================
 
+// TODO CREATE PARSER  FOR RINEX SP3 FILE
+
+// =========================================================================
+//  HELPERS
+// =========================================================================
+
 func parseFloat(s string) float64 {
 	s = strings.TrimSpace(s)
 	s = strings.ReplaceAll(s, "D", "E")
@@ -465,4 +569,82 @@ func parseInt(s string) int {
 		return 0
 	}
 	return i
+}
+
+// =========================================================================
+
+// =========================================================================
+
+func PrintSortedEphemerides(sorted []GroupedEphemerides) {
+	fmt.Println("Grouped Ephemerides Summary:")
+	for _, group := range sorted {
+		fmt.Printf("Satellite ID: %d\n", group.SatelliteID)
+		fmt.Printf("  Number of Ephemerides: %d\n", len(group.SortedEphemerides))
+
+		if len(group.SortedEphemerides) > 0 {
+			firstEph := group.SortedEphemerides[0]
+			lastEph := group.SortedEphemerides[len(group.SortedEphemerides)-1]
+
+			fmt.Printf("  Time Range: %s to %s\n",
+				formatTime(firstEph.Epoch),
+				formatTime(lastEph.Epoch))
+
+			fmt.Printf("  First Ephemeris Data:\n")
+			printData(firstEph)
+		}
+
+		fmt.Println(strings.Repeat("-", 60))
+	}
+}
+
+// =========================================================================
+
+// =========================================================================
+
+func PrintRINEXHeader(header *RINEXHeader) {
+	fmt.Println("RINEX Header:")
+	fmt.Printf("  Version: %.2f\n", header.Version)
+	fmt.Printf("  Type: %s\n", header.Type)
+	fmt.Printf("  Satellite System: %s\n", header.SatSystem)
+	fmt.Printf("  Program: %s\n", header.ProgramName)
+	fmt.Printf("  Agency: %s\n", header.Agency)
+	fmt.Printf("  Date: %s\n", formatTime(header.Date))
+	fmt.Println("  Comments:")
+	for _, comment := range header.Comments {
+		fmt.Printf("    %s\n", comment)
+	}
+	fmt.Printf("  Leap Seconds: %d\n", header.LeapSeconds)
+	fmt.Println(strings.Repeat("-", 60))
+}
+
+// =========================================================================
+
+// =========================================================================
+
+func formatTime(t time.Time) string {
+	return t.Format("2006-01-02 15:04:05")
+}
+
+// =========================================================================
+
+// =========================================================================
+
+func printData(eph *GLONASSEphemeris) {
+	fmt.Printf("    Satellite ID: %d\n", eph.SatelliteID)
+	fmt.Printf("    Epoch: %s\n", formatTime(eph.Epoch))
+	fmt.Printf("    Clock Bias: %.12e\n", eph.ClockBias)
+	fmt.Printf("    Relative Frequency Bias: %.12e\n", eph.RelativeFreqBias)
+	fmt.Printf("    Message Frame Time: %.6f\n", eph.MessageFrameTime)
+	fmt.Printf("    Position X: %.3f\n", eph.PositionX)
+	fmt.Printf("    Velocity X: %.6f\n", eph.VelocityX)
+	fmt.Printf("    Acceleration X: %.9f\n", eph.AccelerationX)
+	fmt.Printf("    Position Y: %.3f\n", eph.PositionY)
+	fmt.Printf("    Velocity Y: %.6f\n", eph.VelocityY)
+	fmt.Printf("    Acceleration Y: %.9f\n", eph.AccelerationY)
+	fmt.Printf("    Position Z: %.3f\n", eph.PositionZ)
+	fmt.Printf("    Velocity Z: %.6f\n", eph.VelocityZ)
+	fmt.Printf("    Acceleration Z: %.9f\n", eph.AccelerationZ)
+	fmt.Printf("    Health: %.0f\n", eph.Health)
+	fmt.Printf("    Frequency Channel Offset: %d\n", eph.FrequencyChannelOfSet)
+	fmt.Printf("    Information Age: %.6f\n", eph.InformationAge)
 }
