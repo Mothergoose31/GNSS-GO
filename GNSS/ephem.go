@@ -7,6 +7,7 @@ import (
 	"math"
 	"os"
 	"reflect"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -254,56 +255,56 @@ func (e *GPSEphemeris) GetSatInfo(time GPSTime) ([]float64, []float64, float64, 
 
 // =========================================================================
 
-// func SortEphemerisBySatelliteID(ephs []*RINEXEphemeris) []GroupedEphemerides {
-// 	ephemerisMap := make(map[int][]*RINEXEphemeris)
+func SortEphemerisBySatelliteID(ephs []*RINEXEphemeris) []GroupedEphemerides {
+	ephemerisMap := make(map[int][]*RINEXEphemeris)
 
-// 	for _, eph := range ephs {
-// 		singleEph := RINEXEphemeris{
-// 			SatelliteID:           eph.SatelliteID,
-// 			Epoch:                 eph.Epoch,
-// 			ClockBias:             eph.ClockBias,
-// 			RelativeFreqBias:      eph.RelativeFreqBias,
-// 			MessageFrameTime:      eph.MessageFrameTime,
-// 			PositionX:             eph.PositionX,
-// 			VelocityX:             eph.VelocityX,
-// 			AccelerationX:         eph.AccelerationX,
-// 			PositionY:             eph.PositionY,
-// 			VelocityY:             eph.VelocityY,
-// 			AccelerationY:         eph.AccelerationY,
-// 			PositionZ:             eph.PositionZ,
-// 			VelocityZ:             eph.VelocityZ,
-// 			AccelerationZ:         eph.AccelerationZ,
-// 			Health:                eph.Health,
-// 			FrequencyChannelOfSet: eph.FrequencyChannelOfSet,
-// 			InformationAge:        eph.InformationAge,
-// 		}
+	for _, eph := range ephs {
+		singleEph := RINEXEphemeris{
+			SatelliteID:           eph.SatelliteID,
+			Epoch:                 eph.Epoch,
+			ClockBias:             eph.ClockBias,
+			RelativeFreqBias:      eph.RelativeFreqBias,
+			MessageFrameTime:      eph.MessageFrameTime,
+			PositionX:             eph.PositionX,
+			VelocityX:             eph.VelocityX,
+			AccelerationX:         eph.AccelerationX,
+			PositionY:             eph.PositionY,
+			VelocityY:             eph.VelocityY,
+			AccelerationY:         eph.AccelerationY,
+			PositionZ:             eph.PositionZ,
+			VelocityZ:             eph.VelocityZ,
+			AccelerationZ:         eph.AccelerationZ,
+			Health:                eph.Health,
+			FrequencyChannelOfSet: eph.FrequencyChannelOfSet,
+			InformationAge:        eph.InformationAge,
+		}
 
-// 		ephemerisMap[eph.SatelliteID] = append(ephemerisMap[eph.SatelliteID], &singleEph)
+		ephemerisMap[eph.SatelliteID] = append(ephemerisMap[eph.SatelliteID], &singleEph)
 
-// 	}
-// 	var groupedEphemerides []GroupedEphemerides
+	}
+	var groupedEphemerides []GroupedEphemerides
 
-// 	var satelliteIDs []int
-// 	for id := range ephemerisMap {
-// 		satelliteIDs = append(satelliteIDs, id)
-// 	}
-// 	sort.Ints(satelliteIDs)
+	var satelliteIDs []int
+	for id := range ephemerisMap {
+		satelliteIDs = append(satelliteIDs, id)
+	}
+	sort.Ints(satelliteIDs)
 
-// 	for _, id := range satelliteIDs {
-// 		group := ephemerisMap[id]
+	for _, id := range satelliteIDs {
+		group := ephemerisMap[id]
 
-// 		sort.Slice(group, func(i, j int) bool {
-// 			return group[i].Epoch.Before(group[j].Epoch)
-// 		})
+		sort.Slice(group, func(i, j int) bool {
+			return group[i].Epoch.Before(group[j].Epoch)
+		})
 
-// 		groupedEphemerides = append(groupedEphemerides, GroupedEphemerides{
-// 			SatelliteID:       id,
-// 			SortedEphemerides: group,
-// 		})
-// 	}
+		groupedEphemerides = append(groupedEphemerides, GroupedEphemerides{
+			SatelliteID:       id,
+			SortedEphemerides: group,
+		})
+	}
 
-// 	return groupedEphemerides
-// }
+	return groupedEphemerides
+}
 
 // =========================================================================
 
