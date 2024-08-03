@@ -81,35 +81,9 @@ type RINEXHeader struct {
 	LeapSeconds int
 }
 
-type SP3Header struct {
-	Version           string    `json:"version"`
-	Time              time.Time `json:"time"`
-	EpochCount        int       `json:"epochCount"`
-	DataUsed          string    `json:"dataUsed"`
-	CoordinateSystem  string    `json:"coordinateSystem"`
-	OrbitType         string    `json:"orbitType"`
-	Agency            string    `json:"agency"`
-	GPSWeek           int       `json:"gpsWeek"`
-	SecondsOfWeek     float64   `json:"secondsOfWeek"`
-	EpochInterval     float64   `json:"epochInterval"`
-	ModifiedJulianDay int       `json:"modifiedJulianDay"`
-	FractionalDay     float64   `json:"fractionalDay"`
-	SatelliteCount    int       `json:"satelliteCount"`
-	SatelliteIDs      []string  `json:"satelliteIDs"`
-	AccuracyExponents []int     `json:"accuracyExponents"`
-	File              string    `json:"file"`
-	TimeSys           string    `json:"timeSys"`
-	BaseForPosVel     float64   `json:"baseForPosVel"`
-	BaseForClkRate    float64   `json:"baseForClkRate"`
-	Comments          []string  `json:"comments"`
-}
-
-type SP3Entry struct {
-	Satellite string  `json:"satellite"`
-	X         float64 `json:"x"`     // km
-	Y         float64 `json:"y"`     // km
-	Z         float64 `json:"z"`     // km
-	Clock     float64 `json:"clock"` // microseconds
+type SP3File struct {
+	Header SP3Header  `json:"header"`
+	Epochs []SP3Epoch `json:"epochs"`
 }
 
 type SP3Epoch struct {
@@ -117,9 +91,27 @@ type SP3Epoch struct {
 	Entries []SP3Entry `json:"entries"`
 }
 
-type SP3File struct {
-	Header SP3Header  `json:"header"`
-	Epochs []SP3Epoch `json:"epochs"`
+type SP3Header struct {
+	Version           string
+	Start             time.Time
+	NumberOfEpochs    int
+	DataUsed          string
+	CoordinateSystem  string
+	OrbitType         string
+	Agency            string
+	GPSWeek           int
+	SecondsOfWeek     float64
+	EpochInterval     float64
+	ModifiedJulianDay int
+	FractionalDay     float64
+}
+
+type SP3Entry struct {
+	SatelliteVehicleNumber string  `json:"satelliteVehicleNumber"`
+	X                      float64 `json:"x"`
+	Y                      float64 `json:"y"`
+	Z                      float64 `json:"z"`
+	Clock                  float64 `json:"clock"`
 }
 
 // =========================================================================
@@ -393,6 +385,7 @@ func parseGLONASSEphemeris(scanner *bufio.Scanner) ([]*GLONASSEphemeris, error) 
 				eph, err := processEphemerisLines(currentLines)
 				if err != nil {
 					err = fmt.Errorf("error processing ephemeris lines: %v", err)
+					return nil, err
 				} else {
 					ephemerides = append(ephemerides, eph)
 					fmt.Printf("Debug: Processed ephemeris for satellite %d\n", eph.SatelliteID)
@@ -407,6 +400,7 @@ func parseGLONASSEphemeris(scanner *bufio.Scanner) ([]*GLONASSEphemeris, error) 
 			eph, err := processEphemerisLines(currentLines)
 			if err != nil {
 				err = fmt.Errorf("error processing ephemeris lines: %v", err)
+				return nil, err
 			} else {
 				ephemerides = append(ephemerides, eph)
 			}
@@ -418,6 +412,7 @@ func parseGLONASSEphemeris(scanner *bufio.Scanner) ([]*GLONASSEphemeris, error) 
 		eph, err := processEphemerisLines(currentLines)
 		if err != nil {
 			err = fmt.Errorf("error processing ephemeris lines: %v", err)
+			return nil, err
 		} else {
 			ephemerides = append(ephemerides, eph)
 		}
@@ -528,6 +523,72 @@ func processEphemerisLines(lines []string) (*GLONASSEphemeris, error) {
 // =========================================================================
 
 // TODO CREATE PARSER  FOR RINEX SP3 FILE
+// https://files.igs.org/pub/data/format/sp3c.txt#:~:text=The%20basic%20format%20of%20an,correction%20rate%2Dof%2Dchange.
+// https://files.igs.org/pub/data/format/sp3c.txt
+// https://files.igs.org/pub/data/format/sp3d.pdf
+
+//  AFTER THE HEADER THERE ARE SATELITE ID  LINES  PG01, PJ02 , PC01, PE01,
+//  THOSE CORESPOND WITH
+// G: GPS (US)
+// R: GLONASS (Russia)
+// E: Galileo (EU)
+// C: BeiDou (China)
+// J: QZSS (Japan)
+
+func ParseSP3File(filename string) (*SP3File, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, fmt.Errorf("error opening file: %v", err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	sp3File := &SP3File{
+		Header: SP3Header{},
+		Epochs: []SP3Epoch{},
+	}
+	// var currentEpoch *SP3Epoch
+	lineCount := 0
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		lineCount++
+
+		if lineCount <= 27 {
+			if err := parseHeaderLine(line, &sp3File.Header, lineCount); err != nil {
+				return nil, fmt.Errorf("error parsing header line: %v", err)
+			}
+		}
+	}
+
+	return sp3File, nil
+}
+
+func parseHeaderLine(line string, header *SP3Header, lineNumber int) error {
+	switch {
+	case lineNumber == 1:
+		return parseFirstHeaderLine(line, header)
+	case lineNumber == 2:
+		return parseSecondLine(line, header)
+	case strings.HasPrefix(line, "++"):
+		// fmt.Println(line)
+
+	}
+	return nil
+}
+
+func parseFirstHeaderLine(line string, header *SP3Header) error {
+	fmt.Println(line)
+	// starTimeStr := strings.Join(fields[2:8], " ")
+	// fmt.Println(starTimeStr)
+
+	return nil
+}
+
+func parseSecondLine(line string, header *SP3Header) error {
+	fmt.Println(line)
+	return nil
+}
 
 // =========================================================================
 //  HELPERS

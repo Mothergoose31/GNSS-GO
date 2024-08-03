@@ -2,16 +2,16 @@ package main
 
 import (
 	"fmt"
-	"log"
 
-	// "os"
-
-	// "math"
-	// "math/rand"
-	"capnproto.org/go/capnp/v3"
 	gnss "github.com/mothergoose31/GNNS-GO/GNSS"
-	// "github.com/mothergoose31/GNNS-GO/GNSS/helpers"
 )
+
+// "os"
+
+// "math"
+// "math/rand"
+
+// "github.com/mothergoose31/GNNS-GO/GNSS/helpers"
 
 // func printEphemeris(e gnss.Ephemeris) {
 // 	fmt.Println("Ephemeris Details:")
@@ -43,54 +43,56 @@ import (
 // }
 
 func main() {
-	_, seg, err := capnp.NewMessage(capnp.SingleSegment(nil))
-	if err != nil {
-		log.Fatalf("Failed to create new message: %v", err)
-	}
 
-	ephemeris, err := gnss.NewEphemeris(seg)
-	if err != nil {
-		log.Fatalf("Failed to create new Ephemeris: %v", err)
-	}
+	fmt.Println(gnss.ParseSP3File("WUM0MGXULT_20241042300_01D_05M_ORB.SP3"))
+	// _, seg, err := capnp.NewMessage(capnp.SingleSegment(nil))
+	// if err != nil {
+	// 	log.Fatalf("Failed to create new message: %v", err)
+	// }
 
-	ephemeris.SetSatelliteId(1)
-	ephemeris.SetToeWeek(2000)
-	ephemeris.SetToe(14400)
-	ephemeris.SetTimeOfClockWeek(2000)
-	ephemeris.SetTimeOfClock(14400)
-	ephemeris.SetAf0(0.000100)
-	ephemeris.SetAf1(0.000001)
-	ephemeris.SetAf2(0)
-	ephemeris.SetIode(1)
-	ephemeris.SetCrs(100)
-	ephemeris.SetDeltaN(0.000001)
-	ephemeris.SetM0(1.0)
-	ephemeris.SetCuc(0.000100)
-	ephemeris.SetEccentricity(0.001)
-	ephemeris.SetCus(0.000100)
-	ephemeris.SetSemiMajorAxis(26559800.0)
-	ephemeris.SetCic(0.000100)
-	ephemeris.SetOmega0(1.0)
-	ephemeris.SetCis(0.000100)
-	ephemeris.SetInclination(0.96)
-	ephemeris.SetCrc(100)
-	ephemeris.SetPerigeeArgument(1.0)
-	ephemeris.SetRateOfRightAscension(0.000001)
-	ephemeris.SetRateOfInclination(0)
-	ephemeris.SetSatelliteHealth(0)
+	// ephemeris, err := gnss.NewEphemeris(seg)
+	// if err != nil {
+	// 	log.Fatalf("Failed to create new Ephemeris: %v", err)
+	// }
 
-	filename := "./brdc2050.24g"
-	fmt.Printf("Debug: Parsing file %s\n", filename)
+	// ephemeris.SetSatelliteId(1)
+	// ephemeris.SetToeWeek(2000)
+	// ephemeris.SetToe(14400)
+	// ephemeris.SetTimeOfClockWeek(2000)
+	// ephemeris.SetTimeOfClock(14400)
+	// ephemeris.SetAf0(0.000100)
+	// ephemeris.SetAf1(0.000001)
+	// ephemeris.SetAf2(0)
+	// ephemeris.SetIode(1)
+	// ephemeris.SetCrs(100)
+	// ephemeris.SetDeltaN(0.000001)
+	// ephemeris.SetM0(1.0)
+	// ephemeris.SetCuc(0.000100)
+	// ephemeris.SetEccentricity(0.001)
+	// ephemeris.SetCus(0.000100)
+	// ephemeris.SetSemiMajorAxis(26559800.0)
+	// ephemeris.SetCic(0.000100)
+	// ephemeris.SetOmega0(1.0)
+	// ephemeris.SetCis(0.000100)
+	// ephemeris.SetInclination(0.96)
+	// ephemeris.SetCrc(100)
+	// ephemeris.SetPerigeeArgument(1.0)
+	// ephemeris.SetRateOfRightAscension(0.000001)
+	// ephemeris.SetRateOfInclination(0)
+	// ephemeris.SetSatelliteHealth(0)
 
-	header, ephemerides, err := gnss.ParseRINEXFileV201(filename)
-	if err != nil {
-		fmt.Printf("Error parsing RINEX file: %v\n", err)
-		return
-	}
-	fmt.Println(header)
-	sorted := gnss.SortEphemerisBySatelliteID(ephemerides)
+	// filename := "./brdc2050.24g"
+	// fmt.Printf("Debug: Parsing file %s\n", filename)
 
-	gnss.PrintSortedEphemerides(sorted)
+	// header, ephemerides, err := gnss.ParseRINEXFileV201(filename)
+	// if err != nil {
+	// 	fmt.Printf("Error parsing RINEX file: %v\n", err)
+	// 	return
+	// }
+	// fmt.Println(header)
+	// sorted := gnss.SortEphemerisBySatelliteID(ephemerides)
+
+	// gnss.PrintSortedEphemerides(sorted)
 
 	// for _, ephs := range sorted {
 	// 	fmt.Println(ephs)
