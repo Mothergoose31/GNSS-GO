@@ -9,6 +9,382 @@ import (
 	math "math"
 )
 
+type BaseEphemeris capnp.Struct
+
+// BaseEphemeris_TypeID is the unique identifier for the type BaseEphemeris.
+const BaseEphemeris_TypeID = 0xfde08cc67d073fd0
+
+func NewBaseEphemeris(s *capnp.Segment) (BaseEphemeris, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 16, PointerCount: 5})
+	return BaseEphemeris(st), err
+}
+
+func NewRootBaseEphemeris(s *capnp.Segment) (BaseEphemeris, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 16, PointerCount: 5})
+	return BaseEphemeris(st), err
+}
+
+func ReadRootBaseEphemeris(msg *capnp.Message) (BaseEphemeris, error) {
+	root, err := msg.Root()
+	return BaseEphemeris(root.Struct()), err
+}
+
+func (s BaseEphemeris) String() string {
+	str, _ := text.Marshal(0xfde08cc67d073fd0, capnp.Struct(s))
+	return str
+}
+
+func (s BaseEphemeris) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+	return capnp.Struct(s).EncodeAsPtr(seg)
+}
+
+func (BaseEphemeris) DecodeFromPtr(p capnp.Ptr) BaseEphemeris {
+	return BaseEphemeris(capnp.Struct{}.DecodeFromPtr(p))
+}
+
+func (s BaseEphemeris) ToPtr() capnp.Ptr {
+	return capnp.Struct(s).ToPtr()
+}
+func (s BaseEphemeris) IsValid() bool {
+	return capnp.Struct(s).IsValid()
+}
+
+func (s BaseEphemeris) Message() *capnp.Message {
+	return capnp.Struct(s).Message()
+}
+
+func (s BaseEphemeris) Segment() *capnp.Segment {
+	return capnp.Struct(s).Segment()
+}
+func (s BaseEphemeris) PseudoRandomNumber() (string, error) {
+	p, err := capnp.Struct(s).Ptr(0)
+	return p.Text(), err
+}
+
+func (s BaseEphemeris) HasPseudoRandomNumber() bool {
+	return capnp.Struct(s).HasPtr(0)
+}
+
+func (s BaseEphemeris) PseudoRandomNumberBytes() ([]byte, error) {
+	p, err := capnp.Struct(s).Ptr(0)
+	return p.TextBytes(), err
+}
+
+func (s BaseEphemeris) SetPseudoRandomNumber(v string) error {
+	return capnp.Struct(s).SetText(0, v)
+}
+
+func (s BaseEphemeris) Epoch() (GPSTime, error) {
+	p, err := capnp.Struct(s).Ptr(1)
+	return GPSTime(p.Struct()), err
+}
+
+func (s BaseEphemeris) HasEpoch() bool {
+	return capnp.Struct(s).HasPtr(1)
+}
+
+func (s BaseEphemeris) SetEpoch(v GPSTime) error {
+	return capnp.Struct(s).SetPtr(1, capnp.Struct(v).ToPtr())
+}
+
+// NewEpoch sets the epoch field to a newly
+// allocated GPSTime struct, preferring placement in s's segment.
+func (s BaseEphemeris) NewEpoch() (GPSTime, error) {
+	ss, err := NewGPSTime(capnp.Struct(s).Segment())
+	if err != nil {
+		return GPSTime{}, err
+	}
+	err = capnp.Struct(s).SetPtr(1, capnp.Struct(ss).ToPtr())
+	return ss, err
+}
+
+func (s BaseEphemeris) EphemerisType() EphemerisType {
+	return EphemerisType(capnp.Struct(s).Uint16(0))
+}
+
+func (s BaseEphemeris) SetEphemerisType(v EphemerisType) {
+	capnp.Struct(s).SetUint16(0, uint16(v))
+}
+
+func (s BaseEphemeris) IsHealthy() bool {
+	return capnp.Struct(s).Bit(16)
+}
+
+func (s BaseEphemeris) SetIsHealthy(v bool) {
+	capnp.Struct(s).SetBit(16, v)
+}
+
+func (s BaseEphemeris) MaximumTimeDifference() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(8))
+}
+
+func (s BaseEphemeris) SetMaximumTimeDifference(v float64) {
+	capnp.Struct(s).SetUint64(8, math.Float64bits(v))
+}
+
+func (s BaseEphemeris) FileEpoch() (GPSTime, error) {
+	p, err := capnp.Struct(s).Ptr(2)
+	return GPSTime(p.Struct()), err
+}
+
+func (s BaseEphemeris) HasFileEpoch() bool {
+	return capnp.Struct(s).HasPtr(2)
+}
+
+func (s BaseEphemeris) SetFileEpoch(v GPSTime) error {
+	return capnp.Struct(s).SetPtr(2, capnp.Struct(v).ToPtr())
+}
+
+// NewFileEpoch sets the fileEpoch field to a newly
+// allocated GPSTime struct, preferring placement in s's segment.
+func (s BaseEphemeris) NewFileEpoch() (GPSTime, error) {
+	ss, err := NewGPSTime(capnp.Struct(s).Segment())
+	if err != nil {
+		return GPSTime{}, err
+	}
+	err = capnp.Struct(s).SetPtr(2, capnp.Struct(ss).ToPtr())
+	return ss, err
+}
+
+func (s BaseEphemeris) FileName() (string, error) {
+	p, err := capnp.Struct(s).Ptr(3)
+	return p.Text(), err
+}
+
+func (s BaseEphemeris) HasFileName() bool {
+	return capnp.Struct(s).HasPtr(3)
+}
+
+func (s BaseEphemeris) FileNameBytes() ([]byte, error) {
+	p, err := capnp.Struct(s).Ptr(3)
+	return p.TextBytes(), err
+}
+
+func (s BaseEphemeris) SetFileName(v string) error {
+	return capnp.Struct(s).SetText(3, v)
+}
+
+func (s BaseEphemeris) FileSource() (string, error) {
+	p, err := capnp.Struct(s).Ptr(4)
+	return p.Text(), err
+}
+
+func (s BaseEphemeris) HasFileSource() bool {
+	return capnp.Struct(s).HasPtr(4)
+}
+
+func (s BaseEphemeris) FileSourceBytes() ([]byte, error) {
+	p, err := capnp.Struct(s).Ptr(4)
+	return p.TextBytes(), err
+}
+
+func (s BaseEphemeris) SetFileSource(v string) error {
+	return capnp.Struct(s).SetText(4, v)
+}
+
+// BaseEphemeris_List is a list of BaseEphemeris.
+type BaseEphemeris_List = capnp.StructList[BaseEphemeris]
+
+// NewBaseEphemeris creates a new list of BaseEphemeris.
+func NewBaseEphemeris_List(s *capnp.Segment, sz int32) (BaseEphemeris_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 16, PointerCount: 5}, sz)
+	return capnp.StructList[BaseEphemeris](l), err
+}
+
+// BaseEphemeris_Future is a wrapper for a BaseEphemeris promised by a client call.
+type BaseEphemeris_Future struct{ *capnp.Future }
+
+func (f BaseEphemeris_Future) Struct() (BaseEphemeris, error) {
+	p, err := f.Future.Ptr()
+	return BaseEphemeris(p.Struct()), err
+}
+func (p BaseEphemeris_Future) Epoch() GPSTime_Future {
+	return GPSTime_Future{Future: p.Future.Field(1, nil)}
+}
+func (p BaseEphemeris_Future) FileEpoch() GPSTime_Future {
+	return GPSTime_Future{Future: p.Future.Field(2, nil)}
+}
+
+type GPSEphemeris capnp.Struct
+
+// GPSEphemeris_TypeID is the unique identifier for the type GPSEphemeris.
+const GPSEphemeris_TypeID = 0xd67148628f889f75
+
+func NewGPSEphemeris(s *capnp.Segment) (GPSEphemeris, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 8, PointerCount: 4})
+	return GPSEphemeris(st), err
+}
+
+func NewRootGPSEphemeris(s *capnp.Segment) (GPSEphemeris, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 8, PointerCount: 4})
+	return GPSEphemeris(st), err
+}
+
+func ReadRootGPSEphemeris(msg *capnp.Message) (GPSEphemeris, error) {
+	root, err := msg.Root()
+	return GPSEphemeris(root.Struct()), err
+}
+
+func (s GPSEphemeris) String() string {
+	str, _ := text.Marshal(0xd67148628f889f75, capnp.Struct(s))
+	return str
+}
+
+func (s GPSEphemeris) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+	return capnp.Struct(s).EncodeAsPtr(seg)
+}
+
+func (GPSEphemeris) DecodeFromPtr(p capnp.Ptr) GPSEphemeris {
+	return GPSEphemeris(capnp.Struct{}.DecodeFromPtr(p))
+}
+
+func (s GPSEphemeris) ToPtr() capnp.Ptr {
+	return capnp.Struct(s).ToPtr()
+}
+func (s GPSEphemeris) IsValid() bool {
+	return capnp.Struct(s).IsValid()
+}
+
+func (s GPSEphemeris) Message() *capnp.Message {
+	return capnp.Struct(s).Message()
+}
+
+func (s GPSEphemeris) Segment() *capnp.Segment {
+	return capnp.Struct(s).Segment()
+}
+func (s GPSEphemeris) BaseEphemeris() (BaseEphemeris, error) {
+	p, err := capnp.Struct(s).Ptr(0)
+	return BaseEphemeris(p.Struct()), err
+}
+
+func (s GPSEphemeris) HasBaseEphemeris() bool {
+	return capnp.Struct(s).HasPtr(0)
+}
+
+func (s GPSEphemeris) SetBaseEphemeris(v BaseEphemeris) error {
+	return capnp.Struct(s).SetPtr(0, capnp.Struct(v).ToPtr())
+}
+
+// NewBaseEphemeris sets the baseEphemeris field to a newly
+// allocated BaseEphemeris struct, preferring placement in s's segment.
+func (s GPSEphemeris) NewBaseEphemeris() (BaseEphemeris, error) {
+	ss, err := NewBaseEphemeris(capnp.Struct(s).Segment())
+	if err != nil {
+		return BaseEphemeris{}, err
+	}
+	err = capnp.Struct(s).SetPtr(0, capnp.Struct(ss).ToPtr())
+	return ss, err
+}
+
+func (s GPSEphemeris) EphemerisData() (Ephemeris, error) {
+	p, err := capnp.Struct(s).Ptr(1)
+	return Ephemeris(p.Struct()), err
+}
+
+func (s GPSEphemeris) HasEphemerisData() bool {
+	return capnp.Struct(s).HasPtr(1)
+}
+
+func (s GPSEphemeris) SetEphemerisData(v Ephemeris) error {
+	return capnp.Struct(s).SetPtr(1, capnp.Struct(v).ToPtr())
+}
+
+// NewEphemerisData sets the ephemerisData field to a newly
+// allocated Ephemeris struct, preferring placement in s's segment.
+func (s GPSEphemeris) NewEphemerisData() (Ephemeris, error) {
+	ss, err := NewEphemeris(capnp.Struct(s).Segment())
+	if err != nil {
+		return Ephemeris{}, err
+	}
+	err = capnp.Struct(s).SetPtr(1, capnp.Struct(ss).ToPtr())
+	return ss, err
+}
+
+func (s GPSEphemeris) TimeOfEphemeris() (GPSTime, error) {
+	p, err := capnp.Struct(s).Ptr(2)
+	return GPSTime(p.Struct()), err
+}
+
+func (s GPSEphemeris) HasTimeOfEphemeris() bool {
+	return capnp.Struct(s).HasPtr(2)
+}
+
+func (s GPSEphemeris) SetTimeOfEphemeris(v GPSTime) error {
+	return capnp.Struct(s).SetPtr(2, capnp.Struct(v).ToPtr())
+}
+
+// NewTimeOfEphemeris sets the timeOfEphemeris field to a newly
+// allocated GPSTime struct, preferring placement in s's segment.
+func (s GPSEphemeris) NewTimeOfEphemeris() (GPSTime, error) {
+	ss, err := NewGPSTime(capnp.Struct(s).Segment())
+	if err != nil {
+		return GPSTime{}, err
+	}
+	err = capnp.Struct(s).SetPtr(2, capnp.Struct(ss).ToPtr())
+	return ss, err
+}
+
+func (s GPSEphemeris) TimeOfClock() (GPSTime, error) {
+	p, err := capnp.Struct(s).Ptr(3)
+	return GPSTime(p.Struct()), err
+}
+
+func (s GPSEphemeris) HasTimeOfClock() bool {
+	return capnp.Struct(s).HasPtr(3)
+}
+
+func (s GPSEphemeris) SetTimeOfClock(v GPSTime) error {
+	return capnp.Struct(s).SetPtr(3, capnp.Struct(v).ToPtr())
+}
+
+// NewTimeOfClock sets the timeOfClock field to a newly
+// allocated GPSTime struct, preferring placement in s's segment.
+func (s GPSEphemeris) NewTimeOfClock() (GPSTime, error) {
+	ss, err := NewGPSTime(capnp.Struct(s).Segment())
+	if err != nil {
+		return GPSTime{}, err
+	}
+	err = capnp.Struct(s).SetPtr(3, capnp.Struct(ss).ToPtr())
+	return ss, err
+}
+
+func (s GPSEphemeris) SquareRootOfSemiMajorAxis() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(0))
+}
+
+func (s GPSEphemeris) SetSquareRootOfSemiMajorAxis(v float64) {
+	capnp.Struct(s).SetUint64(0, math.Float64bits(v))
+}
+
+// GPSEphemeris_List is a list of GPSEphemeris.
+type GPSEphemeris_List = capnp.StructList[GPSEphemeris]
+
+// NewGPSEphemeris creates a new list of GPSEphemeris.
+func NewGPSEphemeris_List(s *capnp.Segment, sz int32) (GPSEphemeris_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 8, PointerCount: 4}, sz)
+	return capnp.StructList[GPSEphemeris](l), err
+}
+
+// GPSEphemeris_Future is a wrapper for a GPSEphemeris promised by a client call.
+type GPSEphemeris_Future struct{ *capnp.Future }
+
+func (f GPSEphemeris_Future) Struct() (GPSEphemeris, error) {
+	p, err := f.Future.Ptr()
+	return GPSEphemeris(p.Struct()), err
+}
+func (p GPSEphemeris_Future) BaseEphemeris() BaseEphemeris_Future {
+	return BaseEphemeris_Future{Future: p.Future.Field(0, nil)}
+}
+func (p GPSEphemeris_Future) EphemerisData() Ephemeris_Future {
+	return Ephemeris_Future{Future: p.Future.Field(1, nil)}
+}
+func (p GPSEphemeris_Future) TimeOfEphemeris() GPSTime_Future {
+	return GPSTime_Future{Future: p.Future.Field(2, nil)}
+}
+func (p GPSEphemeris_Future) TimeOfClock() GPSTime_Future {
+	return GPSTime_Future{Future: p.Future.Field(3, nil)}
+}
+
 type Ephemeris capnp.Struct
 
 // Ephemeris_TypeID is the unique identifier for the type Ephemeris.
@@ -112,67 +488,67 @@ func (s Ephemeris) SetSecond(v float32) {
 	capnp.Struct(s).SetUint32(12, math.Float32bits(v))
 }
 
-func (s Ephemeris) Af0() float64 {
+func (s Ephemeris) ClockBiasCoefficient() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(16))
 }
 
-func (s Ephemeris) SetAf0(v float64) {
+func (s Ephemeris) SetClockBiasCoefficient(v float64) {
 	capnp.Struct(s).SetUint64(16, math.Float64bits(v))
 }
 
-func (s Ephemeris) Af1() float64 {
+func (s Ephemeris) ClockDriftCoefficient() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(24))
 }
 
-func (s Ephemeris) SetAf1(v float64) {
+func (s Ephemeris) SetClockDriftCoefficient(v float64) {
 	capnp.Struct(s).SetUint64(24, math.Float64bits(v))
 }
 
-func (s Ephemeris) Af2() float64 {
+func (s Ephemeris) ClockDriftRateCoefficient() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(32))
 }
 
-func (s Ephemeris) SetAf2(v float64) {
+func (s Ephemeris) SetClockDriftRateCoefficient(v float64) {
 	capnp.Struct(s).SetUint64(32, math.Float64bits(v))
 }
 
-func (s Ephemeris) Iode() float64 {
+func (s Ephemeris) IssueOfDataEphemeris() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(40))
 }
 
-func (s Ephemeris) SetIode(v float64) {
+func (s Ephemeris) SetIssueOfDataEphemeris(v float64) {
 	capnp.Struct(s).SetUint64(40, math.Float64bits(v))
 }
 
-func (s Ephemeris) Crs() float64 {
+func (s Ephemeris) RadiusSineCorrectionTerm() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(48))
 }
 
-func (s Ephemeris) SetCrs(v float64) {
+func (s Ephemeris) SetRadiusSineCorrectionTerm(v float64) {
 	capnp.Struct(s).SetUint64(48, math.Float64bits(v))
 }
 
-func (s Ephemeris) DeltaN() float64 {
+func (s Ephemeris) MeanMotionDifference() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(56))
 }
 
-func (s Ephemeris) SetDeltaN(v float64) {
+func (s Ephemeris) SetMeanMotionDifference(v float64) {
 	capnp.Struct(s).SetUint64(56, math.Float64bits(v))
 }
 
-func (s Ephemeris) M0() float64 {
+func (s Ephemeris) MeanAnomaly() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(64))
 }
 
-func (s Ephemeris) SetM0(v float64) {
+func (s Ephemeris) SetMeanAnomaly(v float64) {
 	capnp.Struct(s).SetUint64(64, math.Float64bits(v))
 }
 
-func (s Ephemeris) Cuc() float64 {
+func (s Ephemeris) LatitudeCosineCorrectionTerm() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(72))
 }
 
-func (s Ephemeris) SetCuc(v float64) {
+func (s Ephemeris) SetLatitudeCosineCorrectionTerm(v float64) {
 	capnp.Struct(s).SetUint64(72, math.Float64bits(v))
 }
 
@@ -184,11 +560,11 @@ func (s Ephemeris) SetEccentricity(v float64) {
 	capnp.Struct(s).SetUint64(80, math.Float64bits(v))
 }
 
-func (s Ephemeris) Cus() float64 {
+func (s Ephemeris) LatitudeSineCorrectionTerm() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(88))
 }
 
-func (s Ephemeris) SetCus(v float64) {
+func (s Ephemeris) SetLatitudeSineCorrectionTerm(v float64) {
 	capnp.Struct(s).SetUint64(88, math.Float64bits(v))
 }
 
@@ -200,35 +576,35 @@ func (s Ephemeris) SetSemiMajorAxis(v float64) {
 	capnp.Struct(s).SetUint64(96, math.Float64bits(v))
 }
 
-func (s Ephemeris) Toe() float64 {
+func (s Ephemeris) TimeOfEphemeris() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(104))
 }
 
-func (s Ephemeris) SetToe(v float64) {
+func (s Ephemeris) SetTimeOfEphemeris(v float64) {
 	capnp.Struct(s).SetUint64(104, math.Float64bits(v))
 }
 
-func (s Ephemeris) Cic() float64 {
+func (s Ephemeris) InclinationCosineCorrectionTerm() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(112))
 }
 
-func (s Ephemeris) SetCic(v float64) {
+func (s Ephemeris) SetInclinationCosineCorrectionTerm(v float64) {
 	capnp.Struct(s).SetUint64(112, math.Float64bits(v))
 }
 
-func (s Ephemeris) Omega0() float64 {
+func (s Ephemeris) RightAscensionOfAscendingNode() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(120))
 }
 
-func (s Ephemeris) SetOmega0(v float64) {
+func (s Ephemeris) SetRightAscensionOfAscendingNode(v float64) {
 	capnp.Struct(s).SetUint64(120, math.Float64bits(v))
 }
 
-func (s Ephemeris) Cis() float64 {
+func (s Ephemeris) InclinationSineCorrectionTerm() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(128))
 }
 
-func (s Ephemeris) SetCis(v float64) {
+func (s Ephemeris) SetInclinationSineCorrectionTerm(v float64) {
 	capnp.Struct(s).SetUint64(128, math.Float64bits(v))
 }
 
@@ -240,19 +616,19 @@ func (s Ephemeris) SetInclination(v float64) {
 	capnp.Struct(s).SetUint64(136, math.Float64bits(v))
 }
 
-func (s Ephemeris) Crc() float64 {
+func (s Ephemeris) RadiusCosineCorrectionTerm() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(144))
 }
 
-func (s Ephemeris) SetCrc(v float64) {
+func (s Ephemeris) SetRadiusCosineCorrectionTerm(v float64) {
 	capnp.Struct(s).SetUint64(144, math.Float64bits(v))
 }
 
-func (s Ephemeris) PerigeeArgument() float64 {
+func (s Ephemeris) ArgumentOfPerigee() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(152))
 }
 
-func (s Ephemeris) SetPerigeeArgument(v float64) {
+func (s Ephemeris) SetArgumentOfPerigee(v float64) {
 	capnp.Struct(s).SetUint64(152, math.Float64bits(v))
 }
 
@@ -272,27 +648,27 @@ func (s Ephemeris) SetRateOfInclination(v float64) {
 	capnp.Struct(s).SetUint64(168, math.Float64bits(v))
 }
 
-func (s Ephemeris) CodesL2() float64 {
+func (s Ephemeris) L2CodeFlags() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(176))
 }
 
-func (s Ephemeris) SetCodesL2(v float64) {
+func (s Ephemeris) SetL2CodeFlags(v float64) {
 	capnp.Struct(s).SetUint64(176, math.Float64bits(v))
 }
 
-func (s Ephemeris) GpsWeekDEPRECATED() float64 {
+func (s Ephemeris) GpsWeekDeprecated() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(184))
 }
 
-func (s Ephemeris) SetGpsWeekDEPRECATED(v float64) {
+func (s Ephemeris) SetGpsWeekDeprecated(v float64) {
 	capnp.Struct(s).SetUint64(184, math.Float64bits(v))
 }
 
-func (s Ephemeris) L2() float64 {
+func (s Ephemeris) L2PDataFlag() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(192))
 }
 
-func (s Ephemeris) SetL2(v float64) {
+func (s Ephemeris) SetL2PDataFlag(v float64) {
 	capnp.Struct(s).SetUint64(192, math.Float64bits(v))
 }
 
@@ -312,19 +688,19 @@ func (s Ephemeris) SetSatelliteHealth(v float64) {
 	capnp.Struct(s).SetUint64(208, math.Float64bits(v))
 }
 
-func (s Ephemeris) Tgd() float64 {
+func (s Ephemeris) TotalGroupDelay() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(216))
 }
 
-func (s Ephemeris) SetTgd(v float64) {
+func (s Ephemeris) SetTotalGroupDelay(v float64) {
 	capnp.Struct(s).SetUint64(216, math.Float64bits(v))
 }
 
-func (s Ephemeris) Iodc() float64 {
+func (s Ephemeris) IssueOfDataClock() float64 {
 	return math.Float64frombits(capnp.Struct(s).Uint64(224))
 }
 
-func (s Ephemeris) SetIodc(v float64) {
+func (s Ephemeris) SetIssueOfDataClock(v float64) {
 	capnp.Struct(s).SetUint64(224, math.Float64bits(v))
 }
 
@@ -414,11 +790,11 @@ func (s Ephemeris) SetTimeOfWeekCount(v uint32) {
 	capnp.Struct(s).SetUint32(260, v)
 }
 
-func (s Ephemeris) ToeWeek() uint16 {
+func (s Ephemeris) TimeOfEphemerisWeek() uint16 {
 	return capnp.Struct(s).Uint16(258)
 }
 
-func (s Ephemeris) SetToeWeek(v uint16) {
+func (s Ephemeris) SetTimeOfEphemerisWeek(v uint16) {
 	capnp.Struct(s).SetUint16(258, v)
 }
 
@@ -447,575 +823,1562 @@ func (f Ephemeris_Future) Struct() (Ephemeris, error) {
 	return Ephemeris(p.Struct()), err
 }
 
-type GlonassEphemeris capnp.Struct
+type RINEXHeader capnp.Struct
 
-// GlonassEphemeris_TypeID is the unique identifier for the type GlonassEphemeris.
-const GlonassEphemeris_TypeID = 0xc98ab11e016b9507
+// RINEXHeader_TypeID is the unique identifier for the type RINEXHeader.
+const RINEXHeader_TypeID = 0x8861b2182dea79c8
 
-func NewGlonassEphemeris(s *capnp.Segment) (GlonassEphemeris, error) {
-	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 144, PointerCount: 0})
-	return GlonassEphemeris(st), err
+func NewRINEXHeader(s *capnp.Segment) (RINEXHeader, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 16, PointerCount: 6})
+	return RINEXHeader(st), err
 }
 
-func NewRootGlonassEphemeris(s *capnp.Segment) (GlonassEphemeris, error) {
-	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 144, PointerCount: 0})
-	return GlonassEphemeris(st), err
+func NewRootRINEXHeader(s *capnp.Segment) (RINEXHeader, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 16, PointerCount: 6})
+	return RINEXHeader(st), err
 }
 
-func ReadRootGlonassEphemeris(msg *capnp.Message) (GlonassEphemeris, error) {
+func ReadRootRINEXHeader(msg *capnp.Message) (RINEXHeader, error) {
 	root, err := msg.Root()
-	return GlonassEphemeris(root.Struct()), err
+	return RINEXHeader(root.Struct()), err
 }
 
-func (s GlonassEphemeris) String() string {
-	str, _ := text.Marshal(0xc98ab11e016b9507, capnp.Struct(s))
+func (s RINEXHeader) String() string {
+	str, _ := text.Marshal(0x8861b2182dea79c8, capnp.Struct(s))
 	return str
 }
 
-func (s GlonassEphemeris) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+func (s RINEXHeader) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
 	return capnp.Struct(s).EncodeAsPtr(seg)
 }
 
-func (GlonassEphemeris) DecodeFromPtr(p capnp.Ptr) GlonassEphemeris {
-	return GlonassEphemeris(capnp.Struct{}.DecodeFromPtr(p))
+func (RINEXHeader) DecodeFromPtr(p capnp.Ptr) RINEXHeader {
+	return RINEXHeader(capnp.Struct{}.DecodeFromPtr(p))
 }
 
-func (s GlonassEphemeris) ToPtr() capnp.Ptr {
+func (s RINEXHeader) ToPtr() capnp.Ptr {
 	return capnp.Struct(s).ToPtr()
 }
-func (s GlonassEphemeris) IsValid() bool {
+func (s RINEXHeader) IsValid() bool {
 	return capnp.Struct(s).IsValid()
 }
 
-func (s GlonassEphemeris) Message() *capnp.Message {
+func (s RINEXHeader) Message() *capnp.Message {
 	return capnp.Struct(s).Message()
 }
 
-func (s GlonassEphemeris) Segment() *capnp.Segment {
+func (s RINEXHeader) Segment() *capnp.Segment {
 	return capnp.Struct(s).Segment()
 }
-func (s GlonassEphemeris) SatelliteId() uint16 {
-	return capnp.Struct(s).Uint16(0)
+func (s RINEXHeader) Version() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(0))
 }
 
-func (s GlonassEphemeris) SetSatelliteId(v uint16) {
-	capnp.Struct(s).SetUint16(0, v)
+func (s RINEXHeader) SetVersion(v float64) {
+	capnp.Struct(s).SetUint64(0, math.Float64bits(v))
 }
 
-func (s GlonassEphemeris) Year() uint16 {
-	return capnp.Struct(s).Uint16(2)
-}
-
-func (s GlonassEphemeris) SetYear(v uint16) {
-	capnp.Struct(s).SetUint16(2, v)
-}
-
-func (s GlonassEphemeris) DayOfYear() uint16 {
-	return capnp.Struct(s).Uint16(4)
-}
-
-func (s GlonassEphemeris) SetDayOfYear(v uint16) {
-	capnp.Struct(s).SetUint16(4, v)
-}
-
-func (s GlonassEphemeris) Hour() uint16 {
-	return capnp.Struct(s).Uint16(6)
-}
-
-func (s GlonassEphemeris) SetHour(v uint16) {
-	capnp.Struct(s).SetUint16(6, v)
-}
-
-func (s GlonassEphemeris) Minute() uint16 {
-	return capnp.Struct(s).Uint16(8)
-}
-
-func (s GlonassEphemeris) SetMinute(v uint16) {
-	capnp.Struct(s).SetUint16(8, v)
-}
-
-func (s GlonassEphemeris) Second() float32 {
-	return math.Float32frombits(capnp.Struct(s).Uint32(12))
-}
-
-func (s GlonassEphemeris) SetSecond(v float32) {
-	capnp.Struct(s).SetUint32(12, math.Float32bits(v))
-}
-
-func (s GlonassEphemeris) XPosition() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(16))
-}
-
-func (s GlonassEphemeris) SetXPosition(v float64) {
-	capnp.Struct(s).SetUint64(16, math.Float64bits(v))
-}
-
-func (s GlonassEphemeris) XVelocity() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(24))
-}
-
-func (s GlonassEphemeris) SetXVelocity(v float64) {
-	capnp.Struct(s).SetUint64(24, math.Float64bits(v))
-}
-
-func (s GlonassEphemeris) XAcceleration() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(32))
-}
-
-func (s GlonassEphemeris) SetXAcceleration(v float64) {
-	capnp.Struct(s).SetUint64(32, math.Float64bits(v))
-}
-
-func (s GlonassEphemeris) YPosition() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(40))
-}
-
-func (s GlonassEphemeris) SetYPosition(v float64) {
-	capnp.Struct(s).SetUint64(40, math.Float64bits(v))
-}
-
-func (s GlonassEphemeris) YVelocity() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(48))
-}
-
-func (s GlonassEphemeris) SetYVelocity(v float64) {
-	capnp.Struct(s).SetUint64(48, math.Float64bits(v))
-}
-
-func (s GlonassEphemeris) YAcceleration() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(56))
-}
-
-func (s GlonassEphemeris) SetYAcceleration(v float64) {
-	capnp.Struct(s).SetUint64(56, math.Float64bits(v))
-}
-
-func (s GlonassEphemeris) ZPosition() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(64))
-}
-
-func (s GlonassEphemeris) SetZPosition(v float64) {
-	capnp.Struct(s).SetUint64(64, math.Float64bits(v))
-}
-
-func (s GlonassEphemeris) ZVelocity() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(72))
-}
-
-func (s GlonassEphemeris) SetZVelocity(v float64) {
-	capnp.Struct(s).SetUint64(72, math.Float64bits(v))
-}
-
-func (s GlonassEphemeris) ZAcceleration() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(80))
-}
-
-func (s GlonassEphemeris) SetZAcceleration(v float64) {
-	capnp.Struct(s).SetUint64(80, math.Float64bits(v))
-}
-
-func (s GlonassEphemeris) SatelliteType() uint8 {
-	return capnp.Struct(s).Uint8(10)
-}
-
-func (s GlonassEphemeris) SetSatelliteType(v uint8) {
-	capnp.Struct(s).SetUint8(10, v)
-}
-
-func (s GlonassEphemeris) UserRangeAccuracy() float32 {
-	return math.Float32frombits(capnp.Struct(s).Uint32(88))
-}
-
-func (s GlonassEphemeris) SetUserRangeAccuracy(v float32) {
-	capnp.Struct(s).SetUint32(88, math.Float32bits(v))
-}
-
-func (s GlonassEphemeris) AgeOfOperation() uint8 {
-	return capnp.Struct(s).Uint8(11)
-}
-
-func (s GlonassEphemeris) SetAgeOfOperation(v uint8) {
-	capnp.Struct(s).SetUint8(11, v)
-}
-
-func (s GlonassEphemeris) SatelliteHealth() uint8 {
-	return capnp.Struct(s).Uint8(92)
-}
-
-func (s GlonassEphemeris) SetSatelliteHealth(v uint8) {
-	capnp.Struct(s).SetUint8(92, v)
-}
-
-func (s GlonassEphemeris) TimeCorrectionDEPRECATED() uint16 {
-	return capnp.Struct(s).Uint16(94)
-}
-
-func (s GlonassEphemeris) SetTimeCorrectionDEPRECATED(v uint16) {
-	capnp.Struct(s).SetUint16(94, v)
-}
-
-func (s GlonassEphemeris) TimeGroupDelay() uint16 {
-	return capnp.Struct(s).Uint16(96)
-}
-
-func (s GlonassEphemeris) SetTimeGroupDelay(v uint16) {
-	capnp.Struct(s).SetUint16(96, v)
-}
-
-func (s GlonassEphemeris) TauN() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(104))
-}
-
-func (s GlonassEphemeris) SetTauN(v float64) {
-	capnp.Struct(s).SetUint64(104, math.Float64bits(v))
-}
-
-func (s GlonassEphemeris) DeltaTauN() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(112))
-}
-
-func (s GlonassEphemeris) SetDeltaTauN(v float64) {
-	capnp.Struct(s).SetUint64(112, math.Float64bits(v))
-}
-
-func (s GlonassEphemeris) GammaN() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(120))
-}
-
-func (s GlonassEphemeris) SetGammaN(v float64) {
-	capnp.Struct(s).SetUint64(120, math.Float64bits(v))
-}
-
-func (s GlonassEphemeris) FrequencyNumber1() uint8 {
-	return capnp.Struct(s).Uint8(93)
-}
-
-func (s GlonassEphemeris) SetFrequencyNumber1(v uint8) {
-	capnp.Struct(s).SetUint8(93, v)
-}
-
-func (s GlonassEphemeris) FrequencyNumber2() uint8 {
-	return capnp.Struct(s).Uint8(98)
-}
-
-func (s GlonassEphemeris) SetFrequencyNumber2(v uint8) {
-	capnp.Struct(s).SetUint8(98, v)
-}
-
-func (s GlonassEphemeris) FrequencyNumber3() uint8 {
-	return capnp.Struct(s).Uint8(99)
-}
-
-func (s GlonassEphemeris) SetFrequencyNumber3(v uint8) {
-	capnp.Struct(s).SetUint8(99, v)
-}
-
-func (s GlonassEphemeris) FrequencyNumber4() uint8 {
-	return capnp.Struct(s).Uint8(100)
-}
-
-func (s GlonassEphemeris) SetFrequencyNumber4(v uint8) {
-	capnp.Struct(s).SetUint8(100, v)
-}
-
-func (s GlonassEphemeris) FrequencyNumberDEPRECATED() uint32 {
-	return capnp.Struct(s).Uint32(128)
-}
-
-func (s GlonassEphemeris) SetFrequencyNumberDEPRECATED(v uint32) {
-	capnp.Struct(s).SetUint32(128, v)
-}
-
-func (s GlonassEphemeris) N4() uint8 {
-	return capnp.Struct(s).Uint8(101)
-}
-
-func (s GlonassEphemeris) SetN4(v uint8) {
-	capnp.Struct(s).SetUint8(101, v)
-}
-
-func (s GlonassEphemeris) Nt() uint16 {
-	return capnp.Struct(s).Uint16(102)
-}
-
-func (s GlonassEphemeris) SetNt(v uint16) {
-	capnp.Struct(s).SetUint16(102, v)
-}
-
-func (s GlonassEphemeris) FrequencyNumber() int16 {
-	return int16(capnp.Struct(s).Uint16(132))
-}
-
-func (s GlonassEphemeris) SetFrequencyNumber(v int16) {
-	capnp.Struct(s).SetUint16(132, uint16(v))
-}
-
-func (s GlonassEphemeris) TimeCorrectionSeconds() uint32 {
-	return capnp.Struct(s).Uint32(136)
-}
-
-func (s GlonassEphemeris) SetTimeCorrectionSeconds(v uint32) {
-	capnp.Struct(s).SetUint32(136, v)
-}
-
-// GlonassEphemeris_List is a list of GlonassEphemeris.
-type GlonassEphemeris_List = capnp.StructList[GlonassEphemeris]
-
-// NewGlonassEphemeris creates a new list of GlonassEphemeris.
-func NewGlonassEphemeris_List(s *capnp.Segment, sz int32) (GlonassEphemeris_List, error) {
-	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 144, PointerCount: 0}, sz)
-	return capnp.StructList[GlonassEphemeris](l), err
-}
-
-// GlonassEphemeris_Future is a wrapper for a GlonassEphemeris promised by a client call.
-type GlonassEphemeris_Future struct{ *capnp.Future }
-
-func (f GlonassEphemeris_Future) Struct() (GlonassEphemeris, error) {
-	p, err := f.Future.Ptr()
-	return GlonassEphemeris(p.Struct()), err
-}
-
-type EphemerisCache capnp.Struct
-
-// EphemerisCache_TypeID is the unique identifier for the type EphemerisCache.
-const EphemerisCache_TypeID = 0xfb7d655c3ad3e9bb
-
-func NewEphemerisCache(s *capnp.Segment) (EphemerisCache, error) {
-	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 2})
-	return EphemerisCache(st), err
-}
-
-func NewRootEphemerisCache(s *capnp.Segment) (EphemerisCache, error) {
-	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 2})
-	return EphemerisCache(st), err
-}
-
-func ReadRootEphemerisCache(msg *capnp.Message) (EphemerisCache, error) {
-	root, err := msg.Root()
-	return EphemerisCache(root.Struct()), err
-}
-
-func (s EphemerisCache) String() string {
-	str, _ := text.Marshal(0xfb7d655c3ad3e9bb, capnp.Struct(s))
-	return str
-}
-
-func (s EphemerisCache) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
-	return capnp.Struct(s).EncodeAsPtr(seg)
-}
-
-func (EphemerisCache) DecodeFromPtr(p capnp.Ptr) EphemerisCache {
-	return EphemerisCache(capnp.Struct{}.DecodeFromPtr(p))
-}
-
-func (s EphemerisCache) ToPtr() capnp.Ptr {
-	return capnp.Struct(s).ToPtr()
-}
-func (s EphemerisCache) IsValid() bool {
-	return capnp.Struct(s).IsValid()
-}
-
-func (s EphemerisCache) Message() *capnp.Message {
-	return capnp.Struct(s).Message()
-}
-
-func (s EphemerisCache) Segment() *capnp.Segment {
-	return capnp.Struct(s).Segment()
-}
-func (s EphemerisCache) GpsEphemerides() (Ephemeris_List, error) {
+func (s RINEXHeader) Type() (string, error) {
 	p, err := capnp.Struct(s).Ptr(0)
-	return Ephemeris_List(p.List()), err
+	return p.Text(), err
 }
 
-func (s EphemerisCache) HasGpsEphemerides() bool {
+func (s RINEXHeader) HasType() bool {
 	return capnp.Struct(s).HasPtr(0)
 }
 
-func (s EphemerisCache) SetGpsEphemerides(v Ephemeris_List) error {
+func (s RINEXHeader) TypeBytes() ([]byte, error) {
+	p, err := capnp.Struct(s).Ptr(0)
+	return p.TextBytes(), err
+}
+
+func (s RINEXHeader) SetType(v string) error {
+	return capnp.Struct(s).SetText(0, v)
+}
+
+func (s RINEXHeader) SatelliteSystem() (string, error) {
+	p, err := capnp.Struct(s).Ptr(1)
+	return p.Text(), err
+}
+
+func (s RINEXHeader) HasSatelliteSystem() bool {
+	return capnp.Struct(s).HasPtr(1)
+}
+
+func (s RINEXHeader) SatelliteSystemBytes() ([]byte, error) {
+	p, err := capnp.Struct(s).Ptr(1)
+	return p.TextBytes(), err
+}
+
+func (s RINEXHeader) SetSatelliteSystem(v string) error {
+	return capnp.Struct(s).SetText(1, v)
+}
+
+func (s RINEXHeader) ProgramName() (string, error) {
+	p, err := capnp.Struct(s).Ptr(2)
+	return p.Text(), err
+}
+
+func (s RINEXHeader) HasProgramName() bool {
+	return capnp.Struct(s).HasPtr(2)
+}
+
+func (s RINEXHeader) ProgramNameBytes() ([]byte, error) {
+	p, err := capnp.Struct(s).Ptr(2)
+	return p.TextBytes(), err
+}
+
+func (s RINEXHeader) SetProgramName(v string) error {
+	return capnp.Struct(s).SetText(2, v)
+}
+
+func (s RINEXHeader) Agency() (string, error) {
+	p, err := capnp.Struct(s).Ptr(3)
+	return p.Text(), err
+}
+
+func (s RINEXHeader) HasAgency() bool {
+	return capnp.Struct(s).HasPtr(3)
+}
+
+func (s RINEXHeader) AgencyBytes() ([]byte, error) {
+	p, err := capnp.Struct(s).Ptr(3)
+	return p.TextBytes(), err
+}
+
+func (s RINEXHeader) SetAgency(v string) error {
+	return capnp.Struct(s).SetText(3, v)
+}
+
+func (s RINEXHeader) Date() (Time, error) {
+	p, err := capnp.Struct(s).Ptr(4)
+	return Time(p.Struct()), err
+}
+
+func (s RINEXHeader) HasDate() bool {
+	return capnp.Struct(s).HasPtr(4)
+}
+
+func (s RINEXHeader) SetDate(v Time) error {
+	return capnp.Struct(s).SetPtr(4, capnp.Struct(v).ToPtr())
+}
+
+// NewDate sets the date field to a newly
+// allocated Time struct, preferring placement in s's segment.
+func (s RINEXHeader) NewDate() (Time, error) {
+	ss, err := NewTime(capnp.Struct(s).Segment())
+	if err != nil {
+		return Time{}, err
+	}
+	err = capnp.Struct(s).SetPtr(4, capnp.Struct(ss).ToPtr())
+	return ss, err
+}
+
+func (s RINEXHeader) Comments() (capnp.TextList, error) {
+	p, err := capnp.Struct(s).Ptr(5)
+	return capnp.TextList(p.List()), err
+}
+
+func (s RINEXHeader) HasComments() bool {
+	return capnp.Struct(s).HasPtr(5)
+}
+
+func (s RINEXHeader) SetComments(v capnp.TextList) error {
+	return capnp.Struct(s).SetPtr(5, v.ToPtr())
+}
+
+// NewComments sets the comments field to a newly
+// allocated capnp.TextList, preferring placement in s's segment.
+func (s RINEXHeader) NewComments(n int32) (capnp.TextList, error) {
+	l, err := capnp.NewTextList(capnp.Struct(s).Segment(), n)
+	if err != nil {
+		return capnp.TextList{}, err
+	}
+	err = capnp.Struct(s).SetPtr(5, l.ToPtr())
+	return l, err
+}
+func (s RINEXHeader) LeapSeconds() int32 {
+	return int32(capnp.Struct(s).Uint32(8))
+}
+
+func (s RINEXHeader) SetLeapSeconds(v int32) {
+	capnp.Struct(s).SetUint32(8, uint32(v))
+}
+
+// RINEXHeader_List is a list of RINEXHeader.
+type RINEXHeader_List = capnp.StructList[RINEXHeader]
+
+// NewRINEXHeader creates a new list of RINEXHeader.
+func NewRINEXHeader_List(s *capnp.Segment, sz int32) (RINEXHeader_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 16, PointerCount: 6}, sz)
+	return capnp.StructList[RINEXHeader](l), err
+}
+
+// RINEXHeader_Future is a wrapper for a RINEXHeader promised by a client call.
+type RINEXHeader_Future struct{ *capnp.Future }
+
+func (f RINEXHeader_Future) Struct() (RINEXHeader, error) {
+	p, err := f.Future.Ptr()
+	return RINEXHeader(p.Struct()), err
+}
+func (p RINEXHeader_Future) Date() Time_Future {
+	return Time_Future{Future: p.Future.Field(4, nil)}
+}
+
+type RINEXEphemeris capnp.Struct
+
+// RINEXEphemeris_TypeID is the unique identifier for the type RINEXEphemeris.
+const RINEXEphemeris_TypeID = 0xeca2c2c553ea12f6
+
+func NewRINEXEphemeris(s *capnp.Segment) (RINEXEphemeris, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 120, PointerCount: 2})
+	return RINEXEphemeris(st), err
+}
+
+func NewRootRINEXEphemeris(s *capnp.Segment) (RINEXEphemeris, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 120, PointerCount: 2})
+	return RINEXEphemeris(st), err
+}
+
+func ReadRootRINEXEphemeris(msg *capnp.Message) (RINEXEphemeris, error) {
+	root, err := msg.Root()
+	return RINEXEphemeris(root.Struct()), err
+}
+
+func (s RINEXEphemeris) String() string {
+	str, _ := text.Marshal(0xeca2c2c553ea12f6, capnp.Struct(s))
+	return str
+}
+
+func (s RINEXEphemeris) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+	return capnp.Struct(s).EncodeAsPtr(seg)
+}
+
+func (RINEXEphemeris) DecodeFromPtr(p capnp.Ptr) RINEXEphemeris {
+	return RINEXEphemeris(capnp.Struct{}.DecodeFromPtr(p))
+}
+
+func (s RINEXEphemeris) ToPtr() capnp.Ptr {
+	return capnp.Struct(s).ToPtr()
+}
+func (s RINEXEphemeris) IsValid() bool {
+	return capnp.Struct(s).IsValid()
+}
+
+func (s RINEXEphemeris) Message() *capnp.Message {
+	return capnp.Struct(s).Message()
+}
+
+func (s RINEXEphemeris) Segment() *capnp.Segment {
+	return capnp.Struct(s).Segment()
+}
+func (s RINEXEphemeris) Header() (RINEXHeader, error) {
+	p, err := capnp.Struct(s).Ptr(0)
+	return RINEXHeader(p.Struct()), err
+}
+
+func (s RINEXEphemeris) HasHeader() bool {
+	return capnp.Struct(s).HasPtr(0)
+}
+
+func (s RINEXEphemeris) SetHeader(v RINEXHeader) error {
+	return capnp.Struct(s).SetPtr(0, capnp.Struct(v).ToPtr())
+}
+
+// NewHeader sets the header field to a newly
+// allocated RINEXHeader struct, preferring placement in s's segment.
+func (s RINEXEphemeris) NewHeader() (RINEXHeader, error) {
+	ss, err := NewRINEXHeader(capnp.Struct(s).Segment())
+	if err != nil {
+		return RINEXHeader{}, err
+	}
+	err = capnp.Struct(s).SetPtr(0, capnp.Struct(ss).ToPtr())
+	return ss, err
+}
+
+func (s RINEXEphemeris) SatelliteId() int32 {
+	return int32(capnp.Struct(s).Uint32(0))
+}
+
+func (s RINEXEphemeris) SetSatelliteId(v int32) {
+	capnp.Struct(s).SetUint32(0, uint32(v))
+}
+
+func (s RINEXEphemeris) Epoch() (Time, error) {
+	p, err := capnp.Struct(s).Ptr(1)
+	return Time(p.Struct()), err
+}
+
+func (s RINEXEphemeris) HasEpoch() bool {
+	return capnp.Struct(s).HasPtr(1)
+}
+
+func (s RINEXEphemeris) SetEpoch(v Time) error {
+	return capnp.Struct(s).SetPtr(1, capnp.Struct(v).ToPtr())
+}
+
+// NewEpoch sets the epoch field to a newly
+// allocated Time struct, preferring placement in s's segment.
+func (s RINEXEphemeris) NewEpoch() (Time, error) {
+	ss, err := NewTime(capnp.Struct(s).Segment())
+	if err != nil {
+		return Time{}, err
+	}
+	err = capnp.Struct(s).SetPtr(1, capnp.Struct(ss).ToPtr())
+	return ss, err
+}
+
+func (s RINEXEphemeris) ClockBias() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(8))
+}
+
+func (s RINEXEphemeris) SetClockBias(v float64) {
+	capnp.Struct(s).SetUint64(8, math.Float64bits(v))
+}
+
+func (s RINEXEphemeris) RelativeFrequencyBias() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(16))
+}
+
+func (s RINEXEphemeris) SetRelativeFrequencyBias(v float64) {
+	capnp.Struct(s).SetUint64(16, math.Float64bits(v))
+}
+
+func (s RINEXEphemeris) MessageFrameTime() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(24))
+}
+
+func (s RINEXEphemeris) SetMessageFrameTime(v float64) {
+	capnp.Struct(s).SetUint64(24, math.Float64bits(v))
+}
+
+func (s RINEXEphemeris) PositionX() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(32))
+}
+
+func (s RINEXEphemeris) SetPositionX(v float64) {
+	capnp.Struct(s).SetUint64(32, math.Float64bits(v))
+}
+
+func (s RINEXEphemeris) VelocityX() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(40))
+}
+
+func (s RINEXEphemeris) SetVelocityX(v float64) {
+	capnp.Struct(s).SetUint64(40, math.Float64bits(v))
+}
+
+func (s RINEXEphemeris) AccelerationX() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(48))
+}
+
+func (s RINEXEphemeris) SetAccelerationX(v float64) {
+	capnp.Struct(s).SetUint64(48, math.Float64bits(v))
+}
+
+func (s RINEXEphemeris) PositionY() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(56))
+}
+
+func (s RINEXEphemeris) SetPositionY(v float64) {
+	capnp.Struct(s).SetUint64(56, math.Float64bits(v))
+}
+
+func (s RINEXEphemeris) VelocityY() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(64))
+}
+
+func (s RINEXEphemeris) SetVelocityY(v float64) {
+	capnp.Struct(s).SetUint64(64, math.Float64bits(v))
+}
+
+func (s RINEXEphemeris) AccelerationY() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(72))
+}
+
+func (s RINEXEphemeris) SetAccelerationY(v float64) {
+	capnp.Struct(s).SetUint64(72, math.Float64bits(v))
+}
+
+func (s RINEXEphemeris) PositionZ() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(80))
+}
+
+func (s RINEXEphemeris) SetPositionZ(v float64) {
+	capnp.Struct(s).SetUint64(80, math.Float64bits(v))
+}
+
+func (s RINEXEphemeris) VelocityZ() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(88))
+}
+
+func (s RINEXEphemeris) SetVelocityZ(v float64) {
+	capnp.Struct(s).SetUint64(88, math.Float64bits(v))
+}
+
+func (s RINEXEphemeris) AccelerationZ() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(96))
+}
+
+func (s RINEXEphemeris) SetAccelerationZ(v float64) {
+	capnp.Struct(s).SetUint64(96, math.Float64bits(v))
+}
+
+func (s RINEXEphemeris) Health() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(104))
+}
+
+func (s RINEXEphemeris) SetHealth(v float64) {
+	capnp.Struct(s).SetUint64(104, math.Float64bits(v))
+}
+
+func (s RINEXEphemeris) FrequencyChannelOffset() int32 {
+	return int32(capnp.Struct(s).Uint32(4))
+}
+
+func (s RINEXEphemeris) SetFrequencyChannelOffset(v int32) {
+	capnp.Struct(s).SetUint32(4, uint32(v))
+}
+
+func (s RINEXEphemeris) InformationAge() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(112))
+}
+
+func (s RINEXEphemeris) SetInformationAge(v float64) {
+	capnp.Struct(s).SetUint64(112, math.Float64bits(v))
+}
+
+// RINEXEphemeris_List is a list of RINEXEphemeris.
+type RINEXEphemeris_List = capnp.StructList[RINEXEphemeris]
+
+// NewRINEXEphemeris creates a new list of RINEXEphemeris.
+func NewRINEXEphemeris_List(s *capnp.Segment, sz int32) (RINEXEphemeris_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 120, PointerCount: 2}, sz)
+	return capnp.StructList[RINEXEphemeris](l), err
+}
+
+// RINEXEphemeris_Future is a wrapper for a RINEXEphemeris promised by a client call.
+type RINEXEphemeris_Future struct{ *capnp.Future }
+
+func (f RINEXEphemeris_Future) Struct() (RINEXEphemeris, error) {
+	p, err := f.Future.Ptr()
+	return RINEXEphemeris(p.Struct()), err
+}
+func (p RINEXEphemeris_Future) Header() RINEXHeader_Future {
+	return RINEXHeader_Future{Future: p.Future.Field(0, nil)}
+}
+func (p RINEXEphemeris_Future) Epoch() Time_Future {
+	return Time_Future{Future: p.Future.Field(1, nil)}
+}
+
+type GroupedEphemerides capnp.Struct
+
+// GroupedEphemerides_TypeID is the unique identifier for the type GroupedEphemerides.
+const GroupedEphemerides_TypeID = 0x8a11dc8313cd9d6d
+
+func NewGroupedEphemerides(s *capnp.Segment) (GroupedEphemerides, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 8, PointerCount: 1})
+	return GroupedEphemerides(st), err
+}
+
+func NewRootGroupedEphemerides(s *capnp.Segment) (GroupedEphemerides, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 8, PointerCount: 1})
+	return GroupedEphemerides(st), err
+}
+
+func ReadRootGroupedEphemerides(msg *capnp.Message) (GroupedEphemerides, error) {
+	root, err := msg.Root()
+	return GroupedEphemerides(root.Struct()), err
+}
+
+func (s GroupedEphemerides) String() string {
+	str, _ := text.Marshal(0x8a11dc8313cd9d6d, capnp.Struct(s))
+	return str
+}
+
+func (s GroupedEphemerides) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+	return capnp.Struct(s).EncodeAsPtr(seg)
+}
+
+func (GroupedEphemerides) DecodeFromPtr(p capnp.Ptr) GroupedEphemerides {
+	return GroupedEphemerides(capnp.Struct{}.DecodeFromPtr(p))
+}
+
+func (s GroupedEphemerides) ToPtr() capnp.Ptr {
+	return capnp.Struct(s).ToPtr()
+}
+func (s GroupedEphemerides) IsValid() bool {
+	return capnp.Struct(s).IsValid()
+}
+
+func (s GroupedEphemerides) Message() *capnp.Message {
+	return capnp.Struct(s).Message()
+}
+
+func (s GroupedEphemerides) Segment() *capnp.Segment {
+	return capnp.Struct(s).Segment()
+}
+func (s GroupedEphemerides) SatelliteId() int32 {
+	return int32(capnp.Struct(s).Uint32(0))
+}
+
+func (s GroupedEphemerides) SetSatelliteId(v int32) {
+	capnp.Struct(s).SetUint32(0, uint32(v))
+}
+
+func (s GroupedEphemerides) SortedEphemerides() (RINEXEphemeris_List, error) {
+	p, err := capnp.Struct(s).Ptr(0)
+	return RINEXEphemeris_List(p.List()), err
+}
+
+func (s GroupedEphemerides) HasSortedEphemerides() bool {
+	return capnp.Struct(s).HasPtr(0)
+}
+
+func (s GroupedEphemerides) SetSortedEphemerides(v RINEXEphemeris_List) error {
 	return capnp.Struct(s).SetPtr(0, v.ToPtr())
 }
 
-// NewGpsEphemerides sets the gpsEphemerides field to a newly
-// allocated Ephemeris_List, preferring placement in s's segment.
-func (s EphemerisCache) NewGpsEphemerides(n int32) (Ephemeris_List, error) {
-	l, err := NewEphemeris_List(capnp.Struct(s).Segment(), n)
+// NewSortedEphemerides sets the sortedEphemerides field to a newly
+// allocated RINEXEphemeris_List, preferring placement in s's segment.
+func (s GroupedEphemerides) NewSortedEphemerides(n int32) (RINEXEphemeris_List, error) {
+	l, err := NewRINEXEphemeris_List(capnp.Struct(s).Segment(), n)
 	if err != nil {
-		return Ephemeris_List{}, err
+		return RINEXEphemeris_List{}, err
 	}
 	err = capnp.Struct(s).SetPtr(0, l.ToPtr())
 	return l, err
 }
-func (s EphemerisCache) GlonassEphemerides() (GlonassEphemeris_List, error) {
-	p, err := capnp.Struct(s).Ptr(1)
-	return GlonassEphemeris_List(p.List()), err
+
+// GroupedEphemerides_List is a list of GroupedEphemerides.
+type GroupedEphemerides_List = capnp.StructList[GroupedEphemerides]
+
+// NewGroupedEphemerides creates a new list of GroupedEphemerides.
+func NewGroupedEphemerides_List(s *capnp.Segment, sz int32) (GroupedEphemerides_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 8, PointerCount: 1}, sz)
+	return capnp.StructList[GroupedEphemerides](l), err
 }
 
-func (s EphemerisCache) HasGlonassEphemerides() bool {
+// GroupedEphemerides_Future is a wrapper for a GroupedEphemerides promised by a client call.
+type GroupedEphemerides_Future struct{ *capnp.Future }
+
+func (f GroupedEphemerides_Future) Struct() (GroupedEphemerides, error) {
+	p, err := f.Future.Ptr()
+	return GroupedEphemerides(p.Struct()), err
+}
+
+type SP3FormatEphemeris capnp.Struct
+
+// SP3FormatEphemeris_TypeID is the unique identifier for the type SP3FormatEphemeris.
+const SP3FormatEphemeris_TypeID = 0xe5b14b55893ef9cb
+
+func NewSP3FormatEphemeris(s *capnp.Segment) (SP3FormatEphemeris, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 2})
+	return SP3FormatEphemeris(st), err
+}
+
+func NewRootSP3FormatEphemeris(s *capnp.Segment) (SP3FormatEphemeris, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 2})
+	return SP3FormatEphemeris(st), err
+}
+
+func ReadRootSP3FormatEphemeris(msg *capnp.Message) (SP3FormatEphemeris, error) {
+	root, err := msg.Root()
+	return SP3FormatEphemeris(root.Struct()), err
+}
+
+func (s SP3FormatEphemeris) String() string {
+	str, _ := text.Marshal(0xe5b14b55893ef9cb, capnp.Struct(s))
+	return str
+}
+
+func (s SP3FormatEphemeris) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+	return capnp.Struct(s).EncodeAsPtr(seg)
+}
+
+func (SP3FormatEphemeris) DecodeFromPtr(p capnp.Ptr) SP3FormatEphemeris {
+	return SP3FormatEphemeris(capnp.Struct{}.DecodeFromPtr(p))
+}
+
+func (s SP3FormatEphemeris) ToPtr() capnp.Ptr {
+	return capnp.Struct(s).ToPtr()
+}
+func (s SP3FormatEphemeris) IsValid() bool {
+	return capnp.Struct(s).IsValid()
+}
+
+func (s SP3FormatEphemeris) Message() *capnp.Message {
+	return capnp.Struct(s).Message()
+}
+
+func (s SP3FormatEphemeris) Segment() *capnp.Segment {
+	return capnp.Struct(s).Segment()
+}
+func (s SP3FormatEphemeris) Header() (SP3Header, error) {
+	p, err := capnp.Struct(s).Ptr(0)
+	return SP3Header(p.Struct()), err
+}
+
+func (s SP3FormatEphemeris) HasHeader() bool {
+	return capnp.Struct(s).HasPtr(0)
+}
+
+func (s SP3FormatEphemeris) SetHeader(v SP3Header) error {
+	return capnp.Struct(s).SetPtr(0, capnp.Struct(v).ToPtr())
+}
+
+// NewHeader sets the header field to a newly
+// allocated SP3Header struct, preferring placement in s's segment.
+func (s SP3FormatEphemeris) NewHeader() (SP3Header, error) {
+	ss, err := NewSP3Header(capnp.Struct(s).Segment())
+	if err != nil {
+		return SP3Header{}, err
+	}
+	err = capnp.Struct(s).SetPtr(0, capnp.Struct(ss).ToPtr())
+	return ss, err
+}
+
+func (s SP3FormatEphemeris) Epochs() (SP3Epoch_List, error) {
+	p, err := capnp.Struct(s).Ptr(1)
+	return SP3Epoch_List(p.List()), err
+}
+
+func (s SP3FormatEphemeris) HasEpochs() bool {
 	return capnp.Struct(s).HasPtr(1)
 }
 
-func (s EphemerisCache) SetGlonassEphemerides(v GlonassEphemeris_List) error {
+func (s SP3FormatEphemeris) SetEpochs(v SP3Epoch_List) error {
 	return capnp.Struct(s).SetPtr(1, v.ToPtr())
 }
 
-// NewGlonassEphemerides sets the glonassEphemerides field to a newly
-// allocated GlonassEphemeris_List, preferring placement in s's segment.
-func (s EphemerisCache) NewGlonassEphemerides(n int32) (GlonassEphemeris_List, error) {
-	l, err := NewGlonassEphemeris_List(capnp.Struct(s).Segment(), n)
+// NewEpochs sets the epochs field to a newly
+// allocated SP3Epoch_List, preferring placement in s's segment.
+func (s SP3FormatEphemeris) NewEpochs(n int32) (SP3Epoch_List, error) {
+	l, err := NewSP3Epoch_List(capnp.Struct(s).Segment(), n)
 	if err != nil {
-		return GlonassEphemeris_List{}, err
+		return SP3Epoch_List{}, err
 	}
 	err = capnp.Struct(s).SetPtr(1, l.ToPtr())
 	return l, err
 }
 
-// EphemerisCache_List is a list of EphemerisCache.
-type EphemerisCache_List = capnp.StructList[EphemerisCache]
+// SP3FormatEphemeris_List is a list of SP3FormatEphemeris.
+type SP3FormatEphemeris_List = capnp.StructList[SP3FormatEphemeris]
 
-// NewEphemerisCache creates a new list of EphemerisCache.
-func NewEphemerisCache_List(s *capnp.Segment, sz int32) (EphemerisCache_List, error) {
+// NewSP3FormatEphemeris creates a new list of SP3FormatEphemeris.
+func NewSP3FormatEphemeris_List(s *capnp.Segment, sz int32) (SP3FormatEphemeris_List, error) {
 	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 2}, sz)
-	return capnp.StructList[EphemerisCache](l), err
+	return capnp.StructList[SP3FormatEphemeris](l), err
 }
 
-// EphemerisCache_Future is a wrapper for a EphemerisCache promised by a client call.
-type EphemerisCache_Future struct{ *capnp.Future }
+// SP3FormatEphemeris_Future is a wrapper for a SP3FormatEphemeris promised by a client call.
+type SP3FormatEphemeris_Future struct{ *capnp.Future }
 
-func (f EphemerisCache_Future) Struct() (EphemerisCache, error) {
+func (f SP3FormatEphemeris_Future) Struct() (SP3FormatEphemeris, error) {
 	p, err := f.Future.Ptr()
-	return EphemerisCache(p.Struct()), err
+	return SP3FormatEphemeris(p.Struct()), err
+}
+func (p SP3FormatEphemeris_Future) Header() SP3Header_Future {
+	return SP3Header_Future{Future: p.Future.Field(0, nil)}
 }
 
-const schema_b3ca6d2462778bb1 = "x\xda\x9c\xd7m\x88\\\xd5\x19\x07\xf0\xe7\xb9/;\xb3" +
-	"\xef\xd9\x9c\x93\xf7\xdd\xecf\x8d\x9a\x0d\xb1\xcd\x9b\x90\x06" +
-	"\xcbf\xb3\xb3\x98\x88\x9a\xdd\xbd\x8b6\x10\xa97w\xce" +
-	"\xce\\wf\xeex\xef\x9d\xba\x13*jI\xc1\xda\x08" +
-	"*Zl\xf1\x83B\x84\xb4DH\xda\x04R\x1a!\x85" +
-	"\x08Q\"\xa4m\x0a)$`K\x84\x14*\x8d\x90\x82" +
-	"\xa5\xca\x94\xff\xb9;/MW[\xfcv\xe7w\x9e\xf3" +
-	"\xdcs\xcf\xcc\x9c\xff\xcc\xe6\x07\xec]\xd6\x96\xee\xc0 " +
-	"c\xaa\xdfn\xab=`}\xf7\xefsg_\xfe\x09M" +
-	"\x0d\xf0p\xed\xe4\x8f\x9f:\xb8\xbe\xf8\xc1\xaf\xc86R" +
-	"D\xdb\x06x'\x8b{\x18\x97#\x1c\xb4\x13\xd7R\xaf" +
-	"\xcd\xf1\xda\x93/\xbc\x8f\xf2\xa5\xcdr\x0b%ou\x86" +
-	",Nw\xe2\xf2d\xe7h\x8a\xb8\xf6\x9b\xbf\xfea\xe7" +
-	"\x01\xf5\xf4\xbf\xa8o\x80o\xef}M\x1cd\xf1\xa9H" +
-	"\x11\x89O\xc4StOm\xa2\x9cWE\x15\xfaf\x94" +
-	"qc\xd7\x89\xc3\x8a\x17WB\xf5\x0d\xcf-\x97\xca;" +
-	"'\xca\xf9Q=\x1cM2O\x1d7-\"\x8b\x89\xc4" +
-	"\xdb\xd6A\"\xe7\xa8e\xb2s\xc22\xb8\x8fY2\xfc" +
-	"\x1dk#\x91s\x0c~\x0an\x18\x92\x0d\"q\xd2\xda" +
-	"J\xe4\x1c\x87\x9f\x81\x9b\xa6d\x93H\x9c\xb6\x86\x89\x9c" +
-	"\x13\xf0\xb3p\xcb\x92l\x11\x89_\xeb>\xa7\xe0\xe7\xe0" +
-	"\xb6-\xd9&\x12\xefZ;\x89\x9c3\xf0\xf3\xf06S" +
-	"r\x1b\x91\xf8\xad\xf6\xb3\xf0\x0b\xf0\x94!\xb1\x7f\xe2=" +
-	"\xdd\xff\x1c\xfc\"<mJN\x13\x89\xf7\xb5\x9f\x87_" +
-	"\x82\xb7[\x92\xdb\x89\xc4\x87\xda/\xc0/\xc3;l\xc9" +
-	"\x1dD\xe2wz=\x17\xe1W\xe0\x9dm\x92;\x89\xc4" +
-	"\x1fu\xfd%\xf8UxWJr\x17\x91\xf8\x93^\xcf" +
-	"e\xf8G\xf0\xee\xb4\xe4n\"q\xcdZM\xe4\\\x81" +
-	"_\x87\xf7\xb4K\xee!\x12\x7f\xd6}\xae\xc2o\xc0{" +
-	";$\xf7\x12\x89\x8f\xad'\x88\x9c\xeb\xf0\x9b\xf0%\x9d" +
-	"\x92\x97\xe0\xbd\xd3\xf57\xe0\xb7\xe0}]\x92\xfb\x88\xc4" +
-	"\xa7VH\xe4\xdc\x84\x7f\x0e_\xda-y)\x91\xf8\xa7" +
-	"\xae\xbfe\x99<m\x1b\xdc'z$\x0b\"\xf1\x85\xe6" +
-	"\xcfPn\xc1e\xafdI$\xd8\xc6\xf2?\x87\xa7\xe1" +
-	"\xcb\x96H^F$l{\x98h\xda6\xd9\xe9\x02/" +
-	"\xef\x93\xbc\x9cH\xb4\xdb\xf84\xa4\xe1\x12\xbeb\xa9\xe4" +
-	"\x15D\xa2\x0f\xe5N\x17|%|\xa5\x90\xbc\x92H," +
-	"\xb3\x7f@\xe4H\xf8\x10|\x95\x94\xbc\x8aH\x0c\xd8\xbf" +
-	" r\x86\xe0\x9b\xe0\xab\x97I^M$F\xecW\x88" +
-	"\x9cM\xf0\x1d\xf05\xcb%\xaf!\x12\xf7\xda\xbb\x89\x9c" +
-	"\xcd\xf0\xfb\xe0\xfd+$\xf7\x13\x89o\xe9\xfa\xfb\xe0{" +
-	"\xe0\x03+%\x0f\x10\x89\x09\x1b\xbb\xbf\x0b\xfe |\xed" +
-	"*\xc9k\x89\xc4^\xfb\x10\x91\xb3\x07>\x03\x1f\\-" +
-	"y\x90HL\xe9uN\xc2\x0f\xc0\x87\xd6H\x1e\"\x12" +
-	"\xfb\xf5s\xcd\xc0\x1f\x87\xaf\xeb\x97\xbc\x8eH<f\xe3" +
-	"S\xf2\x1dx\x16>< y\x98H\xb8\xf6\x0bDN" +
-	"\x16^\x86\xdf\xb1V\xf2\x1dD\xa2\xa8\xf7\xad\x00\x9f\x87" +
-	"\xaf\x1f\x94\xbc\x9eHT\xb4\xc7\xf0gm\x83\xd7\xdd\x99" +
-	"\x96|'\x91x\xda\xfe\x0b\x91s\x18\xfe\x92m0\xdf" +
-	"%\xf9.\"\xf1\xa2^\xe6\x11\xf01\xb4\xb9\x9b%\xdf" +
-	"\x8d/\xa9~\xac\xa3\xf0s\xf0\x0dc\x927\xe0K\xa4" +
-	"\xeb\xcf\xc2/\xc0G\x9e\x93<\x82/\x8b\xde\xces\xf0" +
-	"\x8b\xf0\x8d\x87%o\xc4\x97E\xd7_\x80_\xb6\x0d\xae" +
-	"En\xac\x0a\x05?\xa6\x94\xda\x9b\xe5\x14\x19\x9c\"\xee" +
-	"\xad*7\xac\xbf\x18,\x06\xa58_\x7f\x95\xca\xba\xd5" +
-	"FY>\xa84\xcaF\x8b~\xa9\x12\xab\xc6\xcbHy" +
-	"A)\xcb\x1ddp\x07q\xca\x9d\xdd\xcc\x9ddp\xa7" +
-	"\xbe\xde\xd2r\xbd\xb5~\xdd\xeb\x07Y\xd5\x18\xf0\xc2\xa8" +
-	"~=\x9aU\x85\xd8}\xb8\xfe\xd2,6[y\x15\xaf" +
-	"~]S\x9e\xa7Jq\xe8S\xaf\xe7\xc7\xd5\x96\x92F" +
-	"\xa3Z\xa4\x8a\xfeC\xee\x13\x01\x0d\x86c\xf3~\xc3S" +
-	"q\xd0rc\xbf\xd1r4(\xaa\x9c\xdbr\xb7\xe6\x94" +
-	"\x9a_\xf2\x0a~\xc9\x8d)\xe5\x07\xa5\x96U7\xd7S" +
-	"V\xa1\x9fSj\x8c\xc3\\\xa5\xa8J15FB7" +
-	"V\xfbf\xa7}\xce\xe5\xe3\xb1\xc8S\xa5\xde\xa8\xa5\xc9" +
-	"\xc2\xf0\xde\x12'w\xf0\x03n\x8c=\xe3\x05Y\x15=" +
-	"\xd8\xd8\xb3Z\xae\x1c=\xaa\xd4\\\x86'&\xa7'\xc6" +
-	"\xc7f&8\xd3\xd8\xa7B\xb3,\xf2s%\xb70\xe6" +
-	"\xd1\xa8W\x09]\xaf\xda\x1cXx\xffY\xedQn!" +
-	"\xceSsOr\xd9\xd6w\xa6\xf9\\q\xe8\x96\xa2\xa2" +
-	"\x1f1\x16=\xe3\x17\x155\x9fl\xd6\x8f\xf7\x96b\x15" +
-	"R\xea{n\xa19\xc3/\xaa}\xb3\xe3\x05J\x05\xde" +
-	"\\s\x07\x83R\x10\x95\xf3\xca\x08\xd5x\xa0fg}" +
-	"\xcfW\xa58z\xc4M\x15\xfc,3\x19\xcc-U\x1c" +
-	"\xaa\xb1B9\xef\x12\xf7\x10O\x9a\xac\xdb\xf4\xb4\x14\xd0" +
-	"h\xa8v\xab\xd8\xbd}<\xb9\xf9\xa3\x8a\xd5\xdcxP" +
-	"\xc1\xdb\x90&\x83\xd3\xc4\xcf\xc4\x81\xc2\xde\xd5?\xb2\x8d" +
-	"er\xe0\xcda\x80\x1a#\xf5`\xb5\x16\x0d\xd6\xfb\x0b" +
-	"A\xc9\x8d\"\x14\x0d6\xf2\xf5p#__4q\x02" +
-	"\x1c1Mv^7[\xf2\xf55\x13'\xccK\xf07" +
-	"\xcc\x96|\xfd\xa99M\xe4\xbc\x0e?j\xb6\xe4\xeb[" +
-	"\xba\xfe\x0d\xf81\xb3%_\xdf6q\xc0\xbf\x09?\x0e" +
-	"\xb7\xcd$_\x7f\xae\xfd(\xfc\x04\xbc\xcdH\xf2\xf5\x1d" +
-	"\xdd\xff8\xfc\x0c<e&\xf9zZ\xfb)\xf89x" +
-	"\xdaJ\xf2\xf5]\x139t\x16~\x01\xden'\xf9\xfa" +
-	"\x9e\xae?\x0f\xbf\x04\xefhK\xf2\xf5C\xed\x17\xe1W" +
-	"\xe0\x9d\xa9\x85|\xd5}.\xc3?\x82w\xa5\x93|\xbd" +
-	"\xa6\xeb\xaf\xc2o\xc0\xbb\xdb\x93|\xfdX\xfbu\xf8M" +
-	"xOG\x92\xaf\x9f\xe8>\x7f\x83\x7ff\xb6\xe4\xeb?" +
-	"\xb4\xdf2M\x9e\xd6\xf1\xba<\x89\xd7/\xccW\x88\xa6" +
-	"\x11\x7f]:];\x93tm\xb7p\xa0\xa6\xe1R\xa7" +
-	"\xeb\x81$]\xfb,\x1c\x90K\xe0\xfdp\xf1\xcd$^" +
-	"WY\x1f \xcf\xe0\x9b\xe0rs\x12\xaf#\xba\xcf\x06" +
-	"\xf8v\xf8\xb2\xee$^\xb7\xe8_\x19\x9b\xe0;\xe0\xcb" +
-	"{\x92|\xbd\xd7\xc2Sm\x87\xef\x82\xaf\xe8M\xf2\xf5" +
-	"\xdb\xfaW\xc6\x0ex\x06\xbe\xf2\xb1$_\xc7,\xe4M" +
-	"\x06>\x09_u0\xc9\xd7\x87\xb4O\xc2\x0f\xc0W{" +
-	"I\xbe\xee\xd7~\x00\x9e\x87\xaf\xc9&\xf9\xaa\xb4\xe7\xe1" +
-	"1\xbc\x7f(\xc9\xd7'\xad\xdf\x139\xf3\xf0\xc3\xf0\x01" +
-	"\x95\xe4\xebs\xfa\xd7\xcd\xf7\xe1\xcf\xc3\xd7nK\xf2\xf5" +
-	"\x87\xda\x9f\x85\x1f\x81\x0f\xeeN\xf2\xf5Gz\xdf\x9e\x87" +
-	"\xbf\x0a\x1f\x1aN\xf2\xf5e\xeb\x97D\xce\xab\xf07\xad" +
-	"\xff+pjY\xb7\xbaov\xbfr\x89\xc3\xaf\x115" +
-	"\xb5\xf9\xc9 \xf2c?\xa0\xe6\xb1Y\x9b\x7fD\x15\x02" +
-	"\xcf\x8f\x89\x9bG\xdf\xfc\x98\xe7\xa9\x82\x0ai\x10gl" +
-	"\xb3\xb6\xba\xc8\xfc\xea\"\xf3\xab_2\xff\xd0\"\xf3\x0f" +
-	"-2\xff\xd0\x97\xcco\xec\xd0\xa0\x9a\xa9\x96\x15\xb7\x91" +
-	"\xc1m\xc4\xb5J\xa4\xc2i\xb7\x94c5\xe6\xe9S\x9c" +
-	"\xab\x8dgvsj\xdf\xec\xbe2\x0e\xc1\xa4Y}\xd2" +
-	"\x7f\x9f\xef\xf5\x11\x9cv\xe3A\x18\x1a\xca\xc3\x8cL=" +
-	"@2D\xffq\"\xde\x1f\x06\x15\x1a-gT\xa1%" +
-	"\xf9c\xb7\xd2\xc8\xe3\x9a\x8e\xe7\x19\xb7B\xdc\xb0\xd1\x9c" +
-	"[,6#\xbb6\x1b\xaa'+\xaa\xe4q\xf5\xe1J" +
-	"\xf1\xa0\x0a\xb7Ps!\xb7\x8fm\xfd\x8a\xb1m_1" +
-	"\xb6}\x911ca,\xd3\x12\x8f\x0b\xc7\xbfY\xda^" +
-	"/7Kq\xe3\x91o\xefJl\x92\xc1f\xcb\x86q" +
-	"\xb2a\x8e\x1a\xc4\xc7.\xaa\xf7\xfb\x1f!Q\x1f\x8d\xc6" +
-	"\xdd\x94\x97W\x88\x88t=\"\xfaF\x0e\x11Mm0" +
-	"y*\xd3\xcc\x87\xbe\xb1\x9f\x11MeL\x9ez\xdc\xd0" +
-	"9\xaf;\xd0\xa8\x0a\xfd\xac\x8a\xea)\xb7\xa4\xf9\xf7\x93" +
-	"X\xe7]n!\x8dx\xe1\x86Y\xb3\xb5\xba\xf1\xef3" +
-	"\xa9\xfew\x00\x00\x00\xff\xff>*\xd4m"
+type SP3Header capnp.Struct
+
+// SP3Header_TypeID is the unique identifier for the type SP3Header.
+const SP3Header_TypeID = 0xd5b36c059384fab0
+
+func NewSP3Header(s *capnp.Segment) (SP3Header, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 40, PointerCount: 6})
+	return SP3Header(st), err
+}
+
+func NewRootSP3Header(s *capnp.Segment) (SP3Header, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 40, PointerCount: 6})
+	return SP3Header(st), err
+}
+
+func ReadRootSP3Header(msg *capnp.Message) (SP3Header, error) {
+	root, err := msg.Root()
+	return SP3Header(root.Struct()), err
+}
+
+func (s SP3Header) String() string {
+	str, _ := text.Marshal(0xd5b36c059384fab0, capnp.Struct(s))
+	return str
+}
+
+func (s SP3Header) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+	return capnp.Struct(s).EncodeAsPtr(seg)
+}
+
+func (SP3Header) DecodeFromPtr(p capnp.Ptr) SP3Header {
+	return SP3Header(capnp.Struct{}.DecodeFromPtr(p))
+}
+
+func (s SP3Header) ToPtr() capnp.Ptr {
+	return capnp.Struct(s).ToPtr()
+}
+func (s SP3Header) IsValid() bool {
+	return capnp.Struct(s).IsValid()
+}
+
+func (s SP3Header) Message() *capnp.Message {
+	return capnp.Struct(s).Message()
+}
+
+func (s SP3Header) Segment() *capnp.Segment {
+	return capnp.Struct(s).Segment()
+}
+func (s SP3Header) Version() (string, error) {
+	p, err := capnp.Struct(s).Ptr(0)
+	return p.Text(), err
+}
+
+func (s SP3Header) HasVersion() bool {
+	return capnp.Struct(s).HasPtr(0)
+}
+
+func (s SP3Header) VersionBytes() ([]byte, error) {
+	p, err := capnp.Struct(s).Ptr(0)
+	return p.TextBytes(), err
+}
+
+func (s SP3Header) SetVersion(v string) error {
+	return capnp.Struct(s).SetText(0, v)
+}
+
+func (s SP3Header) Start() (Time, error) {
+	p, err := capnp.Struct(s).Ptr(1)
+	return Time(p.Struct()), err
+}
+
+func (s SP3Header) HasStart() bool {
+	return capnp.Struct(s).HasPtr(1)
+}
+
+func (s SP3Header) SetStart(v Time) error {
+	return capnp.Struct(s).SetPtr(1, capnp.Struct(v).ToPtr())
+}
+
+// NewStart sets the start field to a newly
+// allocated Time struct, preferring placement in s's segment.
+func (s SP3Header) NewStart() (Time, error) {
+	ss, err := NewTime(capnp.Struct(s).Segment())
+	if err != nil {
+		return Time{}, err
+	}
+	err = capnp.Struct(s).SetPtr(1, capnp.Struct(ss).ToPtr())
+	return ss, err
+}
+
+func (s SP3Header) NumberOfEpochs() int32 {
+	return int32(capnp.Struct(s).Uint32(0))
+}
+
+func (s SP3Header) SetNumberOfEpochs(v int32) {
+	capnp.Struct(s).SetUint32(0, uint32(v))
+}
+
+func (s SP3Header) DataUsed() (string, error) {
+	p, err := capnp.Struct(s).Ptr(2)
+	return p.Text(), err
+}
+
+func (s SP3Header) HasDataUsed() bool {
+	return capnp.Struct(s).HasPtr(2)
+}
+
+func (s SP3Header) DataUsedBytes() ([]byte, error) {
+	p, err := capnp.Struct(s).Ptr(2)
+	return p.TextBytes(), err
+}
+
+func (s SP3Header) SetDataUsed(v string) error {
+	return capnp.Struct(s).SetText(2, v)
+}
+
+func (s SP3Header) CoordinateSystem() (string, error) {
+	p, err := capnp.Struct(s).Ptr(3)
+	return p.Text(), err
+}
+
+func (s SP3Header) HasCoordinateSystem() bool {
+	return capnp.Struct(s).HasPtr(3)
+}
+
+func (s SP3Header) CoordinateSystemBytes() ([]byte, error) {
+	p, err := capnp.Struct(s).Ptr(3)
+	return p.TextBytes(), err
+}
+
+func (s SP3Header) SetCoordinateSystem(v string) error {
+	return capnp.Struct(s).SetText(3, v)
+}
+
+func (s SP3Header) OrbitType() (string, error) {
+	p, err := capnp.Struct(s).Ptr(4)
+	return p.Text(), err
+}
+
+func (s SP3Header) HasOrbitType() bool {
+	return capnp.Struct(s).HasPtr(4)
+}
+
+func (s SP3Header) OrbitTypeBytes() ([]byte, error) {
+	p, err := capnp.Struct(s).Ptr(4)
+	return p.TextBytes(), err
+}
+
+func (s SP3Header) SetOrbitType(v string) error {
+	return capnp.Struct(s).SetText(4, v)
+}
+
+func (s SP3Header) Agency() (string, error) {
+	p, err := capnp.Struct(s).Ptr(5)
+	return p.Text(), err
+}
+
+func (s SP3Header) HasAgency() bool {
+	return capnp.Struct(s).HasPtr(5)
+}
+
+func (s SP3Header) AgencyBytes() ([]byte, error) {
+	p, err := capnp.Struct(s).Ptr(5)
+	return p.TextBytes(), err
+}
+
+func (s SP3Header) SetAgency(v string) error {
+	return capnp.Struct(s).SetText(5, v)
+}
+
+func (s SP3Header) GpsWeek() int32 {
+	return int32(capnp.Struct(s).Uint32(4))
+}
+
+func (s SP3Header) SetGpsWeek(v int32) {
+	capnp.Struct(s).SetUint32(4, uint32(v))
+}
+
+func (s SP3Header) SecondsOfWeek() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(8))
+}
+
+func (s SP3Header) SetSecondsOfWeek(v float64) {
+	capnp.Struct(s).SetUint64(8, math.Float64bits(v))
+}
+
+func (s SP3Header) EpochInterval() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(16))
+}
+
+func (s SP3Header) SetEpochInterval(v float64) {
+	capnp.Struct(s).SetUint64(16, math.Float64bits(v))
+}
+
+func (s SP3Header) ModifiedJulianDay() int32 {
+	return int32(capnp.Struct(s).Uint32(24))
+}
+
+func (s SP3Header) SetModifiedJulianDay(v int32) {
+	capnp.Struct(s).SetUint32(24, uint32(v))
+}
+
+func (s SP3Header) FractionalDay() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(32))
+}
+
+func (s SP3Header) SetFractionalDay(v float64) {
+	capnp.Struct(s).SetUint64(32, math.Float64bits(v))
+}
+
+// SP3Header_List is a list of SP3Header.
+type SP3Header_List = capnp.StructList[SP3Header]
+
+// NewSP3Header creates a new list of SP3Header.
+func NewSP3Header_List(s *capnp.Segment, sz int32) (SP3Header_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 40, PointerCount: 6}, sz)
+	return capnp.StructList[SP3Header](l), err
+}
+
+// SP3Header_Future is a wrapper for a SP3Header promised by a client call.
+type SP3Header_Future struct{ *capnp.Future }
+
+func (f SP3Header_Future) Struct() (SP3Header, error) {
+	p, err := f.Future.Ptr()
+	return SP3Header(p.Struct()), err
+}
+func (p SP3Header_Future) Start() Time_Future {
+	return Time_Future{Future: p.Future.Field(1, nil)}
+}
+
+type SP3Epoch capnp.Struct
+
+// SP3Epoch_TypeID is the unique identifier for the type SP3Epoch.
+const SP3Epoch_TypeID = 0x9261b240a2cc4a68
+
+func NewSP3Epoch(s *capnp.Segment) (SP3Epoch, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 2})
+	return SP3Epoch(st), err
+}
+
+func NewRootSP3Epoch(s *capnp.Segment) (SP3Epoch, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 2})
+	return SP3Epoch(st), err
+}
+
+func ReadRootSP3Epoch(msg *capnp.Message) (SP3Epoch, error) {
+	root, err := msg.Root()
+	return SP3Epoch(root.Struct()), err
+}
+
+func (s SP3Epoch) String() string {
+	str, _ := text.Marshal(0x9261b240a2cc4a68, capnp.Struct(s))
+	return str
+}
+
+func (s SP3Epoch) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+	return capnp.Struct(s).EncodeAsPtr(seg)
+}
+
+func (SP3Epoch) DecodeFromPtr(p capnp.Ptr) SP3Epoch {
+	return SP3Epoch(capnp.Struct{}.DecodeFromPtr(p))
+}
+
+func (s SP3Epoch) ToPtr() capnp.Ptr {
+	return capnp.Struct(s).ToPtr()
+}
+func (s SP3Epoch) IsValid() bool {
+	return capnp.Struct(s).IsValid()
+}
+
+func (s SP3Epoch) Message() *capnp.Message {
+	return capnp.Struct(s).Message()
+}
+
+func (s SP3Epoch) Segment() *capnp.Segment {
+	return capnp.Struct(s).Segment()
+}
+func (s SP3Epoch) Time() (Time, error) {
+	p, err := capnp.Struct(s).Ptr(0)
+	return Time(p.Struct()), err
+}
+
+func (s SP3Epoch) HasTime() bool {
+	return capnp.Struct(s).HasPtr(0)
+}
+
+func (s SP3Epoch) SetTime(v Time) error {
+	return capnp.Struct(s).SetPtr(0, capnp.Struct(v).ToPtr())
+}
+
+// NewTime sets the time field to a newly
+// allocated Time struct, preferring placement in s's segment.
+func (s SP3Epoch) NewTime() (Time, error) {
+	ss, err := NewTime(capnp.Struct(s).Segment())
+	if err != nil {
+		return Time{}, err
+	}
+	err = capnp.Struct(s).SetPtr(0, capnp.Struct(ss).ToPtr())
+	return ss, err
+}
+
+func (s SP3Epoch) Entries() (SP3Entry_List, error) {
+	p, err := capnp.Struct(s).Ptr(1)
+	return SP3Entry_List(p.List()), err
+}
+
+func (s SP3Epoch) HasEntries() bool {
+	return capnp.Struct(s).HasPtr(1)
+}
+
+func (s SP3Epoch) SetEntries(v SP3Entry_List) error {
+	return capnp.Struct(s).SetPtr(1, v.ToPtr())
+}
+
+// NewEntries sets the entries field to a newly
+// allocated SP3Entry_List, preferring placement in s's segment.
+func (s SP3Epoch) NewEntries(n int32) (SP3Entry_List, error) {
+	l, err := NewSP3Entry_List(capnp.Struct(s).Segment(), n)
+	if err != nil {
+		return SP3Entry_List{}, err
+	}
+	err = capnp.Struct(s).SetPtr(1, l.ToPtr())
+	return l, err
+}
+
+// SP3Epoch_List is a list of SP3Epoch.
+type SP3Epoch_List = capnp.StructList[SP3Epoch]
+
+// NewSP3Epoch creates a new list of SP3Epoch.
+func NewSP3Epoch_List(s *capnp.Segment, sz int32) (SP3Epoch_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 2}, sz)
+	return capnp.StructList[SP3Epoch](l), err
+}
+
+// SP3Epoch_Future is a wrapper for a SP3Epoch promised by a client call.
+type SP3Epoch_Future struct{ *capnp.Future }
+
+func (f SP3Epoch_Future) Struct() (SP3Epoch, error) {
+	p, err := f.Future.Ptr()
+	return SP3Epoch(p.Struct()), err
+}
+func (p SP3Epoch_Future) Time() Time_Future {
+	return Time_Future{Future: p.Future.Field(0, nil)}
+}
+
+type SP3Entry capnp.Struct
+
+// SP3Entry_TypeID is the unique identifier for the type SP3Entry.
+const SP3Entry_TypeID = 0xdfc8474e015f357d
+
+func NewSP3Entry(s *capnp.Segment) (SP3Entry, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 32, PointerCount: 1})
+	return SP3Entry(st), err
+}
+
+func NewRootSP3Entry(s *capnp.Segment) (SP3Entry, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 32, PointerCount: 1})
+	return SP3Entry(st), err
+}
+
+func ReadRootSP3Entry(msg *capnp.Message) (SP3Entry, error) {
+	root, err := msg.Root()
+	return SP3Entry(root.Struct()), err
+}
+
+func (s SP3Entry) String() string {
+	str, _ := text.Marshal(0xdfc8474e015f357d, capnp.Struct(s))
+	return str
+}
+
+func (s SP3Entry) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+	return capnp.Struct(s).EncodeAsPtr(seg)
+}
+
+func (SP3Entry) DecodeFromPtr(p capnp.Ptr) SP3Entry {
+	return SP3Entry(capnp.Struct{}.DecodeFromPtr(p))
+}
+
+func (s SP3Entry) ToPtr() capnp.Ptr {
+	return capnp.Struct(s).ToPtr()
+}
+func (s SP3Entry) IsValid() bool {
+	return capnp.Struct(s).IsValid()
+}
+
+func (s SP3Entry) Message() *capnp.Message {
+	return capnp.Struct(s).Message()
+}
+
+func (s SP3Entry) Segment() *capnp.Segment {
+	return capnp.Struct(s).Segment()
+}
+func (s SP3Entry) SatelliteVehicleNumber() (string, error) {
+	p, err := capnp.Struct(s).Ptr(0)
+	return p.Text(), err
+}
+
+func (s SP3Entry) HasSatelliteVehicleNumber() bool {
+	return capnp.Struct(s).HasPtr(0)
+}
+
+func (s SP3Entry) SatelliteVehicleNumberBytes() ([]byte, error) {
+	p, err := capnp.Struct(s).Ptr(0)
+	return p.TextBytes(), err
+}
+
+func (s SP3Entry) SetSatelliteVehicleNumber(v string) error {
+	return capnp.Struct(s).SetText(0, v)
+}
+
+func (s SP3Entry) XPosition() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(0))
+}
+
+func (s SP3Entry) SetXPosition(v float64) {
+	capnp.Struct(s).SetUint64(0, math.Float64bits(v))
+}
+
+func (s SP3Entry) YPosition() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(8))
+}
+
+func (s SP3Entry) SetYPosition(v float64) {
+	capnp.Struct(s).SetUint64(8, math.Float64bits(v))
+}
+
+func (s SP3Entry) ZPosition() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(16))
+}
+
+func (s SP3Entry) SetZPosition(v float64) {
+	capnp.Struct(s).SetUint64(16, math.Float64bits(v))
+}
+
+func (s SP3Entry) ClockBias() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(24))
+}
+
+func (s SP3Entry) SetClockBias(v float64) {
+	capnp.Struct(s).SetUint64(24, math.Float64bits(v))
+}
+
+// SP3Entry_List is a list of SP3Entry.
+type SP3Entry_List = capnp.StructList[SP3Entry]
+
+// NewSP3Entry creates a new list of SP3Entry.
+func NewSP3Entry_List(s *capnp.Segment, sz int32) (SP3Entry_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 32, PointerCount: 1}, sz)
+	return capnp.StructList[SP3Entry](l), err
+}
+
+// SP3Entry_Future is a wrapper for a SP3Entry promised by a client call.
+type SP3Entry_Future struct{ *capnp.Future }
+
+func (f SP3Entry_Future) Struct() (SP3Entry, error) {
+	p, err := f.Future.Ptr()
+	return SP3Entry(p.Struct()), err
+}
+
+type GPSTime capnp.Struct
+
+// GPSTime_TypeID is the unique identifier for the type GPSTime.
+const GPSTime_TypeID = 0x8724cc2fcbb631fd
+
+func NewGPSTime(s *capnp.Segment) (GPSTime, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 16, PointerCount: 0})
+	return GPSTime(st), err
+}
+
+func NewRootGPSTime(s *capnp.Segment) (GPSTime, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 16, PointerCount: 0})
+	return GPSTime(st), err
+}
+
+func ReadRootGPSTime(msg *capnp.Message) (GPSTime, error) {
+	root, err := msg.Root()
+	return GPSTime(root.Struct()), err
+}
+
+func (s GPSTime) String() string {
+	str, _ := text.Marshal(0x8724cc2fcbb631fd, capnp.Struct(s))
+	return str
+}
+
+func (s GPSTime) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+	return capnp.Struct(s).EncodeAsPtr(seg)
+}
+
+func (GPSTime) DecodeFromPtr(p capnp.Ptr) GPSTime {
+	return GPSTime(capnp.Struct{}.DecodeFromPtr(p))
+}
+
+func (s GPSTime) ToPtr() capnp.Ptr {
+	return capnp.Struct(s).ToPtr()
+}
+func (s GPSTime) IsValid() bool {
+	return capnp.Struct(s).IsValid()
+}
+
+func (s GPSTime) Message() *capnp.Message {
+	return capnp.Struct(s).Message()
+}
+
+func (s GPSTime) Segment() *capnp.Segment {
+	return capnp.Struct(s).Segment()
+}
+func (s GPSTime) Week() int32 {
+	return int32(capnp.Struct(s).Uint32(0))
+}
+
+func (s GPSTime) SetWeek(v int32) {
+	capnp.Struct(s).SetUint32(0, uint32(v))
+}
+
+func (s GPSTime) TimeOfWeek() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(8))
+}
+
+func (s GPSTime) SetTimeOfWeek(v float64) {
+	capnp.Struct(s).SetUint64(8, math.Float64bits(v))
+}
+
+// GPSTime_List is a list of GPSTime.
+type GPSTime_List = capnp.StructList[GPSTime]
+
+// NewGPSTime creates a new list of GPSTime.
+func NewGPSTime_List(s *capnp.Segment, sz int32) (GPSTime_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 16, PointerCount: 0}, sz)
+	return capnp.StructList[GPSTime](l), err
+}
+
+// GPSTime_Future is a wrapper for a GPSTime promised by a client call.
+type GPSTime_Future struct{ *capnp.Future }
+
+func (f GPSTime_Future) Struct() (GPSTime, error) {
+	p, err := f.Future.Ptr()
+	return GPSTime(p.Struct()), err
+}
+
+type Time capnp.Struct
+
+// Time_TypeID is the unique identifier for the type Time.
+const Time_TypeID = 0xffe70a8369c5f3f6
+
+func NewTime(s *capnp.Segment) (Time, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 16, PointerCount: 0})
+	return Time(st), err
+}
+
+func NewRootTime(s *capnp.Segment) (Time, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 16, PointerCount: 0})
+	return Time(st), err
+}
+
+func ReadRootTime(msg *capnp.Message) (Time, error) {
+	root, err := msg.Root()
+	return Time(root.Struct()), err
+}
+
+func (s Time) String() string {
+	str, _ := text.Marshal(0xffe70a8369c5f3f6, capnp.Struct(s))
+	return str
+}
+
+func (s Time) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+	return capnp.Struct(s).EncodeAsPtr(seg)
+}
+
+func (Time) DecodeFromPtr(p capnp.Ptr) Time {
+	return Time(capnp.Struct{}.DecodeFromPtr(p))
+}
+
+func (s Time) ToPtr() capnp.Ptr {
+	return capnp.Struct(s).ToPtr()
+}
+func (s Time) IsValid() bool {
+	return capnp.Struct(s).IsValid()
+}
+
+func (s Time) Message() *capnp.Message {
+	return capnp.Struct(s).Message()
+}
+
+func (s Time) Segment() *capnp.Segment {
+	return capnp.Struct(s).Segment()
+}
+func (s Time) Seconds() int64 {
+	return int64(capnp.Struct(s).Uint64(0))
+}
+
+func (s Time) SetSeconds(v int64) {
+	capnp.Struct(s).SetUint64(0, uint64(v))
+}
+
+func (s Time) Nanoseconds() int32 {
+	return int32(capnp.Struct(s).Uint32(8))
+}
+
+func (s Time) SetNanoseconds(v int32) {
+	capnp.Struct(s).SetUint32(8, uint32(v))
+}
+
+// Time_List is a list of Time.
+type Time_List = capnp.StructList[Time]
+
+// NewTime creates a new list of Time.
+func NewTime_List(s *capnp.Segment, sz int32) (Time_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 16, PointerCount: 0}, sz)
+	return capnp.StructList[Time](l), err
+}
+
+// Time_Future is a wrapper for a Time promised by a client call.
+type Time_Future struct{ *capnp.Future }
+
+func (f Time_Future) Struct() (Time, error) {
+	p, err := f.Future.Ptr()
+	return Time(p.Struct()), err
+}
+
+type EphemerisType uint16
+
+// EphemerisType_TypeID is the unique identifier for the type EphemerisType.
+const EphemerisType_TypeID = 0x88bee98e19a6d24e
+
+// Values of EphemerisType.
+const (
+	EphemerisType_navigation      EphemerisType = 0
+	EphemerisType_finalOrbit      EphemerisType = 1
+	EphemerisType_rapidOrbit      EphemerisType = 2
+	EphemerisType_ultraRapidOrbit EphemerisType = 3
+	EphemerisType_qcomPoly        EphemerisType = 4
+)
+
+// String returns the enum's constant name.
+func (c EphemerisType) String() string {
+	switch c {
+	case EphemerisType_navigation:
+		return "navigation"
+	case EphemerisType_finalOrbit:
+		return "finalOrbit"
+	case EphemerisType_rapidOrbit:
+		return "rapidOrbit"
+	case EphemerisType_ultraRapidOrbit:
+		return "ultraRapidOrbit"
+	case EphemerisType_qcomPoly:
+		return "qcomPoly"
+
+	default:
+		return ""
+	}
+}
+
+// EphemerisTypeFromString returns the enum value with a name,
+// or the zero value if there's no such value.
+func EphemerisTypeFromString(c string) EphemerisType {
+	switch c {
+	case "navigation":
+		return EphemerisType_navigation
+	case "finalOrbit":
+		return EphemerisType_finalOrbit
+	case "rapidOrbit":
+		return EphemerisType_rapidOrbit
+	case "ultraRapidOrbit":
+		return EphemerisType_ultraRapidOrbit
+	case "qcomPoly":
+		return EphemerisType_qcomPoly
+
+	default:
+		return 0
+	}
+}
+
+type EphemerisType_List = capnp.EnumList[EphemerisType]
+
+func NewEphemerisType_List(s *capnp.Segment, sz int32) (EphemerisType_List, error) {
+	return capnp.NewEnumList[EphemerisType](s, sz)
+}
+
+const schema_b3ca6d2462778bb1 = "x\xda\x8c\x99\x7f\x8c\x1d\xd5u\xc7\xcf\xb93\xf3\xde\xfe" +
+	"\xf4\xdb\xf1\xcc\xb2k\xf0\xfa\xd9\xc4N\xb0\x05\xad\x7f\x80" +
+	"D\xad\xa8\xcb\xfe\xb0\xd9u\xc1\xbb\xb3\xb3\x04\xdbr\x95" +
+	"\xde}\xef\xbe}\x13\xcf\x9by\x9e\x99g\xfc\"#\xa7" +
+	"\x0e\xa8\x9b\x14Z\xa0\xb4J\xaaX\x05D\x7f\xca\x95\x80" +
+	"$\x15\x89h\x95V\xa1%\x89+%\x08*Z\x81b" +
+	"*\xa3\xc6\x08T\xa7M(T\xa0W\x9d;\xef\xcd\x8c" +
+	"\x9f\x1f.\x7fy\xdf\xe7\x9e\xb9\xf7\xdc{\xcf=\xf7{" +
+	"\xaew\xde\xdaw\x87\xbak\xf8\xa7\x1a0kV\xcb\xb5" +
+	">\xda\xf57?\xfa\xd5\xf3[\x7f\x07\xac\x09d\xadg" +
+	"\x7f\xf7\xbe\x95\xad\xb5\x1f~\x13\xd4<\xc0\x9eW\xd9\x0e" +
+	"4\xdeby\x00\xe3Mv\x1f`\xeb\xa5\xe6\xdb\xb7\x8c" +
+	"?\xc7\xd7\xba\x8c\xb5\x1cYO)\x07\xd0\xb8G\xa1?" +
+	"-\xe5\x9f\x10\xb0u\xf0\xe5?\xdb\xf0{\x97\xfen\x0d" +
+	"\xf4\x89\x8c5\xe0\x9e\xdb\xb4#h\xcck\xd4\xf1>\xed" +
+	"4`\xabv\xf6\x9f\x8d/\xbf\xae\x7f\x95:\xc6L\xc7" +
+	"H\xbd=\xac\x9dA\xe3Ii}V#7\xaa\x07\xce" +
+	"?u\xc7s\xfc1\xd0'\xb2\xc6\xe4\xe8\x9e\xd1\xdcn" +
+	"4\xb6\x91C\xc6\x96\x1c\x19\x1fP?\xff\x9f\xc7^x" +
+	"\xf4\x8f\xa8\xeb\x1b\xbb\xad\x1f\xce\xedE\xe3\xact\xff\xeb" +
+	"9\xbf\x1f\xb0\xf5\xcc\xff>\xf0\x07\x9a\xfb\xcdW\xc9\\" +
+	"\xeb\x9e\xe2w\xf4\xbdh\xfc@\xa7?_\xd4\xff\x9c\x01" +
+	"\xb6\x1a\x7f\xb2\xf6\xfb+s\xc7\xff\xa5\xdbq\xb9~O" +
+	"\x9aKh|\xdb\xa4?\x9f5\x8b\xb4\"\xf7\xdf\xf6y" +
+	"<x\xe7K?%s\xb5{\x9eo\x8c\xeeF\xe3\xdd" +
+	"Q\xfa\xf3\xd2\xa84\xff\xd1\x07\xbf\xfe\x95{~\xe3\xd9" +
+	"\xb7zMT\x1f;\x83\xc6\xb619\xd11\x9a\xe8{" +
+	"\xeb\xdf\xb6_\xfc\x87\xa7\xde\xa1\xbe\x0bWMtl\x05" +
+	"\x8d'\xc9z\xcf\xd9\xb1\xffQ\x00[?\x9e\xcc\xdf\xff" +
+	"\x8f\x0f]\xf8\xa8{/i\x9d\xf7\xe0\xc6#h\x8cn" +
+	"\x94\xe3l\x94{\xf9\xde\x7f\xbf\xe8|y\xe0?Z\xbd" +
+	"\xe2\xe4\x83\x89\xf5h\xf4o\"W\xb4M\xf7\xc1-\xad" +
+	"}\xf5\xaa\xa8\x89\xc0Q\xc2Y\x1eq;\x0a\x1a\xa5\xa8" +
+	"\x11\x88_)\xf1\xbaW\xdf{\xe7\xa2]Xvjb" +
+	"\x11\xd1\xeaST\x00\x15\x01\xf4\xed;\x00\xac\xad\x0aZ" +
+	";\x19\xea\x88&\x12\xbc\xe5\x08\x80u\xb3\x82\xd6\xed\x0c" +
+	"\x0b\xf7\x09q\x0cU`\xa8\x02\xb6\"\xa7&\x16*\xf7" +
+	"\x0aP\xc41\x1c\x04\x86\x83\x80\xc9\xb8j\xcfq\x97\xe6" +
+	"\x0f\xee;4'xY\x04\x004\xf8\xe6d\xf0\x9fL" +
+	"\x03X\xe7\x15\xb4^c\xd8\x19\xfbUr\xe8\xc7\x0aZ" +
+	"\xaf3\xd4\x19\x9a\xc8\x00\xf4\x7f=\x03`\xbd\xa6\xa0u" +
+	"\x91\xa1\xae0\x13\x15\x00\xfd\xcd\x15\x00\xeb\x82\x82\xd6;" +
+	"\x0cuU1Q\x05\xd0/\xed\x05\xb0.*h]f" +
+	"\xa8k\xaa\x89\x1a\x80\xfe.\xf5\xf93\x05\xad_0\xd4" +
+	"s\x9a\x899\x00\xfd\xe7\x07\x00\xac\xcb\x0a\xdaC\xc8P" +
+	"\xcf3\x93\xa2\xc1\xe8\xc7\x15\x00\xbb\x0f\x15\xb4Mdx" +
+	"\xfa\x84\x08B\xc7\xf7:s-D\xcd\xba\xc0!`8" +
+	"\x04\xd8\x0ay$\\\xd7\x89P\xd8\xcd0\x125HZ" +
+	"\xea\x81\xbf\x1a\xf0\xdaA\xc8\xf3Zb?\xc9W\x85W" +
+	"jv~\x16\xca<\x128\x92\xee1 \x8e\x00\xb6J" +
+	"~\xad&\xbc(\x04\x00\\\x07\xb8\xa8\xa0\xfcb\x1d`" +
+	"\xcb\x15\xbcn\x8b\x92\x0fy\xaf\x1c&\x9br\xed\xf5\xef" +
+	"\xb4\x86\xcbM\xa5.w?^\xd3\xdb\x8e\xd0\x80\xfa." +
+	"\xfa\x87\xc9-GE\xdf~\x06\x00U}\xdb\x01\x80\x96" +
+	"\xc7O8\xab<r@\xf1\xbdV\xc5\xf1\xb8\xbb\x10\xac" +
+	"\x80\xe2D\xad\x80\xd7\x9dr\xe7G\xc3\x8d\x02\xbe\xc4\xeb" +
+	"L\"'\x82\xe3%\xbf\xb6\xe8\xbbM\x80\xc43\xadw" +
+	"D\x06~\xa3.\xca\x1d\xa3\xb2\x08\xa1+8i\x87o" +
+	"R\xd0\xba5\x8d\x8f]\x8f\x01X\xb7*h-\xb2t" +
+	"\x03 /\xe6\xcb\xc9z\x84~\x10Q\xb7\xd8\xe9\x17\xc3" +
+	"\xceB\x8e\xa4\xe7\x15P.\xe9\xb5\x0f\x8d\xbd\xb8\xa7\xb8" +
+	"\xaf\xee\x97\xaa\x9f\xe4\xd4L\xb7\xbd\x9deX\xa0\x83r" +
+	"\xf5\xde\x9e\x16^\x148\"\xe3N\x92\x9a>\x91;\xfb" +
+	"\xea\xd5\xc9x3\xc9\x9fs\x1d\x7f\x8c?U)j\x9f" +
+	"V\x15\xb4\x9fQS\x97\x8c\xbfVw\x00\xd8\x7fA\xfc" +
+	"[\xc4\x19\x93{o<\xab\xee\x06\xb0\xcf\x11\x7f\x9e\xb8" +
+	"\xa2\xc8#e|[\xbd\x11\xc0~\x86\xf8\x0b\xc4UU" +
+	"\x9e*\xe3;\xb2\x9fo\x11\xff\x1eqM\x93\x07\xcb\xf8" +
+	"[u/\x80\xfd<\xf1\xef\x13\xcf)\xf2l\x19\x7f/" +
+	"\xf9\x0b\xc4_R3\xa7\xebE\xf5\xaf\x00\xec\x97\x88\xbf" +
+	"B\xbcO1\xb1\x0f\xc0\xf8\x89\xfa\x1c\x80\xfd\x0a\xf1\x0b" +
+	"\xc4\xfbU\x13\xfb\x01\x8c7\xd4\x97\x01\xec\x8b\xc4/\x13" +
+	"\x1f\xd0L\x1c\x000\xde\x95\xfd\\&\xfe!\xf1\xc1\x9c" +
+	"\x89\x83\x00\xc6\x07\xea\x0f\x01\x964:\xd4\x1aC}(" +
+	"o\xe2\x10\x1dj\x8d\xcc\x87\x88\x8f\x13\x1f\xee3q\x18" +
+	"\xc0\x18\xd5h\xd9L\xe2\x9b\x89\xaf\xeb7q\x1d\x801" +
+	"\xa1\xbd\x0d`o%\xbe\x93xa\xc0\xc4\x02\x80q\x8b" +
+	"\xf6\x05\x00\xfbf\xe2\xb7\x13\x1f\x194q\x04\xc0\xb8M" +
+	"\xfb7\x00\xfb\xb3\xc4\xe7\x88\xebC&\xea\xf2\x96\x0d\x00" +
+	"\xecY\xe2\x8b\xc4\xd7\x0f\x9b\xb8\x1e\xc0\xb8[;\x03`" +
+	"\xdfE\xfc\x10qc\x9d\x89\x06\xc0\x9e{4\x86\x00\xf6" +
+	"Qj\xa8R\x83Y0\xd1\x040\x84\xf6_\x00\xb6K" +
+	"\xfc$\xf1\xd1\x11\x13G\x01\x8c\x86\xe4\xa7\x88\xaf\x11\xbf" +
+	"N7\xf1:\x00\xe3A9\xb1\x07\x88?B|l\xbd" +
+	"\x89c\x00\xc6\xc3\xd2\xd1\xc7\x89?A|\xdc0q\\" +
+	"^\xf0\x8f\x01\xd8O\x10?G|\x83i\xe2\x06\x00\xe3" +
+	"/\xe5\xc2\x9d#\xfe<\xf1\xebGM\xbc\x9e\xe2D\xda" +
+	"?O\xfc\xfb\xc4o\xb8\xce\xc4\x1bh\xdf\xe5\xb8\xdf#" +
+	"~\x9e\xf8\xc61\x137\x02\x18?\x90\xf6\xe7\x89\xbfF" +
+	"|b\xdc\xc4\x09\x00\xe3Ui\xff\x0a\xf1\x0b\xc47m" +
+	"0q\x13\xed\xbb\xf6E\x00\xfbu\xe2?#^\xbc\xde" +
+	"\xc4\"\x80\xf1\x96\\\xb8\x8b\xc4/\x13\xdf|\x83\x89\x9b" +
+	")\x1e$\x7f\x87\xf8\xfb\xc4\xb7l4q\x0b\x80\xf1K" +
+	"\xed\xab\x00\xf6\xfb\xc4\xd5\x1cC\xfd\xc6\x09\x13o\x040" +
+	"0G\\\xcd)h\x8f\x10\xff\xd4&\x13?\x05`\x0c" +
+	"\xe7\xc8\x9f!\xe2\xe3\xc4\xb7\x16M\xdcJ\x81\"\xb9I" +
+	"|s\x8e\xe1\x96m}&n\xa3@\xc9\xfd;\x05\x0a" +
+	"\xf1\x9d9\x86\xf8i\x13?Mq\x92#wn&<" +
+	"G\xdd|\x06M\xfc\x0c\xc5C\x8e\xa65K\xfc\xb7\x88" +
+	"\xdf4e\xe2M\x00\xc6oJ\xfb\xa3\xc4\xab\xc4\xb7\xff" +
+	"\xb6\x89\xdbi\xdbsO\x01\xd8U\xe2\x11\xf1\x1d\x0f\x98" +
+	"\xb8\x03\xc08.\xed\xeb\xc4O\xe5\xaeJ\x83y`\x98" +
+	"\x07,4\x05\x0f:?\x8a5\xdf\x8b\xaa\x9d_\xf92" +
+	"o&fU\xbf\x91\x98M\xd6\x1c\xaf\x11\x89\xe4g(" +
+	"J\xbeW\xc6\x01`8@7\x93\xeb\x97\x8eM;\x1c" +
+	"\xc3\x19_T*N\xa9\xe0\x08/Jt\x80l\x9e\x0d" +
+	"\x1c\xacDq{\xb1\xd4\xb3\x9dU\xa2%\x1e\x89v\x1f" +
+	"\x8e\xf00\xb5q\xc2\xb0!\x16*\xb3\xc8#.sa" +
+	"\x81\xb2]\xd2\x1c\xf0\xb2\xd3\x08m\x87yb\xc6\x0f\x02" +
+	"Q\x8a\x1c\xdf[\x16A\x0d \xb1\xa9\x09\xee\xdd\xedG" +
+	"\x0e\xfa\xde\xacS\xa9\x88\xa0 \xbc\x92\xb8\xa2y\xca\xf3" +
+	"k\x90\xe7n3\xa1.\x8f\x9c\xa8Q\x16l\xc6\x0f\x9d" +
+	"l\xe7\x05\xea=1\x13\xa5\x92L\xe1P(9Q\x8f" +
+	"\xafm\xe7J\xc7\x94\xcc\xb7\xa1\xa89w\xf3/\xf8P" +
+	"\x0c\xa6Nf\xe6\x14k\xaa\xe4\xba\x0a\xd3\x998^\xc9" +
+	"u<\x1e)\x8e\xefu\xfb%'\x9d\xae\x8b\xb3Z\x8d" +
+	"\xa6\xc2\x12\x13\x1e\xc9\x95\x85\xcaTX\x12^\xd9\xf1\x8a" +
+	"\xab\x07\xfd\xb2\xb8\xaaG\xe6\xf8\xde\x15\xbe\x16\xbd+\xe6" +
+	"\xd9\xb1\x83|F\xfc\xb4W\x7f\xc6g\xe15\xa6\xc9\x83" +
+	"\xd5\x06\xe9\x17\\\xa8,\x8a\xc0Y\x15(2\x1dDb" +
+	"\xa1\xb2\xe4`\xec\xad\xf0\x0a\xe1\x95\xfdS\xf3\xbc\x87\xf1" +
+	"\xe0\x8e\x8fi\x9b\xbb{\xc6/\x8b\xfd.\xe4\xf9j\xba" +
+	"v\xab\xf5\xf0^!\x8e\xcd\xa2\xa8\x07\xa2Dz\xaa\x9c" +
+	"\xf9b\x91\xee\xd0\xfd\x90w\xf9j\xba\x0b\xce\xaa\xc7\xdd" +
+	"\xa9\x12L\x96\x1a\x01/\xa5{\x98\x8a\xb99\xc1\xdd\xa8" +
+	"\x9a.n\xe4G\xdc\xbd3\xf0\xb1Q\x9f\x15.oB" +
+	"\xcfh\x9d\xa1\xe8\xce\x84a\x14p/\xac9!\xd2\x14" +
+	"Ixg\xda*N4\xefE\"\x80\xfc\x09\xeev\x05" +
+	"\xc2\x8c\x0by\xbf\x94\xaak\xc7\xf7\xfc\xb0^\x15,\xc8" +
+	"\x9c\x98(\xfc\x1c\xcf\xbbN\x19\x11\x18b\xc6\x0a\x031" +
+	"\xe5\xd6\xab<\x91\x8e\x83m\xe9\xd81\x80\xc9@L\x8b" +
+	"\x88w\xb7w\x94=\x8ac3~\xc3\x8b\x00\xfb\x80a" +
+	"_\x8f\xf8\xbc7O\x15A;E$N\xa3_:F" +
+	"[\x01I\xcb\xff\xab\xac&\xe3\xaa\x80\xa4\xcc\xceD\xca" +
+	"L\xe14\xdd\xa5$\xc0\xe70#e\xf6!I\x96;" +
+	"\x88\xdf\x85\x0c\xb1\xadd\xe6\x91R\xea\x1c\xe1eL\x8b" +
+	"\x03\xc3\xc2\x03\x00\xf6\"\xf1\xa3\x98\xd6\x07\xc6a\xa4\xcc" +
+	"\x7f\x94x\x15\xd3\x12\xc1\x10\xb8\x04`\x97\x89\xd71\xad" +
+	"\x12\x8c\x1a\x92\x92\xa9\x12\x8fd\x9d\x80\xb1\x929.\xdd" +
+	"t\x89\x9f$\xde\x87\xb1\x92i ]\xf9\x11\xf1/\x11" +
+	"\xefg\xb1\x92\xb9_\xf2S\xc4\xd7\x88\x0f\xe4b%\xf3" +
+	" \xd2\xcd\xb8F\xfcq\xe2\x83j\xacd\x1e\x95\xf6\x8f" +
+	"\x10\xffF\xb6\x0ei\xd7\x0e\xc50\xe2A\xd4\xa3x\xf0" +
+	"\x1a\xb5\x15\x11,T`R\xca\xd6\xb4H(\xf3\x88\xdf" +
+	"\x13\x8a2U\x15\x9d*\xa5\xe4\xfbA\xd9\xf18F\x9d" +
+	"\x02&m\xf3I\xcb/7\xeb\x80\x1fW\xbf\x9cn\x1f" +
+	"\xbeTw\xcb\xdb\"\\\x80bE\xf2$i\x92'\xf3" +
+	"^\x04E\x11d\xe3\xbd\xe6\x97\x9d\x8a#\xcax\xa0\xe1" +
+	":\xdc\x9b\xe5\xd8L\xfa\xaa\x04\\\xe6\x16(rw\x96" +
+	"7?a\xady\xe7\xa2\xdd1@)\x91\xcdD\xb2\xdf" +
+	"\x1f\x00X\xa7\x14\xb4\xd62\x92\xfdA\x82\x0f(h=" +
+	"\x92\x8ac\xfda*6\x1fR\xd0\xfaZ\xaa\x8c\xf5?" +
+	"\xa4R\xe4q\x05\xad'\x18b\xac\x8a\xf5\xb3/\x03X" +
+	"O+h=\xc3\xb0\xb5\xc2CAcCQ\x1e\x12\x1c" +
+	"IK\xfd\xf6\xd6\x88\xb6gP\x94\xbe\xe3H\xfaH\xd2" +
+	"\xb6\xb8\xfa&\x18I_\x8a\xae\xb0\xe9$\x89\xab\xdb\xc3" +
+	"\xe3\x0d\x1e\x88%\x9f\xf9\xd1B\xc5n_9t\xe1`" +
+	"x\xd5\"^\xa3\xe6\xf1\xa2\xa0\xd9\xb5\x80\xdf\x05\xb0\xbe" +
+	"\xa4\xa0\xf5PZ\x8c}e\x09\xc0ZS\xd0z<S" +
+	"\xac?J\xf0\x11\x05\xadod\x8a\xf5\xaf\x13\xfc\x9a\x82" +
+	"\xd6\xd3\x99b\xfdI\x82O(h\x9dc\xd9\xfc\xfb9" +
+	"QuJ\xae\x98<(c9\x89\xc8\x93\x8b~\xe8D" +
+	"\x8e\x0f\x99[\xa1\xd9\x83}\xb1\x07\xeb(\x17\xe8\xb1\x0a" +
+	"\xda\xc7\xad\xc2~?\xa8\xf1(\xa9\x9f\xbb\x8b\xd3\xbd\xbd" +
+	"j\xc0\xbdi\x0d8Y\x95\xe9\x0dG\xd2\xd7\xadx\x8f" +
+	"&E|4\x93\"0yY\xeb*\x02\xaf\xf1\xa0\x12" +
+	"\x9b\xe4\xdb\x95\xe0\\\x92>/\xc9|u\x91\xf2\xc6e" +
+	"L6\xcaxW>k\xbcC\xf8}L\xf7\xca\xf8\xa5" +
+	"\xcc\xaa\x97\x89\x7f(\xd3'\xc6\xe9\xf3\x03\x99\x0e\xdf'" +
+	"\xae2\xda1\x16\xa7OdT\xa8\xa9\x8c\x843qM" +
+	"\x89\xd3\xe70\xa3\xb4:B|#\xf1\x9c\x1a\xa7\xcf\x0d" +
+	"\x8c\xfa\x19'\xbe\x95x^\x8b\xd3\xe7\x16\xc97\x13\xbf" +
+	"\x99x_.N\x9f\xdb\x19\xa5\xbd\x9b\x88\xdfJ\xbc?" +
+	"\x1f\xa7\xcf]\xd2~'\xf1\xcf\x12\x1f\xe8\x8b\xd3\xe7\xaf" +
+	"I~;\xf1Y\xe2\x83\xfdq\xfa\x9c\x92\xfd\xdcA\xfc" +
+	".\xe2C\x03q%8/\xed\xe7\x88/\x13\x1f\x1e\x8c" +
+	"+AK\xf2E\xe2G\x89\xaf\x1b\x8a+\xc1\xc3\xb2\x9f" +
+	"C\xc4\xcb\xc4\x0b\xc3q%\xc8\x19-\xf3Q\xe2U\xe2" +
+	"#\x18W\x82\x82}\x97\xae\x0b\xe2\x11q}]\\\x09" +
+	"\x1egtM\xd5\x89\x9fb\xd9\xd0H\xdev;\xc7\xb7" +
+	"\xd7\x8bFQ\x06L\xaf\xa7\xa2\x1ea\x1d\x08R\xa3'" +
+	"\x04\xee\x0f\xc4\xf1\x86\xf0J\xc5\xe6\xb4\xc3\xc3\x8c\xfe\x0d" +
+	"C\xbe*\xf6c\xc0k\xa2K\x97\xd4\xe3\x93\xe3\x01\x1e" +
+	"J\xd8\x09\xe1\xfa$v\xb3\x8c\x97J\xc2\x15\x01\x87\"" +
+	"Y\x1f\xea\xf1\xfd\xe1\x1e\xdf\x1f\xfe\x98\xef\x0f\xf7\xf8\xfe" +
+	"H\x8f\xef\x8f|\xcc\xf7\x09\xa7eu\xa3j*\xb3\xda" +
+	"+\x80\xcd\x99*\xf7<\xe1N.T*\xa1\x88\x92[" +
+	"\xc6\xf1*\xf2\x8c\xc3\xa4\xe3{S\xab\xe2\x13^3\xd3" +
+	"\xed\\_\x13\x81\x12\x1f\xc0\xcc\x9b\xe6\x1f\x03X\xaf(" +
+	"h]\xc8\xa4\x857v\xa7\xef\x97m\xe5\xa2\xbf\x19d" +
+	"\x9e/\x95\x918M^Z\xca\xbcT\xaa\x18\xa7\xc9\x9f" +
+	"?\x07`\xfdB\xc1%)XX\xfc\xa6\xf9\x11Y~" +
+	"\xa8\xa0\xdd\x87\x99\x87\x17M\xca\x1e\x95\xce\xed\x88\x94+" +
+	"j|\xde\x86\xf1\x08\x15\xb6\xc4\xc7\x91a\xab\x1e\x8aF" +
+	"\xd9_\xe2\xe8\x95\xfd\x1a\xe5Y%M\xb4I\xb4u_" +
+	"-\x99\x0bl\xb9Y\x17XH\xff\xab\x01\x10\x0bR\x0f" +
+	"w\xb4s3Q\xa65~\xd2\xa95j\xcb\xe8\xd4\x84" +
+	"\xac\xc7\x8a\xc1\x15\xf5X\xc5q\x05i\x15\xc0^cR" +
+	"\xebANA\x9aJ\x13b\xb6\xdf\x08@)\xa5o\xb1" +
+	"\xd7\xbe\xd3\x96\x9d\x1av\xbf|Og\xf37k\xe7\xef" +
+	"\x95\xf4\xe5\xfbt[\xcf\xa0\x06\x0c5\xd2V\xdc\xf3\xc3" +
+	"\xee\xd7\xd7\xff\x0b\x00\x00\xff\xff\x15=\xf4\x07"
 
 func RegisterSchema(reg *schemas.Registry) {
 	reg.Register(&schemas.Schema{
 		String: schema_b3ca6d2462778bb1,
 		Nodes: []uint64{
+			0x8724cc2fcbb631fd,
+			0x8861b2182dea79c8,
+			0x88bee98e19a6d24e,
+			0x8a11dc8313cd9d6d,
+			0x9261b240a2cc4a68,
 			0x9691bc6bef5f044a,
-			0xc98ab11e016b9507,
-			0xfb7d655c3ad3e9bb,
+			0xd5b36c059384fab0,
+			0xd67148628f889f75,
+			0xdfc8474e015f357d,
+			0xe5b14b55893ef9cb,
+			0xeca2c2c553ea12f6,
+			0xfde08cc67d073fd0,
+			0xffe70a8369c5f3f6,
 		},
 		Compressed: true,
 	})

@@ -8,10 +8,10 @@ import (
 
 const SecondsInWeek = 604800
 
-type GPSTime struct {
-	Week int
-	Tow  float64
-}
+// type GPSTime struct {
+// 	Week int
+// 	Tow  float64
+// }
 
 type TimeSync struct {
 	RefMonoTime time.Duration
@@ -73,9 +73,9 @@ func newTimeSync(monoTime time.Duration, gpsTime GPSTime) *TimeSync {
 
 // ========================================
 
-func NewGPSTime(week int, tow float64) GPSTime {
-	return GPSTime{week, tow}
-}
+// func NewGPSTime(week int, tow float64) GPSTime {
+// 	return GPSTime{week, tow}
+// }
 
 // =======================================
 
