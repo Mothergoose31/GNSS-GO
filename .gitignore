@@ -8,7 +8,8 @@
 
 *.test
 
-
+go.mod
+go.sum
 *.out
 
 e
@@ -17,5 +18,3 @@ go.work.sum
 
 .env
 
-go.mod
-go.sum

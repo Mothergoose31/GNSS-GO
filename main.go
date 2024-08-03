@@ -1,11 +1,5 @@
 package main
 
-import (
-	"fmt"
-
-	gnss "github.com/mothergoose31/GNNS-GO/GNSS"
-)
-
 // "os"
 
 // "math"
@@ -44,7 +38,7 @@ import (
 
 func main() {
 
-	fmt.Println(gnss.ParseSP3File("WUM0MGXULT_20241042300_01D_05M_ORB.SP3"))
+	// fmt.Println(gnss.ParseSP3File("WUM0MGXULT_20241042300_01D_05M_ORB.SP3"))
 	// _, seg, err := capnp.NewMessage(capnp.SingleSegment(nil))
 	// if err != nil {
 	// 	log.Fatalf("Failed to create new message: %v", err)
