@@ -247,10 +247,6 @@ func parseRINEXHeader(scanner *bufio.Scanner) (RINEXHeader, error) {
 			header.SetSatelliteSystem(strings.TrimSpace(line[40:60]))
 		case "PGM / RUN BY / DATE":
 			header.SetProgramName(strings.TrimSpace(line[:20]))
-			fmt.Println("=====================================")
-			fmt.Println(header.ProgramName())
-			fmt.Println("=====================================")
-
 			header.SetAgency(strings.TrimSpace(line[20:40]))
 			parsedDate, _ := time.Parse("02-Jan-06 15:04", strings.TrimSpace(line[40:60]))
 
@@ -619,43 +615,27 @@ func parseInt(s string) int {
 // =========================================================================
 
 // =========================================================================
-
 func PrintRINEXHeader(header RINEXHeader) {
 	fmt.Println("RINEX Header:")
+
 	fmt.Printf("  Version: %.2f\n", header.Version())
 
-	typeStr, err := header.Type()
-	if err == nil {
-		fmt.Printf("  Type: %s\n", typeStr)
-	} else {
-		fmt.Printf("  Type: Error retrieving type: %v\n", err)
-	}
+	typ, err := header.Type()
+	fmt.Printf("  Type: %s (Error: %v)\n", typ, err)
 
 	satSystem, err := header.SatelliteSystem()
-	if err == nil {
-		fmt.Printf("  Satellite System: %s\n", satSystem)
-	} else {
-		fmt.Printf("  Satellite System: Error retrieving satellite system: %v\n", err)
-	}
+	fmt.Printf("  Satellite System: %s (Error: %v)\n", satSystem, err)
 
 	programName, err := header.ProgramName()
-	if err == nil {
-		fmt.Printf("  Program: %s\n", programName)
-	} else {
-		fmt.Printf("  Program: Error retrieving program name: %v\n", err)
-	}
+	fmt.Printf("  Program: %s (Error: %v)\n", programName, err)
 
 	agency, err := header.Agency()
-	if err == nil {
-		fmt.Printf("  Agency: %s\n", agency)
-	} else {
-		fmt.Printf("  Agency: Error retrieving agency: %v\n", err)
-	}
+	fmt.Printf("  Agency: %s (Error: %v)\n", agency, err)
 
 	date, err := header.Date()
 	if err == nil {
-		dateTime := time.Unix(date.Seconds(), int64(date.Nanoseconds()))
-		fmt.Printf("  Date: %s\n", formatTime(dateTime))
+
+		fmt.Printf("  Date: %s (Error: %v)\n", formatTime(date), err)
 	} else {
 		fmt.Printf("  Date: Error retrieving date: %v\n", err)
 	}
@@ -665,56 +645,48 @@ func PrintRINEXHeader(header RINEXHeader) {
 	if err == nil {
 		for i := 0; i < comments.Len(); i++ {
 			comment, err := comments.At(i)
-			if err == nil {
-				fmt.Printf("    %s\n", comment)
-			} else {
-				fmt.Printf("    Error retrieving comment: %v\n", err)
-			}
+			fmt.Printf("    %s (Error: %v)\n", comment, err)
 		}
 	} else {
-		fmt.Printf("  Error retrieving comments: %v\n", err)
+		fmt.Printf("    Error retrieving comments: %v\n", err)
 	}
 
 	fmt.Printf("  Leap Seconds: %d\n", header.LeapSeconds())
 	fmt.Println(strings.Repeat("-", 60))
 }
 
-// =========================================================================
+// ========================================
 
-// =========================================================================
+// ========================================
 
-func formatTime(t time.Time) string {
-	return t.Format("2006-01-02 15:04:05")
+func formatTime(t Time) string {
+	return fmt.Sprintf("%d.%09d", t.Seconds(), t.Nanoseconds())
 }
 
-// =========================================================================
+// ========================================
 
-// =========================================================================
+// ========================================
 
-func printData(eph RINEXEphemeris) {
-	fmt.Printf("    Satellite ID: %d\n", eph.SatelliteId())
+func PrintRINEXEphemeris(eph RINEXEphemeris) {
+	fmt.Println("RINEX Ephemeris Data:")
+	fmt.Printf("Satellite ID: %d\n", eph.SatelliteId())
 
 	epoch, err := eph.Epoch()
-	if err != nil {
-		fmt.Printf("    Epoch: Error retrieving epoch: %v\n", err)
+	if err == nil {
+		fmt.Printf("Epoch: %s\n", formatTime(epoch))
 	} else {
-		epochTime := time.Unix(epoch.Seconds(), int64(epoch.Nanoseconds()))
-		fmt.Printf("    Epoch: %s\n", formatTime(epochTime))
+		fmt.Printf("Epoch: Error retrieving epoch: %v\n", err)
 	}
 
-	fmt.Printf("    Clock Bias: %.12e\n", eph.ClockBias())
-	fmt.Printf("    Relative Frequency Bias: %.12e\n", eph.RelativeFrequencyBias())
-	fmt.Printf("    Message Frame Time: %.6f\n", eph.MessageFrameTime())
-	fmt.Printf("    Position X: %.3f\n", eph.PositionX())
-	fmt.Printf("    Velocity X: %.6f\n", eph.VelocityX())
-	fmt.Printf("    Acceleration X: %.9f\n", eph.AccelerationX())
-	fmt.Printf("    Position Y: %.3f\n", eph.PositionY())
-	fmt.Printf("    Velocity Y: %.6f\n", eph.VelocityY())
-	fmt.Printf("    Acceleration Y: %.9f\n", eph.AccelerationY())
-	fmt.Printf("    Position Z: %.3f\n", eph.PositionZ())
-	fmt.Printf("    Velocity Z: %.6f\n", eph.VelocityZ())
-	fmt.Printf("    Acceleration Z: %.9f\n", eph.AccelerationZ())
-	fmt.Printf("    Health: %.0f\n", eph.Health())
-	fmt.Printf("    Frequency Channel Offset: %d\n", eph.FrequencyChannelOffset())
-	fmt.Printf("    Information Age: %.6f\n", eph.InformationAge())
+	fmt.Printf("Clock Bias: %.12e\n", eph.ClockBias())
+	fmt.Printf("Relative Frequency Bias: %.12e\n", eph.RelativeFrequencyBias())
+	fmt.Printf("Message Frame Time: %.6f\n", eph.MessageFrameTime())
+
+	fmt.Printf("Position (X, Y, Z): %.3f, %.3f, %.3f\n", eph.PositionX(), eph.PositionY(), eph.PositionZ())
+	fmt.Printf("Velocity (X, Y, Z): %.6f, %.6f, %.6f\n", eph.VelocityX(), eph.VelocityY(), eph.VelocityZ())
+	fmt.Printf("Acceleration (X, Y, Z): %.9f, %.9f, %.9f\n", eph.AccelerationX(), eph.AccelerationY(), eph.AccelerationZ())
+
+	fmt.Printf("Health: %.0f\n", eph.Health())
+	fmt.Printf("Frequency Channel Offset: %d\n", eph.FrequencyChannelOffset())
+	fmt.Printf("Information Age: %.6f\n", eph.InformationAge())
 }
