@@ -130,8 +130,11 @@ func GPSTimeFromDateTime(t time.Time) GPSTime {
 	refWk := 1780
 	wk := int(t.Sub(wkRef).Hours()/24/7) + refWk
 	tow := float64(t.Sub(wkRef).Seconds()) - float64((wk-refWk)*SecondsInWeek)
-	return GPSTime{Week: wk, Tow: tow}
 
+	var gpsTime GPSTime
+	gpsTime.SetWeek(int32(wk))
+	gpsTime.SetTimeOfWeek(tow)
+	return gpsTime
 }
 
 // =======================================
@@ -140,7 +143,7 @@ func GPSTimeFromDateTime(t time.Time) GPSTime {
 
 func (t GPSTime) ToDateTime() time.Time {
 	gpsEpoch := time.Date(1980, 1, 6, 0, 0, 0, 0, time.UTC)
-	duration := time.Duration(t.Week)*7*24*time.Hour + time.Duration(t.Tow*float64(time.Second))
+	duration := time.Duration(t.Week())*7*24*time.Hour + time.Duration(t.TimeOfWeek()*float64(time.Second))
 	return gpsEpoch.Add(duration)
 }
 
@@ -149,7 +152,7 @@ func (t GPSTime) ToDateTime() time.Time {
 // ========================================
 
 func (t GPSTime) Sub(other GPSTime) float64 {
-	return float64(t.Week-other.Week)*SecondsInWeek + t.Tow - other.Tow
+	return float64(t.Week()-other.Week())*SecondsInWeek + t.TimeOfWeek() - other.TimeOfWeek()
 }
 
 // =======================================
@@ -157,13 +160,17 @@ func (t GPSTime) Sub(other GPSTime) float64 {
 // ========================================
 
 func (t GPSTime) Add(seconds float64) GPSTime {
-	newWeek := t.Week
-	newTow := t.Tow + seconds
+	newWeek := t.Week()
+	newTow := t.TimeOfWeek() + seconds
 	for newTow >= SecondsInWeek {
 		newTow -= SecondsInWeek
 		newWeek++
 	}
-	return GPSTime{Week: newWeek, Tow: newTow}
+
+	var newGPSTime GPSTime
+	newGPSTime.SetWeek(newWeek)
+	newGPSTime.SetTimeOfWeek(newTow)
+	return newGPSTime
 }
 
 // =======================================
@@ -207,14 +214,6 @@ func GPSTimeFromGLONASS(cycle, days int, tow float64) GPSTime {
 	t = t.Add(-3 * time.Hour)
 	t = t.Add(time.Duration(tow * float64(time.Second)))
 	return UTCToGPST(t)
-}
-
-// =======================================
-
-// ========================================
-
-func (t GPSTime) String() string {
-	return t.ToDateTime().Format("2006-01-02 15:04:05.999999999")
 }
 
 // =======================================
