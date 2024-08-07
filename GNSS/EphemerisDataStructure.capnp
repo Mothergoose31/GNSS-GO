@@ -19,56 +19,11 @@ struct BaseEphemeris {
 struct GPSEphemeris {
   baseEphemeris @0 :BaseEphemeris;
   ephemerisData @1 :Ephemeris;
-  timeOfEphemeris @2 :GPSTime;
-  timeOfClock @3 :GPSTime;
+  toe @2 :GPSTime;  
+  toc @3 :GPSTime;
   squareRootOfSemiMajorAxis @4 :Float64;
 }
 
-struct Ephemeris {
-  satelliteId @0 :UInt16;
-  year @1 :UInt16;
-  month @2 :UInt16;
-  day @3 :UInt16;
-  hour @4 :UInt16;
-  minute @5 :UInt16;
-  second @6 :Float32;
-  clockBiasCoefficient @7 :Float64;
-  clockDriftCoefficient @8 :Float64;
-  clockDriftRateCoefficient @9 :Float64;
-  issueOfDataEphemeris @10 :Float64;
-  radiusSineCorrectionTerm @11 :Float64;
-  meanMotionDifference @12 :Float64;
-  meanAnomaly @13 :Float64;
-  latitudeCosineCorrectionTerm @14 :Float64;
-  eccentricity @15 :Float64;
-  latitudeSineCorrectionTerm @16 :Float64;
-  semiMajorAxis @17 :Float64;
-  timeOfEphemeris @18 :Float64;
-  inclinationCosineCorrectionTerm @19 :Float64;
-  rightAscensionOfAscendingNode @20 :Float64;
-  inclinationSineCorrectionTerm @21 :Float64;
-  inclination @22 :Float64;
-  radiusCosineCorrectionTerm @23 :Float64;
-  argumentOfPerigee @24 :Float64;
-  rateOfRightAscension @25 :Float64;
-  rateOfInclination @26 :Float64;
-  l2CodeFlags @27 :Float64;
-  gpsWeekDeprecated @28 :Float64;
-  l2PDataFlag @29 :Float64;
-  signalAccuracy @30 :Float64;
-  satelliteHealth @31 :Float64;
-  totalGroupDelay @32 :Float64;
-  issueOfDataClock @33 :Float64;
-  transmissionTime @34 :Float64;
-  fitInterval @35 :Float64;
-  timeOfClock @36 :Float64;
-  ionosphereCoefficientsValid @37 :Bool;
-  ionosphereAlpha @38 :List(Float64);
-  ionosphereBeta @39 :List(Float64);
-  timeOfWeekCount @40 :UInt32;
-  timeOfEphemerisWeek @41 :UInt16;
-  timeOfClockWeek @42 :UInt16;
-}
 
 struct RINEXHeader {
   version @0 :Float64;
@@ -80,6 +35,63 @@ struct RINEXHeader {
   comments @6 :List(Text);
   leapSeconds @7 :Int32;
 }
+
+struct Ephemeris {
+
+  svId @0 :UInt16;
+  year @1 :UInt16;
+  month @2 :UInt16;
+  day @3 :UInt16;
+  hour @4 :UInt16;
+  minute @5 :UInt16;
+  second @6 :Float32;
+  af0 @7 :Float64;
+  af1 @8 :Float64;
+  af2 @9 :Float64;
+
+  iode @10 :Float64;
+  crs @11 :Float64;
+  deltaN @12 :Float64;
+  m0 @13 :Float64;
+
+  cuc @14 :Float64;
+  ecc @15 :Float64;
+  cus @16 :Float64;
+  a @17 :Float64; 
+
+  toe @18 :Float64;
+  cic @19 :Float64;
+  omega0 @20 :Float64;
+  cis @21 :Float64;
+
+  i0 @22 :Float64;
+  crc @23 :Float64;
+  omega @24 :Float64;
+  omegaDot @25 :Float64;
+
+  iDot @26 :Float64;
+  codesL2 @27 :Float64;
+  l2 @28 :Float64;
+
+  svAcc @29 :Float64;
+  svHealth @30 :Float64;
+  tgd @31 :Float64;
+  iodc @32 :Float64;
+
+  transmissionTime @33 :Float64;
+  fitInterval @34 :Float64;
+
+  toc @35 :Float64;
+
+  ionoCoeffsValid @36 :Bool;
+  ionoAlpha @37 :List(Float64);
+  ionoBeta @38 :List(Float64);
+
+  towCount @39 :UInt32;
+  toeWeek @40 :UInt16;
+  tocWeek @41 :UInt16;
+}
+
 
 struct RINEXEphemeris {
   header @0 :RINEXHeader;

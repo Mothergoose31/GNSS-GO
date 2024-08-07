@@ -300,22 +300,22 @@ func (s GPSEphemeris) NewEphemerisData() (Ephemeris, error) {
 	return ss, err
 }
 
-func (s GPSEphemeris) TimeOfEphemeris() (GPSTime, error) {
+func (s GPSEphemeris) Toe() (GPSTime, error) {
 	p, err := capnp.Struct(s).Ptr(2)
 	return GPSTime(p.Struct()), err
 }
 
-func (s GPSEphemeris) HasTimeOfEphemeris() bool {
+func (s GPSEphemeris) HasToe() bool {
 	return capnp.Struct(s).HasPtr(2)
 }
 
-func (s GPSEphemeris) SetTimeOfEphemeris(v GPSTime) error {
+func (s GPSEphemeris) SetToe(v GPSTime) error {
 	return capnp.Struct(s).SetPtr(2, capnp.Struct(v).ToPtr())
 }
 
-// NewTimeOfEphemeris sets the timeOfEphemeris field to a newly
+// NewToe sets the toe field to a newly
 // allocated GPSTime struct, preferring placement in s's segment.
-func (s GPSEphemeris) NewTimeOfEphemeris() (GPSTime, error) {
+func (s GPSEphemeris) NewToe() (GPSTime, error) {
 	ss, err := NewGPSTime(capnp.Struct(s).Segment())
 	if err != nil {
 		return GPSTime{}, err
@@ -324,22 +324,22 @@ func (s GPSEphemeris) NewTimeOfEphemeris() (GPSTime, error) {
 	return ss, err
 }
 
-func (s GPSEphemeris) TimeOfClock() (GPSTime, error) {
+func (s GPSEphemeris) Toc() (GPSTime, error) {
 	p, err := capnp.Struct(s).Ptr(3)
 	return GPSTime(p.Struct()), err
 }
 
-func (s GPSEphemeris) HasTimeOfClock() bool {
+func (s GPSEphemeris) HasToc() bool {
 	return capnp.Struct(s).HasPtr(3)
 }
 
-func (s GPSEphemeris) SetTimeOfClock(v GPSTime) error {
+func (s GPSEphemeris) SetToc(v GPSTime) error {
 	return capnp.Struct(s).SetPtr(3, capnp.Struct(v).ToPtr())
 }
 
-// NewTimeOfClock sets the timeOfClock field to a newly
+// NewToc sets the toc field to a newly
 // allocated GPSTime struct, preferring placement in s's segment.
-func (s GPSEphemeris) NewTimeOfClock() (GPSTime, error) {
+func (s GPSEphemeris) NewToc() (GPSTime, error) {
 	ss, err := NewGPSTime(capnp.Struct(s).Segment())
 	if err != nil {
 		return GPSTime{}, err
@@ -378,449 +378,11 @@ func (p GPSEphemeris_Future) BaseEphemeris() BaseEphemeris_Future {
 func (p GPSEphemeris_Future) EphemerisData() Ephemeris_Future {
 	return Ephemeris_Future{Future: p.Future.Field(1, nil)}
 }
-func (p GPSEphemeris_Future) TimeOfEphemeris() GPSTime_Future {
+func (p GPSEphemeris_Future) Toe() GPSTime_Future {
 	return GPSTime_Future{Future: p.Future.Field(2, nil)}
 }
-func (p GPSEphemeris_Future) TimeOfClock() GPSTime_Future {
+func (p GPSEphemeris_Future) Toc() GPSTime_Future {
 	return GPSTime_Future{Future: p.Future.Field(3, nil)}
-}
-
-type Ephemeris capnp.Struct
-
-// Ephemeris_TypeID is the unique identifier for the type Ephemeris.
-const Ephemeris_TypeID = 0x9691bc6bef5f044a
-
-func NewEphemeris(s *capnp.Segment) (Ephemeris, error) {
-	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 272, PointerCount: 2})
-	return Ephemeris(st), err
-}
-
-func NewRootEphemeris(s *capnp.Segment) (Ephemeris, error) {
-	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 272, PointerCount: 2})
-	return Ephemeris(st), err
-}
-
-func ReadRootEphemeris(msg *capnp.Message) (Ephemeris, error) {
-	root, err := msg.Root()
-	return Ephemeris(root.Struct()), err
-}
-
-func (s Ephemeris) String() string {
-	str, _ := text.Marshal(0x9691bc6bef5f044a, capnp.Struct(s))
-	return str
-}
-
-func (s Ephemeris) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
-	return capnp.Struct(s).EncodeAsPtr(seg)
-}
-
-func (Ephemeris) DecodeFromPtr(p capnp.Ptr) Ephemeris {
-	return Ephemeris(capnp.Struct{}.DecodeFromPtr(p))
-}
-
-func (s Ephemeris) ToPtr() capnp.Ptr {
-	return capnp.Struct(s).ToPtr()
-}
-func (s Ephemeris) IsValid() bool {
-	return capnp.Struct(s).IsValid()
-}
-
-func (s Ephemeris) Message() *capnp.Message {
-	return capnp.Struct(s).Message()
-}
-
-func (s Ephemeris) Segment() *capnp.Segment {
-	return capnp.Struct(s).Segment()
-}
-func (s Ephemeris) SatelliteId() uint16 {
-	return capnp.Struct(s).Uint16(0)
-}
-
-func (s Ephemeris) SetSatelliteId(v uint16) {
-	capnp.Struct(s).SetUint16(0, v)
-}
-
-func (s Ephemeris) Year() uint16 {
-	return capnp.Struct(s).Uint16(2)
-}
-
-func (s Ephemeris) SetYear(v uint16) {
-	capnp.Struct(s).SetUint16(2, v)
-}
-
-func (s Ephemeris) Month() uint16 {
-	return capnp.Struct(s).Uint16(4)
-}
-
-func (s Ephemeris) SetMonth(v uint16) {
-	capnp.Struct(s).SetUint16(4, v)
-}
-
-func (s Ephemeris) Day() uint16 {
-	return capnp.Struct(s).Uint16(6)
-}
-
-func (s Ephemeris) SetDay(v uint16) {
-	capnp.Struct(s).SetUint16(6, v)
-}
-
-func (s Ephemeris) Hour() uint16 {
-	return capnp.Struct(s).Uint16(8)
-}
-
-func (s Ephemeris) SetHour(v uint16) {
-	capnp.Struct(s).SetUint16(8, v)
-}
-
-func (s Ephemeris) Minute() uint16 {
-	return capnp.Struct(s).Uint16(10)
-}
-
-func (s Ephemeris) SetMinute(v uint16) {
-	capnp.Struct(s).SetUint16(10, v)
-}
-
-func (s Ephemeris) Second() float32 {
-	return math.Float32frombits(capnp.Struct(s).Uint32(12))
-}
-
-func (s Ephemeris) SetSecond(v float32) {
-	capnp.Struct(s).SetUint32(12, math.Float32bits(v))
-}
-
-func (s Ephemeris) ClockBiasCoefficient() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(16))
-}
-
-func (s Ephemeris) SetClockBiasCoefficient(v float64) {
-	capnp.Struct(s).SetUint64(16, math.Float64bits(v))
-}
-
-func (s Ephemeris) ClockDriftCoefficient() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(24))
-}
-
-func (s Ephemeris) SetClockDriftCoefficient(v float64) {
-	capnp.Struct(s).SetUint64(24, math.Float64bits(v))
-}
-
-func (s Ephemeris) ClockDriftRateCoefficient() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(32))
-}
-
-func (s Ephemeris) SetClockDriftRateCoefficient(v float64) {
-	capnp.Struct(s).SetUint64(32, math.Float64bits(v))
-}
-
-func (s Ephemeris) IssueOfDataEphemeris() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(40))
-}
-
-func (s Ephemeris) SetIssueOfDataEphemeris(v float64) {
-	capnp.Struct(s).SetUint64(40, math.Float64bits(v))
-}
-
-func (s Ephemeris) RadiusSineCorrectionTerm() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(48))
-}
-
-func (s Ephemeris) SetRadiusSineCorrectionTerm(v float64) {
-	capnp.Struct(s).SetUint64(48, math.Float64bits(v))
-}
-
-func (s Ephemeris) MeanMotionDifference() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(56))
-}
-
-func (s Ephemeris) SetMeanMotionDifference(v float64) {
-	capnp.Struct(s).SetUint64(56, math.Float64bits(v))
-}
-
-func (s Ephemeris) MeanAnomaly() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(64))
-}
-
-func (s Ephemeris) SetMeanAnomaly(v float64) {
-	capnp.Struct(s).SetUint64(64, math.Float64bits(v))
-}
-
-func (s Ephemeris) LatitudeCosineCorrectionTerm() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(72))
-}
-
-func (s Ephemeris) SetLatitudeCosineCorrectionTerm(v float64) {
-	capnp.Struct(s).SetUint64(72, math.Float64bits(v))
-}
-
-func (s Ephemeris) Eccentricity() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(80))
-}
-
-func (s Ephemeris) SetEccentricity(v float64) {
-	capnp.Struct(s).SetUint64(80, math.Float64bits(v))
-}
-
-func (s Ephemeris) LatitudeSineCorrectionTerm() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(88))
-}
-
-func (s Ephemeris) SetLatitudeSineCorrectionTerm(v float64) {
-	capnp.Struct(s).SetUint64(88, math.Float64bits(v))
-}
-
-func (s Ephemeris) SemiMajorAxis() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(96))
-}
-
-func (s Ephemeris) SetSemiMajorAxis(v float64) {
-	capnp.Struct(s).SetUint64(96, math.Float64bits(v))
-}
-
-func (s Ephemeris) TimeOfEphemeris() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(104))
-}
-
-func (s Ephemeris) SetTimeOfEphemeris(v float64) {
-	capnp.Struct(s).SetUint64(104, math.Float64bits(v))
-}
-
-func (s Ephemeris) InclinationCosineCorrectionTerm() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(112))
-}
-
-func (s Ephemeris) SetInclinationCosineCorrectionTerm(v float64) {
-	capnp.Struct(s).SetUint64(112, math.Float64bits(v))
-}
-
-func (s Ephemeris) RightAscensionOfAscendingNode() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(120))
-}
-
-func (s Ephemeris) SetRightAscensionOfAscendingNode(v float64) {
-	capnp.Struct(s).SetUint64(120, math.Float64bits(v))
-}
-
-func (s Ephemeris) InclinationSineCorrectionTerm() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(128))
-}
-
-func (s Ephemeris) SetInclinationSineCorrectionTerm(v float64) {
-	capnp.Struct(s).SetUint64(128, math.Float64bits(v))
-}
-
-func (s Ephemeris) Inclination() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(136))
-}
-
-func (s Ephemeris) SetInclination(v float64) {
-	capnp.Struct(s).SetUint64(136, math.Float64bits(v))
-}
-
-func (s Ephemeris) RadiusCosineCorrectionTerm() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(144))
-}
-
-func (s Ephemeris) SetRadiusCosineCorrectionTerm(v float64) {
-	capnp.Struct(s).SetUint64(144, math.Float64bits(v))
-}
-
-func (s Ephemeris) ArgumentOfPerigee() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(152))
-}
-
-func (s Ephemeris) SetArgumentOfPerigee(v float64) {
-	capnp.Struct(s).SetUint64(152, math.Float64bits(v))
-}
-
-func (s Ephemeris) RateOfRightAscension() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(160))
-}
-
-func (s Ephemeris) SetRateOfRightAscension(v float64) {
-	capnp.Struct(s).SetUint64(160, math.Float64bits(v))
-}
-
-func (s Ephemeris) RateOfInclination() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(168))
-}
-
-func (s Ephemeris) SetRateOfInclination(v float64) {
-	capnp.Struct(s).SetUint64(168, math.Float64bits(v))
-}
-
-func (s Ephemeris) L2CodeFlags() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(176))
-}
-
-func (s Ephemeris) SetL2CodeFlags(v float64) {
-	capnp.Struct(s).SetUint64(176, math.Float64bits(v))
-}
-
-func (s Ephemeris) GpsWeekDeprecated() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(184))
-}
-
-func (s Ephemeris) SetGpsWeekDeprecated(v float64) {
-	capnp.Struct(s).SetUint64(184, math.Float64bits(v))
-}
-
-func (s Ephemeris) L2PDataFlag() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(192))
-}
-
-func (s Ephemeris) SetL2PDataFlag(v float64) {
-	capnp.Struct(s).SetUint64(192, math.Float64bits(v))
-}
-
-func (s Ephemeris) SignalAccuracy() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(200))
-}
-
-func (s Ephemeris) SetSignalAccuracy(v float64) {
-	capnp.Struct(s).SetUint64(200, math.Float64bits(v))
-}
-
-func (s Ephemeris) SatelliteHealth() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(208))
-}
-
-func (s Ephemeris) SetSatelliteHealth(v float64) {
-	capnp.Struct(s).SetUint64(208, math.Float64bits(v))
-}
-
-func (s Ephemeris) TotalGroupDelay() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(216))
-}
-
-func (s Ephemeris) SetTotalGroupDelay(v float64) {
-	capnp.Struct(s).SetUint64(216, math.Float64bits(v))
-}
-
-func (s Ephemeris) IssueOfDataClock() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(224))
-}
-
-func (s Ephemeris) SetIssueOfDataClock(v float64) {
-	capnp.Struct(s).SetUint64(224, math.Float64bits(v))
-}
-
-func (s Ephemeris) TransmissionTime() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(232))
-}
-
-func (s Ephemeris) SetTransmissionTime(v float64) {
-	capnp.Struct(s).SetUint64(232, math.Float64bits(v))
-}
-
-func (s Ephemeris) FitInterval() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(240))
-}
-
-func (s Ephemeris) SetFitInterval(v float64) {
-	capnp.Struct(s).SetUint64(240, math.Float64bits(v))
-}
-
-func (s Ephemeris) TimeOfClock() float64 {
-	return math.Float64frombits(capnp.Struct(s).Uint64(248))
-}
-
-func (s Ephemeris) SetTimeOfClock(v float64) {
-	capnp.Struct(s).SetUint64(248, math.Float64bits(v))
-}
-
-func (s Ephemeris) IonosphereCoefficientsValid() bool {
-	return capnp.Struct(s).Bit(2048)
-}
-
-func (s Ephemeris) SetIonosphereCoefficientsValid(v bool) {
-	capnp.Struct(s).SetBit(2048, v)
-}
-
-func (s Ephemeris) IonosphereAlpha() (capnp.Float64List, error) {
-	p, err := capnp.Struct(s).Ptr(0)
-	return capnp.Float64List(p.List()), err
-}
-
-func (s Ephemeris) HasIonosphereAlpha() bool {
-	return capnp.Struct(s).HasPtr(0)
-}
-
-func (s Ephemeris) SetIonosphereAlpha(v capnp.Float64List) error {
-	return capnp.Struct(s).SetPtr(0, v.ToPtr())
-}
-
-// NewIonosphereAlpha sets the ionosphereAlpha field to a newly
-// allocated capnp.Float64List, preferring placement in s's segment.
-func (s Ephemeris) NewIonosphereAlpha(n int32) (capnp.Float64List, error) {
-	l, err := capnp.NewFloat64List(capnp.Struct(s).Segment(), n)
-	if err != nil {
-		return capnp.Float64List{}, err
-	}
-	err = capnp.Struct(s).SetPtr(0, l.ToPtr())
-	return l, err
-}
-func (s Ephemeris) IonosphereBeta() (capnp.Float64List, error) {
-	p, err := capnp.Struct(s).Ptr(1)
-	return capnp.Float64List(p.List()), err
-}
-
-func (s Ephemeris) HasIonosphereBeta() bool {
-	return capnp.Struct(s).HasPtr(1)
-}
-
-func (s Ephemeris) SetIonosphereBeta(v capnp.Float64List) error {
-	return capnp.Struct(s).SetPtr(1, v.ToPtr())
-}
-
-// NewIonosphereBeta sets the ionosphereBeta field to a newly
-// allocated capnp.Float64List, preferring placement in s's segment.
-func (s Ephemeris) NewIonosphereBeta(n int32) (capnp.Float64List, error) {
-	l, err := capnp.NewFloat64List(capnp.Struct(s).Segment(), n)
-	if err != nil {
-		return capnp.Float64List{}, err
-	}
-	err = capnp.Struct(s).SetPtr(1, l.ToPtr())
-	return l, err
-}
-func (s Ephemeris) TimeOfWeekCount() uint32 {
-	return capnp.Struct(s).Uint32(260)
-}
-
-func (s Ephemeris) SetTimeOfWeekCount(v uint32) {
-	capnp.Struct(s).SetUint32(260, v)
-}
-
-func (s Ephemeris) TimeOfEphemerisWeek() uint16 {
-	return capnp.Struct(s).Uint16(258)
-}
-
-func (s Ephemeris) SetTimeOfEphemerisWeek(v uint16) {
-	capnp.Struct(s).SetUint16(258, v)
-}
-
-func (s Ephemeris) TimeOfClockWeek() uint16 {
-	return capnp.Struct(s).Uint16(264)
-}
-
-func (s Ephemeris) SetTimeOfClockWeek(v uint16) {
-	capnp.Struct(s).SetUint16(264, v)
-}
-
-// Ephemeris_List is a list of Ephemeris.
-type Ephemeris_List = capnp.StructList[Ephemeris]
-
-// NewEphemeris creates a new list of Ephemeris.
-func NewEphemeris_List(s *capnp.Segment, sz int32) (Ephemeris_List, error) {
-	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 272, PointerCount: 2}, sz)
-	return capnp.StructList[Ephemeris](l), err
-}
-
-// Ephemeris_Future is a wrapper for a Ephemeris promised by a client call.
-type Ephemeris_Future struct{ *capnp.Future }
-
-func (f Ephemeris_Future) Struct() (Ephemeris, error) {
-	p, err := f.Future.Ptr()
-	return Ephemeris(p.Struct()), err
 }
 
 type RINEXHeader capnp.Struct
@@ -1023,6 +585,436 @@ func (f RINEXHeader_Future) Struct() (RINEXHeader, error) {
 }
 func (p RINEXHeader_Future) Date() Time_Future {
 	return Time_Future{Future: p.Future.Field(4, nil)}
+}
+
+type Ephemeris capnp.Struct
+
+// Ephemeris_TypeID is the unique identifier for the type Ephemeris.
+const Ephemeris_TypeID = 0x9691bc6bef5f044a
+
+func NewEphemeris(s *capnp.Segment) (Ephemeris, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 264, PointerCount: 2})
+	return Ephemeris(st), err
+}
+
+func NewRootEphemeris(s *capnp.Segment) (Ephemeris, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 264, PointerCount: 2})
+	return Ephemeris(st), err
+}
+
+func ReadRootEphemeris(msg *capnp.Message) (Ephemeris, error) {
+	root, err := msg.Root()
+	return Ephemeris(root.Struct()), err
+}
+
+func (s Ephemeris) String() string {
+	str, _ := text.Marshal(0x9691bc6bef5f044a, capnp.Struct(s))
+	return str
+}
+
+func (s Ephemeris) EncodeAsPtr(seg *capnp.Segment) capnp.Ptr {
+	return capnp.Struct(s).EncodeAsPtr(seg)
+}
+
+func (Ephemeris) DecodeFromPtr(p capnp.Ptr) Ephemeris {
+	return Ephemeris(capnp.Struct{}.DecodeFromPtr(p))
+}
+
+func (s Ephemeris) ToPtr() capnp.Ptr {
+	return capnp.Struct(s).ToPtr()
+}
+func (s Ephemeris) IsValid() bool {
+	return capnp.Struct(s).IsValid()
+}
+
+func (s Ephemeris) Message() *capnp.Message {
+	return capnp.Struct(s).Message()
+}
+
+func (s Ephemeris) Segment() *capnp.Segment {
+	return capnp.Struct(s).Segment()
+}
+func (s Ephemeris) SvId() uint16 {
+	return capnp.Struct(s).Uint16(0)
+}
+
+func (s Ephemeris) SetSvId(v uint16) {
+	capnp.Struct(s).SetUint16(0, v)
+}
+
+func (s Ephemeris) Year() uint16 {
+	return capnp.Struct(s).Uint16(2)
+}
+
+func (s Ephemeris) SetYear(v uint16) {
+	capnp.Struct(s).SetUint16(2, v)
+}
+
+func (s Ephemeris) Month() uint16 {
+	return capnp.Struct(s).Uint16(4)
+}
+
+func (s Ephemeris) SetMonth(v uint16) {
+	capnp.Struct(s).SetUint16(4, v)
+}
+
+func (s Ephemeris) Day() uint16 {
+	return capnp.Struct(s).Uint16(6)
+}
+
+func (s Ephemeris) SetDay(v uint16) {
+	capnp.Struct(s).SetUint16(6, v)
+}
+
+func (s Ephemeris) Hour() uint16 {
+	return capnp.Struct(s).Uint16(8)
+}
+
+func (s Ephemeris) SetHour(v uint16) {
+	capnp.Struct(s).SetUint16(8, v)
+}
+
+func (s Ephemeris) Minute() uint16 {
+	return capnp.Struct(s).Uint16(10)
+}
+
+func (s Ephemeris) SetMinute(v uint16) {
+	capnp.Struct(s).SetUint16(10, v)
+}
+
+func (s Ephemeris) Second() float32 {
+	return math.Float32frombits(capnp.Struct(s).Uint32(12))
+}
+
+func (s Ephemeris) SetSecond(v float32) {
+	capnp.Struct(s).SetUint32(12, math.Float32bits(v))
+}
+
+func (s Ephemeris) Af0() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(16))
+}
+
+func (s Ephemeris) SetAf0(v float64) {
+	capnp.Struct(s).SetUint64(16, math.Float64bits(v))
+}
+
+func (s Ephemeris) Af1() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(24))
+}
+
+func (s Ephemeris) SetAf1(v float64) {
+	capnp.Struct(s).SetUint64(24, math.Float64bits(v))
+}
+
+func (s Ephemeris) Af2() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(32))
+}
+
+func (s Ephemeris) SetAf2(v float64) {
+	capnp.Struct(s).SetUint64(32, math.Float64bits(v))
+}
+
+func (s Ephemeris) Iode() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(40))
+}
+
+func (s Ephemeris) SetIode(v float64) {
+	capnp.Struct(s).SetUint64(40, math.Float64bits(v))
+}
+
+func (s Ephemeris) Crs() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(48))
+}
+
+func (s Ephemeris) SetCrs(v float64) {
+	capnp.Struct(s).SetUint64(48, math.Float64bits(v))
+}
+
+func (s Ephemeris) DeltaN() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(56))
+}
+
+func (s Ephemeris) SetDeltaN(v float64) {
+	capnp.Struct(s).SetUint64(56, math.Float64bits(v))
+}
+
+func (s Ephemeris) M0() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(64))
+}
+
+func (s Ephemeris) SetM0(v float64) {
+	capnp.Struct(s).SetUint64(64, math.Float64bits(v))
+}
+
+func (s Ephemeris) Cuc() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(72))
+}
+
+func (s Ephemeris) SetCuc(v float64) {
+	capnp.Struct(s).SetUint64(72, math.Float64bits(v))
+}
+
+func (s Ephemeris) Ecc() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(80))
+}
+
+func (s Ephemeris) SetEcc(v float64) {
+	capnp.Struct(s).SetUint64(80, math.Float64bits(v))
+}
+
+func (s Ephemeris) Cus() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(88))
+}
+
+func (s Ephemeris) SetCus(v float64) {
+	capnp.Struct(s).SetUint64(88, math.Float64bits(v))
+}
+
+func (s Ephemeris) A() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(96))
+}
+
+func (s Ephemeris) SetA(v float64) {
+	capnp.Struct(s).SetUint64(96, math.Float64bits(v))
+}
+
+func (s Ephemeris) Toe() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(104))
+}
+
+func (s Ephemeris) SetToe(v float64) {
+	capnp.Struct(s).SetUint64(104, math.Float64bits(v))
+}
+
+func (s Ephemeris) Cic() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(112))
+}
+
+func (s Ephemeris) SetCic(v float64) {
+	capnp.Struct(s).SetUint64(112, math.Float64bits(v))
+}
+
+func (s Ephemeris) Omega0() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(120))
+}
+
+func (s Ephemeris) SetOmega0(v float64) {
+	capnp.Struct(s).SetUint64(120, math.Float64bits(v))
+}
+
+func (s Ephemeris) Cis() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(128))
+}
+
+func (s Ephemeris) SetCis(v float64) {
+	capnp.Struct(s).SetUint64(128, math.Float64bits(v))
+}
+
+func (s Ephemeris) I0() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(136))
+}
+
+func (s Ephemeris) SetI0(v float64) {
+	capnp.Struct(s).SetUint64(136, math.Float64bits(v))
+}
+
+func (s Ephemeris) Crc() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(144))
+}
+
+func (s Ephemeris) SetCrc(v float64) {
+	capnp.Struct(s).SetUint64(144, math.Float64bits(v))
+}
+
+func (s Ephemeris) Omega() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(152))
+}
+
+func (s Ephemeris) SetOmega(v float64) {
+	capnp.Struct(s).SetUint64(152, math.Float64bits(v))
+}
+
+func (s Ephemeris) OmegaDot() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(160))
+}
+
+func (s Ephemeris) SetOmegaDot(v float64) {
+	capnp.Struct(s).SetUint64(160, math.Float64bits(v))
+}
+
+func (s Ephemeris) IDot() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(168))
+}
+
+func (s Ephemeris) SetIDot(v float64) {
+	capnp.Struct(s).SetUint64(168, math.Float64bits(v))
+}
+
+func (s Ephemeris) CodesL2() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(176))
+}
+
+func (s Ephemeris) SetCodesL2(v float64) {
+	capnp.Struct(s).SetUint64(176, math.Float64bits(v))
+}
+
+func (s Ephemeris) L2() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(184))
+}
+
+func (s Ephemeris) SetL2(v float64) {
+	capnp.Struct(s).SetUint64(184, math.Float64bits(v))
+}
+
+func (s Ephemeris) SvAcc() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(192))
+}
+
+func (s Ephemeris) SetSvAcc(v float64) {
+	capnp.Struct(s).SetUint64(192, math.Float64bits(v))
+}
+
+func (s Ephemeris) SvHealth() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(200))
+}
+
+func (s Ephemeris) SetSvHealth(v float64) {
+	capnp.Struct(s).SetUint64(200, math.Float64bits(v))
+}
+
+func (s Ephemeris) Tgd() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(208))
+}
+
+func (s Ephemeris) SetTgd(v float64) {
+	capnp.Struct(s).SetUint64(208, math.Float64bits(v))
+}
+
+func (s Ephemeris) Iodc() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(216))
+}
+
+func (s Ephemeris) SetIodc(v float64) {
+	capnp.Struct(s).SetUint64(216, math.Float64bits(v))
+}
+
+func (s Ephemeris) TransmissionTime() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(224))
+}
+
+func (s Ephemeris) SetTransmissionTime(v float64) {
+	capnp.Struct(s).SetUint64(224, math.Float64bits(v))
+}
+
+func (s Ephemeris) FitInterval() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(232))
+}
+
+func (s Ephemeris) SetFitInterval(v float64) {
+	capnp.Struct(s).SetUint64(232, math.Float64bits(v))
+}
+
+func (s Ephemeris) Toc() float64 {
+	return math.Float64frombits(capnp.Struct(s).Uint64(240))
+}
+
+func (s Ephemeris) SetToc(v float64) {
+	capnp.Struct(s).SetUint64(240, math.Float64bits(v))
+}
+
+func (s Ephemeris) IonoCoeffsValid() bool {
+	return capnp.Struct(s).Bit(1984)
+}
+
+func (s Ephemeris) SetIonoCoeffsValid(v bool) {
+	capnp.Struct(s).SetBit(1984, v)
+}
+
+func (s Ephemeris) IonoAlpha() (capnp.Float64List, error) {
+	p, err := capnp.Struct(s).Ptr(0)
+	return capnp.Float64List(p.List()), err
+}
+
+func (s Ephemeris) HasIonoAlpha() bool {
+	return capnp.Struct(s).HasPtr(0)
+}
+
+func (s Ephemeris) SetIonoAlpha(v capnp.Float64List) error {
+	return capnp.Struct(s).SetPtr(0, v.ToPtr())
+}
+
+// NewIonoAlpha sets the ionoAlpha field to a newly
+// allocated capnp.Float64List, preferring placement in s's segment.
+func (s Ephemeris) NewIonoAlpha(n int32) (capnp.Float64List, error) {
+	l, err := capnp.NewFloat64List(capnp.Struct(s).Segment(), n)
+	if err != nil {
+		return capnp.Float64List{}, err
+	}
+	err = capnp.Struct(s).SetPtr(0, l.ToPtr())
+	return l, err
+}
+func (s Ephemeris) IonoBeta() (capnp.Float64List, error) {
+	p, err := capnp.Struct(s).Ptr(1)
+	return capnp.Float64List(p.List()), err
+}
+
+func (s Ephemeris) HasIonoBeta() bool {
+	return capnp.Struct(s).HasPtr(1)
+}
+
+func (s Ephemeris) SetIonoBeta(v capnp.Float64List) error {
+	return capnp.Struct(s).SetPtr(1, v.ToPtr())
+}
+
+// NewIonoBeta sets the ionoBeta field to a newly
+// allocated capnp.Float64List, preferring placement in s's segment.
+func (s Ephemeris) NewIonoBeta(n int32) (capnp.Float64List, error) {
+	l, err := capnp.NewFloat64List(capnp.Struct(s).Segment(), n)
+	if err != nil {
+		return capnp.Float64List{}, err
+	}
+	err = capnp.Struct(s).SetPtr(1, l.ToPtr())
+	return l, err
+}
+func (s Ephemeris) TowCount() uint32 {
+	return capnp.Struct(s).Uint32(252)
+}
+
+func (s Ephemeris) SetTowCount(v uint32) {
+	capnp.Struct(s).SetUint32(252, v)
+}
+
+func (s Ephemeris) ToeWeek() uint16 {
+	return capnp.Struct(s).Uint16(250)
+}
+
+func (s Ephemeris) SetToeWeek(v uint16) {
+	capnp.Struct(s).SetUint16(250, v)
+}
+
+func (s Ephemeris) TocWeek() uint16 {
+	return capnp.Struct(s).Uint16(256)
+}
+
+func (s Ephemeris) SetTocWeek(v uint16) {
+	capnp.Struct(s).SetUint16(256, v)
+}
+
+// Ephemeris_List is a list of Ephemeris.
+type Ephemeris_List = capnp.StructList[Ephemeris]
+
+// NewEphemeris creates a new list of Ephemeris.
+func NewEphemeris_List(s *capnp.Segment, sz int32) (Ephemeris_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 264, PointerCount: 2}, sz)
+	return capnp.StructList[Ephemeris](l), err
+}
+
+// Ephemeris_Future is a wrapper for a Ephemeris promised by a client call.
+type Ephemeris_Future struct{ *capnp.Future }
+
+func (f Ephemeris_Future) Struct() (Ephemeris, error) {
+	p, err := f.Future.Ptr()
+	return Ephemeris(p.Struct()), err
 }
 
 type RINEXEphemeris capnp.Struct
@@ -2159,208 +2151,191 @@ func NewEphemerisType_List(s *capnp.Segment, sz int32) (EphemerisType_List, erro
 	return capnp.NewEnumList[EphemerisType](s, sz)
 }
 
-const schema_b3ca6d2462778bb1 = "x\xda\x8c\x99\x7f\x8c\x1d\xd5u\xc7\xcf\xb93\xf3\xde\xfe" +
-	"\xf4\xdb\xf1\xcc\xb2k\xf0\xfa\xd9\xc4N\xb0\x05\xad\x7f\x80" +
-	"D\xad\xa8\xcb\xfe\xb0\xd9u\xc1\xbb\xb3\xb3\x04\xdbr\x95" +
-	"\xde}\xef\xbe}\x13\xcf\x9by\x9e\x99g\xfc\"#\xa7" +
-	"\x0e\xa8\x9b\x14Z\xa0\xb4J\xaaX\x05D\x7f\xca\x95\x80" +
-	"$\x15\x89h\x95V\xa1%\x89+%\x08*Z\x81b" +
-	"*\xa3\xc6\x08T\xa7M(T\xa0W\x9d;\xef\xcd\x8c" +
-	"\x9f\x1f.\x7fy\xdf\xe7\x9e\xb9\xf7\xdc{\xcf=\xf7{" +
-	"\xaew\xde\xdaw\x87\xbak\xf8\xa7\x1a0kV\xcb\xb5" +
-	">\xda\xf57?\xfa\xd5\xf3[\x7f\x07\xac\x09d\xadg" +
-	"\x7f\xf7\xbe\x95\xad\xb5\x1f~\x13\xd4<\xc0\x9eW\xd9\x0e" +
-	"4\xdeby\x00\xe3Mv\x1f`\xeb\xa5\xe6\xdb\xb7\x8c" +
-	"?\xc7\xd7\xba\x8c\xb5\x1cYO)\x07\xd0\xb8G\xa1?" +
-	"-\xe5\x9f\x10\xb0u\xf0\xe5?\xdb\xf0{\x97\xfen\x0d" +
-	"\xf4\x89\x8c5\xe0\x9e\xdb\xb4#h\xcck\xd4\xf1>\xed" +
-	"4`\xabv\xf6\x9f\x8d/\xbf\xae\x7f\x95:\xc6L\xc7" +
-	"H\xbd=\xac\x9dA\xe3Ii}V#7\xaa\x07\xce" +
-	"?u\xc7s\xfc1\xd0'\xb2\xc6\xe4\xe8\x9e\xd1\xdcn" +
-	"4\xb6\x91C\xc6\x96\x1c\x19\x1fP?\xff\x9f\xc7^x" +
-	"\xf4\x8f\xa8\xeb\x1b\xbb\xad\x1f\xce\xedE\xe3\xact\xff\xeb" +
-	"9\xbf\x1f\xb0\xf5\xcc\xff>\xf0\x07\x9a\xfb\xcdW\xc9\\" +
-	"\xeb\x9e\xe2w\xf4\xbdh\xfc@\xa7?_\xd4\xff\x9c\x01" +
-	"\xb6\x1a\x7f\xb2\xf6\xfb+s\xc7\xff\xa5\xdbq\xb9~O" +
-	"\x9aKh|\xdb\xa4?\x9f5\x8b\xb4\"\xf7\xdf\xf6y" +
-	"<x\xe7K?%s\xb5{\x9eo\x8c\xeeF\xe3\xdd" +
-	"Q\xfa\xf3\xd2\xa84\xff\xd1\x07\xbf\xfe\x95{~\xe3\xd9" +
-	"\xb7zMT\x1f;\x83\xc6\xb619\xd11\x9a\xe8{" +
-	"\xeb\xdf\xb6_\xfc\x87\xa7\xde\xa1\xbe\x0bWMtl\x05" +
-	"\x8d'\xc9z\xcf\xd9\xb1\xffQ\x00[?\x9e\xcc\xdf\xff" +
-	"\x8f\x0f]\xf8\xa8{/i\x9d\xf7\xe0\xc6#h\x8cn" +
-	"\x94\xe3l\x94{\xf9\xde\x7f\xbf\xe8|y\xe0?Z\xbd" +
-	"\xe2\xe4\x83\x89\xf5h\xf4o\"W\xb4M\xf7\xc1-\xad" +
-	"}\xf5\xaa\xa8\x89\xc0Q\xc2Y\x1eq;\x0a\x1a\xa5\xa8" +
-	"\x11\x88_)\xf1\xbaW\xdf{\xe7\xa2]Xvjb" +
-	"\x11\xd1\xeaST\x00\x15\x01\xf4\xed;\x00\xac\xad\x0aZ" +
-	";\x19\xea\x88&\x12\xbc\xe5\x08\x80u\xb3\x82\xd6\xed\x0c" +
-	"\x0b\xf7\x09q\x0cU`\xa8\x02\xb6\"\xa7&\x16*\xf7" +
-	"\x0aP\xc41\x1c\x04\x86\x83\x80\xc9\xb8j\xcfq\x97\xe6" +
-	"\x0f\xee;4'xY\x04\x004\xf8\xe6d\xf0\x9fL" +
-	"\x03X\xe7\x15\xb4^c\xd8\x19\xfbUr\xe8\xc7\x0aZ" +
-	"\xaf3\xd4\x19\x9a\xc8\x00\xf4\x7f=\x03`\xbd\xa6\xa0u" +
-	"\x91\xa1\xae0\x13\x15\x00\xfd\xcd\x15\x00\xeb\x82\x82\xd6;" +
-	"\x0cuU1Q\x05\xd0/\xed\x05\xb0.*h]f" +
-	"\xa8k\xaa\x89\x1a\x80\xfe.\xf5\xf93\x05\xad_0\xd4" +
-	"s\x9a\x899\x00\xfd\xe7\x07\x00\xac\xcb\x0a\xdaC\xc8P" +
-	"\xcf3\x93\xa2\xc1\xe8\xc7\x15\x00\xbb\x0f\x15\xb4Mdx" +
-	"\xfa\x84\x08B\xc7\xf7:s-D\xcd\xba\xc0!`8" +
-	"\x04\xd8\x0ay$\\\xd7\x89P\xd8\xcd0\x125HZ" +
-	"\xea\x81\xbf\x1a\xf0\xdaA\xc8\xf3Zb?\xc9W\x85W" +
-	"jv~\x16\xca<\x128\x92\xee1 \x8e\x00\xb6J" +
-	"~\xad&\xbc(\x04\x00\\\x07\xb8\xa8\xa0\xfcb\x1d`" +
-	"\xcb\x15\xbcn\x8b\x92\x0fy\xaf\x1c&\x9br\xed\xf5\xef" +
-	"\xb4\x86\xcbM\xa5.w?^\xd3\xdb\x8e\xd0\x80\xfa." +
-	"\xfa\x87\xc9-GE\xdf~\x06\x00U}\xdb\x01\x80\x96" +
-	"\xc7O8\xab<r@\xf1\xbdV\xc5\xf1\xb8\xbb\x10\xac" +
-	"\x80\xe2D\xad\x80\xd7\x9dr\xe7G\xc3\x8d\x02\xbe\xc4\xeb" +
-	"L\"'\x82\xe3%\xbf\xb6\xe8\xbbM\x80\xc43\xadw" +
-	"D\x06~\xa3.\xca\x1d\xa3\xb2\x08\xa1+8i\x87o" +
-	"R\xd0\xba5\x8d\x8f]\x8f\x01X\xb7*h-\xb2t" +
-	"\x03 /\xe6\xcb\xc9z\x84~\x10Q\xb7\xd8\xe9\x17\xc3" +
-	"\xceB\x8e\xa4\xe7\x15P.\xe9\xb5\x0f\x8d\xbd\xb8\xa7\xb8" +
-	"\xaf\xee\x97\xaa\x9f\xe4\xd4L\xb7\xbd\x9deX\xa0\x83r" +
-	"\xf5\xde\x9e\x16^\x148\"\xe3N\x92\x9a>\x91;\xfb" +
-	"\xea\xd5\xc9x3\xc9\x9fs\x1d\x7f\x8c?U)j\x9f" +
-	"V\x15\xb4\x9fQS\x97\x8c\xbfVw\x00\xd8\x7fA\xfc" +
-	"[\xc4\x19\x93{o<\xab\xee\x06\xb0\xcf\x11\x7f\x9e\xb8" +
-	"\xa2\xc8#e|[\xbd\x11\xc0~\x86\xf8\x0b\xc4UU" +
-	"\x9e*\xe3;\xb2\x9fo\x11\xff\x1eqM\x93\x07\xcb\xf8" +
-	"[u/\x80\xfd<\xf1\xef\x13\xcf)\xf2l\x19\x7f/" +
-	"\xf9\x0b\xc4_R3\xa7\xebE\xf5\xaf\x00\xec\x97\x88\xbf" +
-	"B\xbcO1\xb1\x0f\xc0\xf8\x89\xfa\x1c\x80\xfd\x0a\xf1\x0b" +
-	"\xc4\xfbU\x13\xfb\x01\x8c7\xd4\x97\x01\xec\x8b\xc4/\x13" +
-	"\x1f\xd0L\x1c\x000\xde\x95\xfd\\&\xfe!\xf1\xc1\x9c" +
-	"\x89\x83\x00\xc6\x07\xea\x0f\x01\x964:\xd4\x1aC}(" +
-	"o\xe2\x10\x1dj\x8d\xcc\x87\x88\x8f\x13\x1f\xee3q\x18" +
-	"\xc0\x18\xd5h\xd9L\xe2\x9b\x89\xaf\xeb7q\x1d\x801" +
-	"\xa1\xbd\x0d`o%\xbe\x93xa\xc0\xc4\x02\x80q\x8b" +
-	"\xf6\x05\x00\xfbf\xe2\xb7\x13\x1f\x194q\x04\xc0\xb8M" +
-	"\xfb7\x00\xfb\xb3\xc4\xe7\x88\xebC&\xea\xf2\x96\x0d\x00" +
-	"\xecY\xe2\x8b\xc4\xd7\x0f\x9b\xb8\x1e\xc0\xb8[;\x03`" +
-	"\xdfE\xfc\x10qc\x9d\x89\x06\xc0\x9e{4\x86\x00\xf6" +
-	"Qj\xa8R\x83Y0\xd1\x040\x84\xf6_\x00\xb6K" +
-	"\xfc$\xf1\xd1\x11\x13G\x01\x8c\x86\xe4\xa7\x88\xaf\x11\xbf" +
-	"N7\xf1:\x00\xe3A9\xb1\x07\x88?B|l\xbd" +
-	"\x89c\x00\xc6\xc3\xd2\xd1\xc7\x89?A|\xdc0q\\" +
-	"^\xf0\x8f\x01\xd8O\x10?G|\x83i\xe2\x06\x00\xe3" +
-	"/\xe5\xc2\x9d#\xfe<\xf1\xebGM\xbc\x9e\xe2D\xda" +
-	"?O\xfc\xfb\xc4o\xb8\xce\xc4\x1bh\xdf\xe5\xb8\xdf#" +
-	"~\x9e\xf8\xc61\x137\x02\x18?\x90\xf6\xe7\x89\xbfF" +
-	"|b\xdc\xc4\x09\x00\xe3Ui\xff\x0a\xf1\x0b\xc47m" +
-	"0q\x13\xed\xbb\xf6E\x00\xfbu\xe2?#^\xbc\xde" +
-	"\xc4\"\x80\xf1\x96\\\xb8\x8b\xc4/\x13\xdf|\x83\x89\x9b" +
-	")\x1e$\x7f\x87\xf8\xfb\xc4\xb7l4q\x0b\x80\xf1K" +
-	"\xed\xab\x00\xf6\xfb\xc4\xd5\x1cC\xfd\xc6\x09\x13o\x040" +
-	"0G\\\xcd)h\x8f\x10\xff\xd4&\x13?\x05`\x0c" +
-	"\xe7\xc8\x9f!\xe2\xe3\xc4\xb7\x16M\xdcJ\x81\"\xb9I" +
-	"|s\x8e\xe1\x96m}&n\xa3@\xc9\xfd;\x05\x0a" +
-	"\xf1\x9d9\x86\xf8i\x13?Mq\x92#wn&<" +
-	"G\xdd|\x06M\xfc\x0c\xc5C\x8e\xa65K\xfc\xb7\x88" +
-	"\xdf4e\xe2M\x00\xc6oJ\xfb\xa3\xc4\xab\xc4\xb7\xff" +
-	"\xb6\x89\xdbi\xdbsO\x01\xd8U\xe2\x11\xf1\x1d\x0f\x98" +
-	"\xb8\x03\xc08.\xed\xeb\xc4O\xe5\xaeJ\x83y`\x98" +
-	"\x07,4\x05\x0f:?\x8a5\xdf\x8b\xaa\x9d_\xf92" +
-	"o&fU\xbf\x91\x98M\xd6\x1c\xaf\x11\x89\xe4g(" +
-	"J\xbeW\xc6\x01`8@7\x93\xeb\x97\x8eM;\x1c" +
-	"\xc3\x19_T*N\xa9\xe0\x08/Jt\x80l\x9e\x0d" +
-	"\x1c\xacDq{\xb1\xd4\xb3\x9dU\xa2%\x1e\x89v\x1f" +
-	"\x8e\xf00\xb5q\xc2\xb0!\x16*\xb3\xc8#.sa" +
-	"\x81\xb2]\xd2\x1c\xf0\xb2\xd3\x08m\x87yb\xc6\x0f\x02" +
-	"Q\x8a\x1c\xdf[\x16A\x0d \xb1\xa9\x09\xee\xdd\xedG" +
-	"\x0e\xfa\xde\xacS\xa9\x88\xa0 \xbc\x92\xb8\xa2y\xca\xf3" +
-	"k\x90\xe7n3\xa1.\x8f\x9c\xa8Q\x16l\xc6\x0f\x9d" +
-	"l\xe7\x05\xea=1\x13\xa5\x92L\xe1P(9Q\x8f" +
-	"\xafm\xe7J\xc7\x94\xcc\xb7\xa1\xa89w\xf3/\xf8P" +
-	"\x0c\xa6Nf\xe6\x14k\xaa\xe4\xba\x0a\xd3\x998^\xc9" +
-	"u<\x1e)\x8e\xefu\xfb%'\x9d\xae\x8b\xb3Z\x8d" +
-	"\xa6\xc2\x12\x13\x1e\xc9\x95\x85\xcaTX\x12^\xd9\xf1\x8a" +
-	"\xab\x07\xfd\xb2\xb8\xaaG\xe6\xf8\xde\x15\xbe\x16\xbd+\xe6" +
-	"\xd9\xb1\x83|F\xfc\xb4W\x7f\xc6g\xe15\xa6\xc9\x83" +
-	"\xd5\x06\xe9\x17\\\xa8,\x8a\xc0Y\x15(2\x1dDb" +
-	"\xa1\xb2\xe4`\xec\xad\xf0\x0a\xe1\x95\xfdS\xf3\xbc\x87\xf1" +
-	"\xe0\x8e\x8fi\x9b\xbb{\xc6/\x8b\xfd.\xe4\xf9j\xba" +
-	"v\xab\xf5\xf0^!\x8e\xcd\xa2\xa8\x07\xa2Dz\xaa\x9c" +
-	"\xf9b\x91\xee\xd0\xfd\x90w\xf9j\xba\x0b\xce\xaa\xc7\xdd" +
-	"\xa9\x12L\x96\x1a\x01/\xa5{\x98\x8a\xb99\xc1\xdd\xa8" +
-	"\x9a.n\xe4G\xdc\xbd3\xf0\xb1Q\x9f\x15.oB" +
-	"\xcfh\x9d\xa1\xe8\xce\x84a\x14p/\xac9!\xd2\x14" +
-	"Ixg\xda*N4\xefE\"\x80\xfc\x09\xeev\x05" +
-	"\xc2\x8c\x0by\xbf\x94\xaak\xc7\xf7\xfc\xb0^\x15,\xc8" +
-	"\x9c\x98(\xfc\x1c\xcf\xbbN\x19\x11\x18b\xc6\x0a\x031" +
-	"\xe5\xd6\xab<\x91\x8e\x83m\xe9\xd81\x80\xc9@L\x8b" +
-	"\x88w\xb7w\x94=\x8ac3~\xc3\x8b\x00\xfb\x80a" +
-	"_\x8f\xf8\xbc7O\x15A;E$N\xa3_:F" +
-	"[\x01I\xcb\xff\xab\xac&\xe3\xaa\x80\xa4\xcc\xceD\xca" +
-	"L\xe14\xdd\xa5$\xc0\xe70#e\xf6!I\x96;" +
-	"\x88\xdf\x85\x0c\xb1\xadd\xe6\x91R\xea\x1c\xe1eL\x8b" +
-	"\x03\xc3\xc2\x03\x00\xf6\"\xf1\xa3\x98\xd6\x07\xc6a\xa4\xcc" +
-	"\x7f\x94x\x15\xd3\x12\xc1\x10\xb8\x04`\x97\x89\xd71\xad" +
-	"\x12\x8c\x1a\x92\x92\xa9\x12\x8fd\x9d\x80\xb1\x929.\xdd" +
-	"t\x89\x9f$\xde\x87\xb1\x92i ]\xf9\x11\xf1/\x11" +
-	"\xefg\xb1\x92\xb9_\xf2S\xc4\xd7\x88\x0f\xe4b%\xf3" +
-	" \xd2\xcd\xb8F\xfcq\xe2\x83j\xacd\x1e\x95\xf6\x8f" +
-	"\x10\xffF\xb6\x0ei\xd7\x0e\xc50\xe2A\xd4\xa3x\xf0" +
-	"\x1a\xb5\x15\x11,T`R\xca\xd6\xb4H(\xf3\x88\xdf" +
-	"\x13\x8a2U\x15\x9d*\xa5\xe4\xfbA\xd9\xf18F\x9d" +
-	"\x02&m\xf3I\xcb/7\xeb\x80\x1fW\xbf\x9cn\x1f" +
-	"\xbeTw\xcb\xdb\"\\\x80bE\xf2$i\x92'\xf3" +
-	"^\x04E\x11d\xe3\xbd\xe6\x97\x9d\x8a#\xcax\xa0\xe1" +
-	":\xdc\x9b\xe5\xd8L\xfa\xaa\x04\\\xe6\x16(rw\x96" +
-	"7?a\xady\xe7\xa2\xdd1@)\x91\xcdD\xb2\xdf" +
-	"\x1f\x00X\xa7\x14\xb4\xd62\x92\xfdA\x82\x0f(h=" +
-	"\x92\x8ac\xfda*6\x1fR\xd0\xfaZ\xaa\x8c\xf5?" +
-	"\xa4R\xe4q\x05\xad'\x18b\xac\x8a\xf5\xb3/\x03X" +
-	"O+h=\xc3\xb0\xb5\xc2CAcCQ\x1e\x12\x1c" +
-	"IK\xfd\xf6\xd6\x88\xb6gP\x94\xbe\xe3H\xfaH\xd2" +
-	"\xb6\xb8\xfa&\x18I_\x8a\xae\xb0\xe9$\x89\xab\xdb\xc3" +
-	"\xe3\x0d\x1e\x88%\x9f\xf9\xd1B\xc5n_9t\xe1`" +
-	"x\xd5\"^\xa3\xe6\xf1\xa2\xa0\xd9\xb5\x80\xdf\x05\xb0\xbe" +
-	"\xa4\xa0\xf5PZ\x8c}e\x09\xc0ZS\xd0z<S" +
-	"\xac?J\xf0\x11\x05\xadod\x8a\xf5\xaf\x13\xfc\x9a\x82" +
-	"\xd6\xd3\x99b\xfdI\x82O(h\x9dc\xd9\xfc\xfb9" +
-	"QuJ\xae\x98<(c9\x89\xc8\x93\x8b~\xe8D" +
-	"\x8e\x0f\x99[\xa1\xd9\x83}\xb1\x07\xeb(\x17\xe8\xb1\x0a" +
-	"\xda\xc7\xad\xc2~?\xa8\xf1(\xa9\x9f\xbb\x8b\xd3\xbd\xbd" +
-	"j\xc0\xbdi\x0d8Y\x95\xe9\x0dG\xd2\xd7\xadx\x8f" +
-	"&E|4\x93\"0yY\xeb*\x02\xaf\xf1\xa0\x12" +
-	"\x9b\xe4\xdb\x95\xe0\\\x92>/\xc9|u\x91\xf2\xc6e" +
-	"L6\xcaxW>k\xbcC\xf8}L\xf7\xca\xf8\xa5" +
-	"\xcc\xaa\x97\x89\x7f(\xd3'\xc6\xe9\xf3\x03\x99\x0e\xdf'" +
-	"\xae2\xda1\x16\xa7OdT\xa8\xa9\x8c\x843qM" +
-	"\x89\xd3\xe70\xa3\xb4:B|#\xf1\x9c\x1a\xa7\xcf\x0d" +
-	"\x8c\xfa\x19'\xbe\x95x^\x8b\xd3\xe7\x16\xc97\x13\xbf" +
-	"\x99x_.N\x9f\xdb\x19\xa5\xbd\x9b\x88\xdfJ\xbc?" +
-	"\x1f\xa7\xcf]\xd2~'\xf1\xcf\x12\x1f\xe8\x8b\xd3\xe7\xaf" +
-	"I~;\xf1Y\xe2\x83\xfdq\xfa\x9c\x92\xfd\xdcA\xfc" +
-	".\xe2C\x03q%8/\xed\xe7\x88/\x13\x1f\x1e\x8c" +
-	"+AK\xf2E\xe2G\x89\xaf\x1b\x8a+\xc1\xc3\xb2\x9f" +
-	"C\xc4\xcb\xc4\x0b\xc3q%\xc8\x19-\xf3Q\xe2U\xe2" +
-	"#\x18W\x82\x82}\x97\xae\x0b\xe2\x11q}]\\\x09" +
-	"\x1egtM\xd5\x89\x9fb\xd9\xd0H\xdev;\xc7\xb7" +
-	"\xd7\x8bFQ\x06L\xaf\xa7\xa2\x1ea\x1d\x08R\xa3'" +
-	"\x04\xee\x0f\xc4\xf1\x86\xf0J\xc5\xe6\xb4\xc3\xc3\x8c\xfe\x0d" +
-	"C\xbe*\xf6c\xc0k\xa2K\x97\xd4\xe3\x93\xe3\x01\x1e" +
-	"J\xd8\x09\xe1\xfa$v\xb3\x8c\x97J\xc2\x15\x01\x87\"" +
-	"Y\x1f\xea\xf1\xfd\xe1\x1e\xdf\x1f\xfe\x98\xef\x0f\xf7\xf8\xfe" +
-	"H\x8f\xef\x8f|\xcc\xf7\x09\xa7eu\xa3j*\xb3\xda" +
-	"+\x80\xcd\x99*\xf7<\xe1N.T*\xa1\x88\x92[" +
-	"\xc6\xf1*\xf2\x8c\xc3\xa4\xe3{S\xab\xe2\x13^3\xd3" +
-	"\xed\\_\x13\x81\x12\x1f\xc0\xcc\x9b\xe6\x1f\x03X\xaf(" +
-	"h]\xc8\xa4\x857v\xa7\xef\x97m\xe5\xa2\xbf\x19d" +
-	"\x9e/\x95\x918M^Z\xca\xbcT\xaa\x18\xa7\xc9\x9f" +
-	"?\x07`\xfdB\xc1%)XX\xfc\xa6\xf9\x11Y~" +
-	"\xa8\xa0\xdd\x87\x99\x87\x17M\xca\x1e\x95\xce\xed\x88\x94+" +
-	"j|\xde\x86\xf1\x08\x15\xb6\xc4\xc7\x91a\xab\x1e\x8aF" +
-	"\xd9_\xe2\xe8\x95\xfd\x1a\xe5Y%M\xb4I\xb4u_" +
-	"-\x99\x0bl\xb9Y\x17XH\xff\xab\x01\x10\x0bR\x0f" +
-	"w\xb4s3Q\xa65~\xd2\xa95j\xcb\xe8\xd4\x84" +
-	"\xac\xc7\x8a\xc1\x15\xf5X\xc5q\x05i\x15\xc0^cR" +
-	"\xebANA\x9aJ\x13b\xb6\xdf\x08@)\xa5o\xb1" +
-	"\xd7\xbe\xd3\x96\x9d\x1av\xbf|Og\xf37k\xe7\xef" +
-	"\x95\xf4\xe5\xfbt[\xcf\xa0\x06\x0c5\xd2V\xdc\xf3\xc3" +
-	"\xee\xd7\xd7\xff\x0b\x00\x00\xff\xff\x15=\xf4\x07"
+const schema_b3ca6d2462778bb1 = "x\xda\x8c\x98\x7f\x8cT\xd5\x15\xc7\xcfy?v\xf6'" +
+	";\xc3}\x8b\x0b\x82\x03\xb8(\x18h\xf9\x99Zb\xba" +
+	"\xb0.\xcaR\x84};\xab\x02!1og\xee\xec\xbc" +
+	"2\xef\xbd\xe1\xbd7\x0bc$kQS\xb4\xd0\x82\xc5" +
+	"\x06\x1aH\xd5h\x8b\x89M\x14\xb5\xb1\xc66\xdaHK" +
+	"+&h\xa4\xc1\x04#$\x98\x8a\x81\x14S\xb5\xd8@" +
+	"\xa69\xf7\xed\xbc\xf7\xb2\x0e\x94\xbff\xde\xe7\x9d{\xef" +
+	"y\xe7\xde{\xce\xf7\xde\xf9\x9f'\x96)\x0b\xda>Q" +
+	"A\xd2{\xd5\x86\xea\x95\x05\xbf\x7f\xf7\xbb\xc7\xba~\x02" +
+	"\xfa4\x94\xaa/\xfft\xcbP\x97\xf5\xf7W@I\x00" +
+	",:!\xdd\x86\xecS)\x01\xc0\xceH[\x00\xabG" +
+	"+\x9f\xcf\xeb<l\xec\x18g\xac6\x90\xf5ry\x15" +
+	"\xb2{e\xfa\xab\xcb\x7fE\xc0\xea\x9a\x0f~3\xf9g" +
+	"\xe7\xfe\xb4\x03R\xd3b\xd6\x80\x8b\x96\xa8\x1b\x90\xf5\xa9" +
+	"\xd4\xf1\x0au\x14\xb0j\x1d|\x8f=r*\xf5\x04u" +
+	"\x8c\xb1\x8e\x91z\xdb\xa5nG\xf6\x8c\xb0>\xa8\x92\x1b" +
+	"\x85U\xc7\x9e]v\xd8x\x12R\xd3\xe2\xc6\xe4\xe8\xa2" +
+	"\x8e\x86\x85\xc8f\x91ClF\x03\x19\xafR\x1e\xf8\xd7" +
+	"\xa67\xf7\xfc\x92\xba\x9e1\xdezW\xc3Rd\x07\x85" +
+	"\xfb\xfb\x1b\xbe\xd7\x04X}\xe9\xbf\x8f\xfeB-\xber" +
+	"\x82\xcc\xd5\xf1\x9f\xb8?\xb9\x14\xd9\x0bI\xfa\xfb|\xf2" +
+	"\xb7\x12`\xb5\xfc\xeb\x1d?\x1fZ\xb9\xf9\x1f\xe3\x1d\x17" +
+	"\xf1\xfb1\x1b@\xf6\x14\xa3\xbf{X\x9a\"\xb2m\xc9" +
+	"\x03\xb8\xe6\xee\xa3\x9f\x90\xb92\xfe;_\xd3\x16\";" +
+	"\xa2\xd1\xdf\xb75a\xfe\xee7?x\xfc\xde\x1f\xbe\xfc" +
+	"i\xbd\x0f=\xd7\xb1\x1d\xd9\x95\x0e\xfa\xd0o:\xe8C" +
+	"\xbf\x9e\xf8y\xe6\xc8\x9f\x9f=O}\xb7\x8f\xb7\xe6\x93" +
+	"\x86\x90U&\xd1\xdf\xf2\xa4\xff\xc8\x80\xd5\xe3\xdd\x89m" +
+	"\x7f\xd9y\xfa\xca\xf8\xb9\xa48/\xfah\xca\x06d\x17" +
+	"\xa6\x88q\xa6\x88\xb9\xfc\xfa\xdfG\xccG\x9a\xffY\xad" +
+	"\xb7N\xde\x9f:\x11\xd9\x99\xa9\xe4\xca\xc7S\xb7\xc0\xbc" +
+	"\xea\x8aR\x81[\xdc5e\xaf\xd7\xf0\x8d\x8c\xef\x96\xb3" +
+	"~\xd9\xe5\xdf\xc9\x1a%\xbb\xb4\xf4\xee\xfeL\xfb\xa0i" +
+	"\xf1~D\xbdQV\x00\x14\x04H\xcd\xb9\x0d@\xef\x92" +
+	"Q\x9f/a\x0aQC\x82\xf36\x00\xe8se\xd4o" +
+	"\x97\xb0}\x0b\xe7\x9bP\x01\x09\x15\xc0\xaaoZ|m" +
+	"\xfe~\x0e2\xdf\x84- a\x0b`8\xaeRw\xdc" +
+	"\x81\xbe5+\xd6\xad\xe4F\x8e\xbb\x004\xf8\xf4p\xf0" +
+	"\xf7{\x00\xf4c2\xea'%\xac\x8d}\x82\x1c:." +
+	"\xa3~J\xc2\x94\x84\x1aJ\x00\xa9\x8f\xb6\x03\xe8'e" +
+	"\xd4\xcfJ\x98\x92%\x0de\x80\xd4\x99!\x00\xfd\xb4\x8c" +
+	"\xfay\x09S\x8a\xac\xa1\x02\x90:\xb7\x14@?+\xa3" +
+	"~Q\xc2\x94\xaah\xa8\x02\xa4.P\x9f\x9f\xc9\xa8\x7f" +
+	")a\xaaA\xd5\xb0\x01 \xf5\xc5*\x00\xfd\xa2\x8c\x99" +
+	"V\x940\x95\x904Z\x0d\xac\x09\x87\x002\x8d(c" +
+	"FC\x09GG\xb8\xeb\x99\x8e]\xfb\xd6v\xbfR\xe2" +
+	"\xd8\x0a\x12\xb6\x02V=\xc3\xe7\xc5\xa2\xe9#\xcfT<" +
+	"\x9f[\x10\xbe)\xb9\xce\xb0kXk aX\xa1}" +
+	"\xb71\xcc\xedl\xa5\xf6\xd8\x9e3|\x8e\xc9h\x8e\x01" +
+	"1\x09X\xcd:\x96\xc5m\xdf\x03\x00\x9c\x00\xd8/\xa3" +
+	"h1\x01\xb0Z\xe4F)\xc3\xb3\x0e$\xec\x9c\x17N" +
+	"\xca\xb5\xe3_{\xeb\x0dV\xe4\x92\x98\xfd \xa6K6" +
+	"\xd0\x80\xa9\x05\xf4#\x89)G95g;\x00*\xa9" +
+	"Y\xab\x00\xaa\xb61b\x0e\x1b\xbe\x09\xb2cW\xf3\xa6" +
+	"m\x14\xd7\xbaC \x9b~\xd55Jf\xae\xf6P." +
+	"\xfa\xae1`\x94$\x81L\x1f6g\x1d\xab\xdf)V" +
+	"\x00B\xcf\xd4\xfa+\xd2u\xca%\x9e\xab\x19\xe5\xb8\x07" +
+	"\xe3\x16'\xcd\xf0l\x19\xf5\xc5\xd1\xfaX\xf0$\x80\xbe" +
+	"XF\xbd_\x8a&\x00\x12\xbc/\x17\xc6\xc3s\\\x9f" +
+	"\xba\xc5Z\xbf\xe8\xd5\x02\x99\x8c\xf6+\xa0\x08\xe9\xb57" +
+	"M\xa6\x7fQzE\xc9\xc9\x16\xaeg\xd7\xf4\x8cy\xdb" +
+	"+a;m\x94o\xcf\xed(\xb7}\xd7\xe41w\xc2" +
+	"\xd4t]\xee\xac(\x15\xba\x83\xc9$\x7f\x0e\xd5\xfca" +
+	"\x8f+\xb7\x01d\x1eUd\xcc\xecV\"\x97\xd8.\xc1" +
+	"w\x10\xdfK\\\x92\xc4\xdc\xb3=\xcaB\x80\xccN\xe2" +
+	"\xfb\x88\xcb\xb2\xd8R\xec)e&@f7\xf1\x03\xc4" +
+	"\x15E\xec*\xb6_\xf4\xb3\x97\xf8\xd3\xc4UUl," +
+	"vPY\x0a\x90\xd9G\xfc9\xe2\x0d\xb2\xd8[\xec\x19" +
+	"\xc1\x0f\x10?\xa4\xc4v\xd7\xf3\xa2\xff\xa7\x89\xbfH\xbc" +
+	"Q\xd6\xb0\x11\x80\xbd \xf8s\xc4_\"\xde\xa4h\xd8" +
+	"\x04\xc0~'\xf8!\xe2\xaf\x12oV5l\x06`/" +
+	"\x0b\x7f^$\xfe:\xf1\x96\x06\x0d[\x00\xd8k\xc2\xfe" +
+	"%\xe2o\x12oMh\xd8\x0a\xc0\xfe \xfcy\x95\xf8" +
+	"[\xc4\xdb\x1a5l\x03`\x7fT\xa6\x00d^'\xfe" +
+	"\x0e\xf1\x09M\x1aN\x00`o\x8b~\xde$~\x94x" +
+	"{\xb3\x86\xed\x00\xec\x88\xe0o\x11?F<\xd9\xa2a" +
+	"\x12\x80\xfdM\xf0w\x88\x1f'\x9ej\xd50\x05\xc0\xde" +
+	"S&\x02d\x8e\x12\xff\x90\xf8\xc46\x0d'\x02\xb0\xf7" +
+	"\x85\xfd1\xe2'\x89\xb3\x09\x1a2\x00vB\xf0\xe3\xc4" +
+	"O\x11\xd7\xda5\xd4\x00\xd8G\xc2\xff\x0f\x89\x9f&\xde" +
+	"\x91\xd4\xb0\x83\xf2\xbe\xb0?I\xfc,\xf1I)\x0d'" +
+	"\x91n\x10\xdfu\x8a\xf8g\xc4o\x98\xa8\xe1\x0d\x00\xec" +
+	"Sa\x7f\x9a\xf8y\xe2\x9dL\xc3N\x00vN\xac\x87" +
+	"\xb3\xc4/\x12\x9f\xaci8\x19\x80]PV\x01d\xce" +
+	"\x13\xbfD|J\x87\x86S\x00\xd8W\"\xfe\x17\x89_" +
+	"&~\xe3$\x0do\xa4\x92\xa8\xf4\x00d\xbeTd\x1c" +
+	"P%LM\xbdA\xc3\xa9\x00\xec\x8ap\xe7\x12\x99+" +
+	"\xc4\xa7uj8\x0d\x80\xa1J\xc3^&\xdeH\xfc\xa6" +
+	"\xc9\x1a\xde\x04\xc0T\x95\x86UT\x193I\xe2\xe9)" +
+	"\x1a\xa6\x01X\x9bJ\xee7\x12\xd7\x88O\xbfQ\xc3\xe9" +
+	"\x00,\xa5\x92;\xad\xc4;\x89\xcf\x98\xaa\xe1\x0c\x00\xd6" +
+	"\xa1>\x01\x90\xe9$\xdeE|\xe64\x0dg\x92DQ" +
+	")\xc9O'>\x97\xf8\xcd7ix3\x00\x9b#\xfa" +
+	"\xef\">_\x95pA\xd7[\x09\x0d\xbb\x00\xd8<u" +
+	";@f.\xbd\xb8]\x95\x10gi8\x0b\x80-Q" +
+	"\x07\x002\x8b\x09\xf7S?\xb7\xa0\x86\xb7\x00\xb0{\x84" +
+	"\xff\xab\x89\x17\x88\xdf\xda\xad\xe1\xad\x00\x8c\x0b\x9e#^" +
+	"\">{\x9b\x86\xb3\x01\x98\xa5R\xd8\x0a\xc4}\xe2s" +
+	"\x1e\xd6p\x0e\x00\xdb,x\x91\xf8VU\xc2vo\xa4" +
+	"/\x87\x09\x900\x01\xd8^\xe1\x86[{H[\x8e\xed" +
+	"\x17jO\x89\x9cQ\x09\xcd\x0aN94\xeb\xb6L\xbb" +
+	"\xec\xf3\xf0\xd1\xe3Y\xc7\xcea3H\xd8\x0c\x980\xf2" +
+	"\xf3ku.a\xe4\x17\xc4\xfe/\x0c\xeb\x9f\xe9\xe4x" +
+	"\xf8\"\xebz\xb5\xff\xdd9^\xf4\x8d5\xb5G\xd9\x8a" +
+	"\xba\xca\x96\xb3\xe1\x7f\x9e\xcd\xc6x\xd8\x1a\x8d\x90\xfaN" +
+	"\xac\x7f3\xb4\xeev,>l\xc4:5\xc3\xc6\xb2\x19" +
+	"\xc3n\xd8\"-Z\x84\"E<\xf5:>U\xd5\xf0" +
+	"cz\x1d\xbf\xf60\x9aur\xdc[\x1d~\xa9\\\x0c" +
+	"\xff\xa6\xbd\x91\xe5\x91\xdfUod%7\x8a~!\xd6" +
+	"S\xc2\x1f\xce\xc5C\x14\x19\xfb\xaea{\x96\xe9!\xa9" +
+	"\x08\x92_Q\xa3j\xde\xf4\xfbl\x9f\xbb\x90\x181\x8a" +
+	"\xb1\x00D\xadM\xc7v\xeetx\x1e\xf3\xde}F\xd1" +
+	"\xcc\x01\"H\x88co\x96\x17K\x05@\xa3VLZ" +
+	"\xc6D\x02\xbd\xea\xe1\xbe\x11\xd3\x0f\xb5W\xbe\xb3\xe5N" +
+	"\xa7l\x8b 4\x82\x84\x8d\x80\xa3\xbe\xc3\xef'\x897" +
+	"\xb6(F}'\x1b\x7f\xfe\xff\x05\xb2;\x10wT\x91" +
+	"\xe6\x87\x15i9\xd2\xd2\xbd\x83t\xd4J\x8cU\xa4\x15" +
+	"H[~\x19\xf1\xd5(!\x8e\x15\xa4>|\x10 \xb3" +
+	"\x92\xf0 F\x1a\x8f\xe9H;\xa6\x9f\xf8F\x8cd\x1e" +
+	"[\x8f\xb4\xb37\x12/`\xa4\xf4\x18G\xda\x919\xe2" +
+	"%\x8c\xc4\x1e\xb3\x90\x12h\x81\xb8/\xe4\x1e\x06\x05i" +
+	"\xb3p\xb3H|+\xf1F\x0c\x0aR\x19]\x80\x8cO" +
+	"\xfca\xe2MRP\x90\xb6\x09\xfe\x10\xf1\x1d\xc4\x9b\x1b" +
+	"\x82\x82\xf4\x18>I\x85\x96\xf8^\xe2-JP\x90\xf6" +
+	"\x08\xfb\xdd\xc4\x0f\xc4\xe5\xe4\x98\x04L{\xbe\xe1\xfau" +
+	"4\xa0]\xb6\x86\xb8\xbb6\x0f\xddB}DZ/g" +
+	"\xf8\xc6\xbd\x1e\xcf\xd1\x0c\xd6\xc4f\xd6q\xdc\x9ci\x1b" +
+	"\xe8\xd7th\xf4\xce!I6X)\x01^M\x86\x8e" +
+	"\x0e\x97\xbc\xfb\xe3\x1a?\xc8\x0a\xdeZH\xe7\x05\xaf-" +
+	"FN\x9e\xf4\xd9>\xa4\xb9\x1b[\xb0U\xcb\xc9\x99y" +
+	"\x93\xe7pU\xb9h\x1av\xaf\x81\x95\xb0\xaf\xbckd" +
+	"}\xd3\xb1!m\x14{\x8d\xcau\x1e\x19\xee\xee\xcf\xd4" +
+	"\x0cP(\x1d-T^\xdb\\\x00\xfd!\x19\xf5\x1d1" +
+	"\xe5\xf5\x18\xc1Ge\xd4wG\x1a'\xb5k&\x80\xbe" +
+	"CF}o$pR{\x08\xee\x94Q\xdf'!\x06" +
+	"\xe2&\xf5\xd4\x07\x00\xfa\x01\x19\xf5C\x12V\x87\x0c\x8f" +
+	"\xd3\xd8\x90\x162\x0b\x93\xd1\x89mlj\xf8\x98g\x90" +
+	"\x16\xbec2:\xeb\x06\x16\"\x85%\xa3#~H\xb3" +
+	"\xdf\xa6Uos\xd9p\xf9\x80#9\xfe\xda|\x86[" +
+	"\xe6=\xc6\x8f\x1cw\xf9V\x13\xbdo\x05\xeb\x1a\x12\xd5" +
+	"\xf6\xdd\xca\xb8@\xbd\x01\xa0?,\xa3\xbe3\xd2\xce\x8f" +
+	"\x0f\xc4BR;[\xed!\xb8[F\xfd@\xecl\xb5" +
+	"\x9f\xe0>\x19\xf5\xe7bg\xabg\x08>-\xa3\xfe\xa2" +
+	"\x14?\xfb\xdc\xc7\x0bf\xb6\xc8\xbb\xd7\x885\x1b\xae\xbc" +
+	"\xad\xfd\x8eg\xfa\xa6\x03\x18\x9e\x9e\xaa\x95:\xec\xc1:" +
+	",[t\xb2\x9bzL\x03\xeaDA\xbdZ\x14\xeer" +
+	"\\\xcb\xf0\xc3\xe3\xce\xf8\xb3\xc4\xd2z\x92}i$\xd9" +
+	"\xbb\x0b\"\x8da2\xba\x8c\x08\xe6\xa8\x9b\x07[0\xd4" +
+	"\xec\xe1E\xc88\xcd~\x8d\xf3o`\x92\x18\x13\xee+" +
+	"\xc34yN\xe4\xa5\xb3\x94\x1f.b8Q\xec\x828" +
+	"\x85\x9e'|\x09\xa3\xb9b_\x89\xecy\x91\xf8e\x91" +
+	"&1H\x93\xdf\x88\xb4w\x89\xb8\"\xd1\x8cIA\x9a" +
+	"D\xe90\x09)\x89\x84\x14qU\x0e\xd2d\x9bD\xe9" +
+	"3I|*\xf1\x06%H\x93\x93%\xea\xa7\x93x\x17" +
+	"\xf1\x84\x1a\xa4\xc9\x19\x82O'>\x97xcC\x90&" +
+	"\xe7H\x94\xdef\x13_L\xbc)\x11\xa4\xc9\x05\xc2~" +
+	">\xf1;\x8877\x06i\xf2\xfb\x82\xdfN\xbc\x97x" +
+	"KS\x90&\x97\x8b~\x96\x11_M\xbc\xb59\xd0\xed" +
+	"}\xc2~%\xf1A\xe2m-\x81n\xd7\x05\xef'\xbe" +
+	"\x91\xf8\x84\xd6@\xb7\xaf\x17\xfd\xac#\x9e#\xde\xde\x16" +
+	"\xe8vC\xa20o$^ \x9e\xc4@\xb7s\xe9\x0d" +
+	"*\x0b\xc4}\xe2\xa9\x09\x81n\xdf,Q9*\x11\x7f" +
+	"H\x8a/\x8d\xf0*\xae\xb6}\xeb\x1d@\xd3b\xc1\xd4" +
+	";\xd9\xd7Y\xd6./\x1a\xbe9\xc2\xf1.\x97o." +
+	"s;\x9b\xae\xf4\x98F\xf4\xde\xe2\x9eg\x0c\xf3\xbb\xd0" +
+	"5,>N@\x94\x82\x9dc\x03\xae\x0b\xd9\x08/:" +
+	"Y\xd3\xaf\xc4\x99\x91\xcd\xf2\"w\x0dH\x93\xf5\xba:" +
+	"\xed\xd7\xd7i\xbf\xfe*\xed\xd7\xd7i\xbf\xa1N\xfb\x0d" +
+	"Wi\x1fr\x0ak\xd1/Dzh,\x02X\xb9\xb3" +
+	"`\xd86/v\xaf\xcd\xe7=\xee\x87\xd5\xc4\xb4\xf3b" +
+	"\x8fC\xb7\xe9\xd8\xcb\x87\xf9u\x96\x93\x9e\xb1\x9cnq" +
+	"W\x0e6`\xec\x0a\xeaW\x00\xfa\x872\xea\xa7ci" +
+	"\xe1\xe3\x85\xd1u\xd3\x98BI\x9dqc\xb7Mr2" +
+	"H\x93\xe7\x06b\x17K\x0a\x06i\xf2\x8b\xc3\x00\xfa\x97" +
+	"2\x0e\x08a\"\x05WPW\xc8\xf22\x1dt0v" +
+	"NV\x85\xbcQh\xdf&\x85,Q\x82\xfd\xd6\x86\x1b" +
+	"\xe8@C\xbc\x13%\xac\x96<^\xce9\x03\x06\xda9" +
+	"\xc7\xa2<+G\x896\\m\xe3KK\xacP\x0dV" +
+	"J\x1c\xdb\xa3\x9ba@l\xa7xzcJ\x16+\xa1" +
+	"\xb0\xb4\x8c\xad\xa6U\xb6\x06\xd1\xb4x\xaf\x99\xcf\xf3\xb4" +
+	"\xcb\xed,\x8f\x89\xd6\"'M\x02XoLz\xbb\xc6" +
+	"\xa0E\x1aI\x10b\x19\xa7\xec\x82\x9c\x8d\xae\xce\xae]" +
+	"\xd3\x06M\x0b\xc7_T\xf6\xc4\xf3\xb74\x96\xbf\x87\xa2" +
+	"\x8b\xca\xd11\xdd\x82*H\xa8\x92\x862l\xc7\x1b\x7f" +
+	"Y\xf6\xbf\x00\x00\x00\xff\xff\xe4\xf7\x06\xf4"
 
 func RegisterSchema(reg *schemas.Registry) {
 	reg.Register(&schemas.Schema{
