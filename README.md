@@ -35,3 +35,7 @@ For more detailed information refer to the [Cap'n Proto documentation](https://c
 ### This will mainly be a place to write thigs down so that I dont forget them.
 
 schema been created , capnp.go file been created, need to update and properly use in structs 
+
+Where we have left off , initially , The Idea was to consume  parse and process RINEX files of various formats, consume API endpoints FROM nasa to  get satellite information. 
+
+Opting for not hitting API endpoints and processing , this will process the Rinex files and  output the data in a format that is easy to understand and process.

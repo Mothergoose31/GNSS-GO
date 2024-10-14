@@ -2,9 +2,11 @@ package gnss
 
 import (
 	"bufio"
+	math "math"
 
 	"fmt"
 
+	"errors"
 	"os"
 	"strconv"
 	"strings"
@@ -96,9 +98,101 @@ func (g *GPSEphemeris) DebugString() string {
 
 // # http://gauss.gge.unb.ca/GLONASS.ICD.pdf
 
-// func (e GPSEphemeris) GetSatInfo(time GPSTime) ([]float64, []float64, float64, float64, error) {
+func (e GPSEphemeris) GetSatInfo(time GPSTime) ([]float64, []float64, float64, float64, error) {
+	fmt.Println("GetSatInfo==========")
 
-// }
+	ephData, err := e.EphemerisData()
+	if err != nil {
+		return nil, nil, 0, 0, fmt.Errorf("failed to get ephemeris data: %v", err)
+	}
+
+	baseEph, err := e.BaseEphemeris()
+	if err != nil {
+		return nil, nil, 0, 0, fmt.Errorf("failed to get base ephemeris: %v", err)
+	}
+
+	if !baseEph.IsHealthy() {
+		return nil, nil, 0, 0, errors.New("unhealthy ephemeris")
+	}
+
+	toc, err := e.Toc()
+	if err != nil {
+		return nil, nil, 0, 0, fmt.Errorf("failed to get time of clock: %v", err)
+	}
+
+	toe, err := e.Toe()
+	if err != nil {
+		return nil, nil, 0, 0, fmt.Errorf("failed to get time of ephemeris: %v", err)
+	}
+
+	tdiff := time.Sub(toc)
+	clockErr := ephData.Af0() + tdiff*(ephData.Af1()+tdiff*ephData.Af2())
+	clockRateErr := ephData.Af1() + 2*tdiff*ephData.Af2()
+
+	tdiff = time.Sub(toe)
+
+	sqrtA := e.SquareRootOfSemiMajorAxis()
+	a := sqrtA * sqrtA
+	maDot := math.Sqrt(EARTH_GM/(a*a*a)) + ephData.DeltaN()
+	ma := ephData.M0() + maDot*tdiff
+
+	ea := ma
+	eaOld := 2222.0
+	for math.Abs(ea-eaOld) > 1.0e-14 {
+		eaOld = ea
+		ea = ea + (ma-eaOld+ephData.Ecc()*math.Sin(eaOld))/(1.0-ephData.Ecc()*math.Cos(eaOld))
+	}
+
+	eaDot := maDot / (1.0 - ephData.Ecc()*math.Cos(ea))
+
+	// Relativistic correction term
+	einstein := -4.442807633e-10 * ephData.Ecc() * sqrtA * math.Sin(ea)
+
+	// Begin calc for True Anomaly and Argument of Latitude
+	tempd2 := math.Sqrt(1.0 - ephData.Ecc()*ephData.Ecc())
+	al := math.Atan2(tempd2*math.Sin(ea), math.Cos(ea)-ephData.Ecc()) + ephData.Omega()
+	alDot := tempd2 * eaDot / (1.0 - ephData.Ecc()*math.Cos(ea))
+
+	// Calculate corrected argument of latitude based on position
+	cal := al + ephData.Cus()*math.Sin(2.0*al) + ephData.Cuc()*math.Cos(2.0*al)
+	calDot := alDot * (1.0 + 2.0*(ephData.Cus()*math.Cos(2.0*al)-ephData.Cuc()*math.Sin(2.0*al)))
+
+	// Calculate corrected radius based on argument of latitude
+	r := a*(1.0-ephData.Ecc()*math.Cos(ea)) + ephData.Crc()*math.Cos(2.0*al) + ephData.Crs()*math.Sin(2.0*al)
+	rDot := a*ephData.Ecc()*math.Sin(ea)*eaDot + 2.0*alDot*(ephData.Crs()*math.Cos(2.0*al)-ephData.Crc()*math.Sin(2.0*al))
+
+	// Calculate inclination based on argument of latitude
+	inc := ephData.I0() + ephData.IDot()*tdiff + ephData.Cic()*math.Cos(2.0*al) + ephData.Cis()*math.Sin(2.0*al)
+	incDot := ephData.IDot() + 2.0*alDot*(ephData.Cis()*math.Cos(2.0*al)-ephData.Cic()*math.Sin(2.0*al))
+
+	// Calculate position and velocity in orbital plane
+	x := r * math.Cos(cal)
+	y := r * math.Sin(cal)
+	xDot := rDot*math.Cos(cal) - y*calDot
+	yDot := rDot*math.Sin(cal) + x*calDot
+
+	// Corrected longitude of ascending node
+	omDot := ephData.OmegaDot() - EARTH_ROTATION_RATE
+	om := ephData.Omega0() + tdiff*omDot - EARTH_ROTATION_RATE*toe.TimeOfWeek()
+
+	// Compute the satellite's position in Earth-Centered Earth-Fixed coordinates
+	pos := make([]float64, 3)
+	pos[0] = x*math.Cos(om) - y*math.Cos(inc)*math.Sin(om)
+	pos[1] = x*math.Sin(om) + y*math.Cos(inc)*math.Cos(om)
+	pos[2] = y * math.Sin(inc)
+
+	tempd3 := yDot*math.Cos(inc) - y*math.Sin(inc)*incDot
+
+	// Compute the satellite's velocity in Earth-Centered Earth-Fixed coordinates
+	vel := make([]float64, 3)
+	vel[0] = -omDot*pos[1] + xDot*math.Cos(om) - tempd3*math.Sin(om)
+	vel[1] = omDot*pos[0] + xDot*math.Sin(om) + tempd3*math.Cos(om)
+	vel[2] = y*math.Cos(inc)*incDot + yDot*math.Sin(inc)
+
+	clockErr += einstein
+
+	return pos, vel, clockErr, clockRateErr, nil
+}
 
 // =========================================================================
 
