@@ -1,41 +1,45 @@
+# RINEX File Processing Project
 
+A tool to process RINEX (Receiver Independent Exchange Format) files and output data in an easily consumable format.
 
-## Writing and Compiling Cap'n Proto Schema for Go
+## Installation Requirements
 
-
-
-1. Install the Cap'n Proto compiler.
-2. Read the installation instructions from [Cap'n Proto Go](https://github.com/capnproto/go-capnp/blob/main/docs/Getting-Started.md#remote-calls-using-interfaces).
-   **Note for Windows users:** Follow the installation steps only up to step 3. 
-   **Aditional Note:** dont get there is a Cap'n Proto compiler, and then you install go-capnp to work along with the compiler. to compile the schema file into go code.
-3. Install go-capnp:
-    ```
-    go get capnproto.org/go/capnp/v3
-    ```
-4. Clone the go-capnp repository:
-    ```
-    git clone https://github.com/capnproto/go-capnp.git
-    ```
-5. Write your schema file (e.g., `yourschema.capnp`).
-
-6. Compile the schema using the following command:
+### Cap'n Proto Setup
+1. Install Cap'n Proto compiler
+2. Install go-capnp:
+```bash
+go get capnproto.org/go/capnp/v3
 ```
-capnp compile -I /path/to/go-capnp/std -ogo /path/to/yourschema.capnp
-```
-
-might need to run this before hand 
-
-```
+3. Add Go bin to PATH:
+```bash
 export PATH=$PATH:$HOME/go/bin
 ```
 
-For more detailed information refer to the [Cap'n Proto documentation](https://capnproto.org/index.html).
+### Windows Users Note
+Follow Cap'n Proto Go installation steps only up to step 3. The Cap'n Proto compiler works in conjunction with go-capnp to compile schema files into Go code.
 
+## Schema Development
+1. Create schema file (.capnp)
+2. Compile schema:
+```bash
+capnp compile -I /path/to/go-capnp/std -ogo /path/to/yourschema.capnp
+```
 
-### This will mainly be a place to write thigs down so that I dont forget them.
+## Project Status
 
-schema been created , capnp.go file been created, need to update and properly use in structs 
+### Completed
+- Initial schema creation
+- Generated capnp.go file
 
-Where we have left off , initially , The Idea was to consume  parse and process RINEX files of various formats, consume API endpoints FROM nasa to  get satellite information. 
+### Current Focus
+- RINEX file processing implementation
+- Data structure optimization
+- Schema refinement for RINEX data representation
 
-Opting for not hitting API endpoints and processing , this will process the Rinex files and  output the data in a format that is easy to understand and process.
+### Future Development
+- Support for various RINEX formats
+- Data output standardization
+- Performance optimization
+
+## Documentation
+For more detailed information, refer to the [Cap'n Proto documentation](https://capnproto.org/documentation.html).
